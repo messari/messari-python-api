@@ -18,7 +18,7 @@ The first step is installing messari. messari is a python project, so it can be 
 other python library. Every Operating System should have Python pre-installed,
 so you should just have to run::
 
-   pip install messari
+   pip install git+https://github.com/messari/messari-python-api.git
 
 Authentication
 ==============
