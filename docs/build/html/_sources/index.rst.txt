@@ -54,7 +54,7 @@ Once you generate an API key, import messari then set your API key by running::
 Usage
 =====
 
-Check out our examples `here <https://gitlab.com/Rtalamas/messari/-/blob/master/examples/Messari%20API%20Tutorial.ipynb>`_ for detailed usage.
+Check out our examples `here <https://github.com/messari/messari-python-api/blob/master/examples/Messari%20API%20Tutorial.ipynb`_ for detailed usage.
 
 :ref:`Here<genindex>` is detailed description of all the available functions in the library.
 
