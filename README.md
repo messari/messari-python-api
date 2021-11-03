@@ -35,4 +35,5 @@ $> python
 
 ## Docs
 To open the offical docs go [here](https://objective-lalande-8ec88b.netlify.app/).
+
 Examples can be found in [this](https://github.com/messari/messari-python-api/blob/master/examples/Messari%20API%20Tutorial.ipynb) Jupyter Notebook. 
