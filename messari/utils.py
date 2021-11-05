@@ -197,10 +197,8 @@ def timeseries_to_dataframe(response: Dict) -> DataFrame:
         Dictionary of asset time series data keyed by symbol
     :return: pandas dataframe
     """
-    data_df = pd.DataFrame()
     df_list, key_list = [], []
     for key, value in response.items():
-        data_df = pd.DataFrame()
         key_list.append(key)
         if isinstance(value['values'], list):
             values_df = pd.DataFrame.from_records(value['values'],
