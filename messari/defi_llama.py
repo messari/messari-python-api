@@ -1,17 +1,22 @@
+# Global imports
+from string import Template
 from typing import Union, List, Dict
-from messari.utils import validate_input
 from numpy import nan as Nan
 import requests
 import datetime
 import pandas as pd
 
+# Local imports
+from messari.utils import validate_input, retrieve_data
 
-##########################
-# DeFi Llama
+# URLS
+DL_PROTOCOLS_URL = "https://api.llama.fi/protocols"
+
+# TODO handle requests error, ie wrong url
+
 def get_defi_llama_protocols() -> pd.DataFrame:
     """Returns basic information on all listed protocols, their current TVL and the changes to it in the last hour/day/week"""
-    dl_get_protocols_url = "https://api.llama.fi/protocols"
-    protocols = requests.get(dl_get_protocols_url).json()
+    protocols = requests.get(DL_PROTOCOLS_URL).json()
 
     protocol_dict={}
     for protocol in protocols:
@@ -20,23 +25,65 @@ def get_defi_llama_protocols() -> pd.DataFrame:
     protocols_df = pd.DataFrame(protocol_dict)
     return protocols_df
 
-#print(get_defi_llama_protocols())
+##########################
+# SETUP
+##########################
+dl_get_chain_chart_url = "https://api.llama.fi/charts/"
 
-## NOTE Should probably go in __init__.py
-## NOTE this could be used to screen slugs before using them
 def get_defi_llama_slugs() -> List[str]:
-    dl_get_protocols_url = "https://api.llama.fi/protocols"
-    protocols = requests.get(dl_get_protocols_url).json()
+    protocols = requests.get(DL_PROTOCOLS_URL).json()
+    #protocols = retrieve_data(DL_PROTOCOLS_URL, {}, {})
 
     dl_slugs=[]
     for protocol in protocols:
         if "slug" in protocol.keys():
             dl_slugs.append(protocol["slug"])
     return dl_slugs
-#DL_SLUGS = get_defi_llama_slugs()
+DL_SLUGS = get_defi_llama_slugs()
+#print(DL_SLUGS)
+
+def validate_dl_input(asset_slugs: Union[str, List]) -> Union[List, None]:
+    """Wrapper around messari.utils.validate_input, validate input & check if it's supported by DeFi Llama
+
+    Parameters
+    ----------
+        asset_slugs: str, list
+            Single asset slug string or list of asset slugs (i.e. bitcoin)
+
+    Returns
+    -------
+        List
+            list of validated slugs
+    """
+    slugs = validate_input(asset_slugs)
+
+    supported_slugs = []
+    for slug in slugs:
+        if slug in DL_SLUGS:
+            supported_slugs.append(slug)
+        else:
+            print(f"WARNING: slug '{slug}' not supported by DeFi Llama")
+    return supported_slugs
 
 
+##########################
+# HELPERS
+##########################
 def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
+    """format a typica DF from DL, replace date & drop duplicates
+
+
+
+    Parameters
+    ----------
+        df_in: pd.DataFrame
+            input DataFrame
+
+    Returns
+    -------
+        DataFrame
+            formated pandas DataFrame
+    """
 
     # set date to index
     df_new = df_in
@@ -52,7 +99,30 @@ def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
     df_new = df_new[~df_new.index.duplicated(keep='last')]
     return df_new
 
+def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None, sort=True) -> pd.DataFrame:
+    time_sorted_sales_history = sales_history[ (sales_history["epoch"] >= start_epoch) & (sales_history["epoch"] <= end_epoch) ]
 
+    filtered_df = df_in
+    if start_date != None:
+        #TODO: filter for greater than start
+        pass
+
+
+    if end_date != None:
+        #TODO: filter for less than end
+        pass
+
+    # Sort ascending
+    if sort:
+        filtered_df.sort_index(inplace=True)
+
+    return filtered_df
+
+
+
+##########################
+# API Wrappers
+##########################
 def get_defi_llama_protocol(asset_slugs: Union[str, List]) -> pd.DataFrame:
     """Returns historical data on the TVL of a protocol along with some basic data on it. The fields `tokensInUsd` and `tokens` are only available for some protocols
 
@@ -66,7 +136,7 @@ def get_defi_llama_protocol(asset_slugs: Union[str, List]) -> pd.DataFrame:
         DataFrame
             pandas DataFrame of protocol TVL
     """
-    slugs = validate_input(asset_slugs)
+    slugs = validate_dl_input(asset_slugs)
 
     protocols_dict={}
     slug_df_list=[]
@@ -173,9 +243,14 @@ def get_defi_llama_protocol(asset_slugs: Union[str, List]) -> pd.DataFrame:
 #tt = get_defi_llama_protocol(slugs)
 #print(tt)
 
-def get_defi_llama_charts():
-    """Returns historical values of the total sum of TVLs from all listed protocols"""
-    dl_get_chain_chart_url = "https://api.llama.fi/charts/"
+def get_defi_llama_charts() -> pd.DataFrame:
+    """Returns timeseries TVL from total of all Defi Llama supported protocols
+
+    Returns
+    -------
+        DataFrame
+            DataFrame containing timeseries tvl data for every protocol
+    """
     charts = requests.get(dl_get_chain_chart_url).json()
     df = pd.DataFrame(charts)
     df.set_index(f'date', inplace=True)
@@ -195,7 +270,7 @@ def get_defi_llama_chain_chart(chains_in: Union[str, List]) -> pd.DataFrame:
     Returns
     -------
         DataFrame
-            TODO
+            DataFrame containing timeseries tvl data for each chain
     """
     chains = validate_input(chains_in)
 
@@ -211,12 +286,6 @@ def get_defi_llama_chain_chart(chains_in: Union[str, List]) -> pd.DataFrame:
     chains_df = pd.concat(chain_df_list, keys=chains, axis=1)
     return chains_df
 
-chains=["ethereum", "avalanche"]
-tt = get_defi_llama_chain_chart(chains)
-print(tt)
-
-
-# TODO handle requests error, ie wrong url
 def get_defi_llama_protocol_tvl(asset_slugs: Union[str, List]) -> Dict:
     """Retrive current protocol tvl for an asset
 
@@ -228,7 +297,7 @@ def get_defi_llama_protocol_tvl(asset_slugs: Union[str, List]) -> Dict:
     Returns
     -------
         Dict
-            dictionary {slug: tvl, ...}
+            dictionary with tvl for each slug {slug: tvl, ...}
     """
     slugs = validate_input(asset_slugs)
 
@@ -240,7 +309,6 @@ def get_defi_llama_protocol_tvl(asset_slugs: Union[str, List]) -> Dict:
             tvl_dict[slug] = tvl
         else:
             print(f"ERROR: slug={slug}, MESSAGE: {tvl['message']}")
-
     return tvl_dict
 
 
