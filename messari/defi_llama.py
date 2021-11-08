@@ -42,6 +42,19 @@ def get_defi_llama_slugs() -> List[str]:
 DL_SLUGS = get_defi_llama_slugs()
 #print(DL_SLUGS)
 
+DATETIME_FORMAT = "%Y-%m-%d"
+def validate_datetime(datetime_input: Union[str, datetime.datetime]) -> Union[datetime.datetime, None]:
+    if isinstance(datetime_input, str):
+        # NOTE Chosing to return just date component of datetime.datetime
+        return datetime.datetime.strptime(datetime_input, DATETIME_FORMAT).date()
+    elif isinstance(datetime_input, datetime.datetime):
+        # NOTE Chosing to return just date component of datetime.datetime
+        return datetime_input.date()
+    else:
+        raise ValueError("Input should be of type string 'YYYY-MM-DD' or datetime.datetime")
+
+#print(validate_datetime("2021-10-01"))
+
 def validate_dl_input(asset_slugs: Union[str, List]) -> Union[List, None]:
     """Wrapper around messari.utils.validate_input, validate input & check if it's supported by DeFi Llama
 
@@ -57,12 +70,18 @@ def validate_dl_input(asset_slugs: Union[str, List]) -> Union[List, None]:
     """
     slugs = validate_input(asset_slugs)
 
+    # TODO: taxonimy translations
+    # messari->dl
+    # 
+
     supported_slugs = []
     for slug in slugs:
         if slug in DL_SLUGS:
             supported_slugs.append(slug)
         else:
             print(f"WARNING: slug '{slug}' not supported by DeFi Llama")
+
+
     return supported_slugs
 
 
@@ -100,16 +119,16 @@ def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
     return df_new
 
 def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None, sort=True) -> pd.DataFrame:
-    time_sorted_sales_history = sales_history[ (sales_history["epoch"] >= start_epoch) & (sales_history["epoch"] <= end_epoch) ]
 
     filtered_df = df_in
-    if start_date != None:
-        #TODO: filter for greater than start
+    if start_date:
+        start = validate_datetime(start_date)
+        filtered_df = filtered_df[start:]
         pass
 
-
-    if end_date != None:
-        #TODO: filter for less than end
+    if end_date:
+        end = validate_datetime(end_date)
+        filtered_df = filtered_df[:end]
         pass
 
     # Sort ascending
@@ -119,11 +138,10 @@ def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None
     return filtered_df
 
 
-
 ##########################
 # API Wrappers
 ##########################
-def get_defi_llama_protocol(asset_slugs: Union[str, List]) -> pd.DataFrame:
+def get_protocol_tvl_timeseries(asset_slugs: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
     """Returns historical data on the TVL of a protocol along with some basic data on it. The fields `tokensInUsd` and `tokens` are only available for some protocols
 
     Parameters
@@ -237,13 +255,14 @@ def get_defi_llama_protocol(asset_slugs: Union[str, List]) -> pd.DataFrame:
     total_slugs_df = pd.concat(slug_df_list, keys=slugs, axis=1)
     total_slugs_df.sort_index(inplace=True)
 
+    total_slugs_df = time_filter_df(total_slugs_df, start_date=start_date, end_date=end_date)
     return total_slugs_df
 
 #slugs = ["curve", "uniswap"]
 #tt = get_defi_llama_protocol(slugs)
 #print(tt)
 
-def get_defi_llama_charts() -> pd.DataFrame:
+def get_global_tvl_timeseries(start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
     """Returns timeseries TVL from total of all Defi Llama supported protocols
 
     Returns
@@ -255,11 +274,12 @@ def get_defi_llama_charts() -> pd.DataFrame:
     df = pd.DataFrame(charts)
     df.set_index(f'date', inplace=True)
     df.index = pd.to_datetime(df.index, unit='s', origin='unix')
+    df = time_filter_df(df, start_date=start_date, end_date=end_date)
     return df
 
 #print(get_defi_llama_charts())
 
-def get_defi_llama_chain_chart(chains_in: Union[str, List]) -> pd.DataFrame:
+def get_chain_tvl_timeseries(chains_in: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
     """Retrive timeseries TVL for a given chain
 
     Parameters
@@ -284,9 +304,12 @@ def get_defi_llama_chain_chart(chains_in: Union[str, List]) -> pd.DataFrame:
 
     # Join DataFrames from each chain & return
     chains_df = pd.concat(chain_df_list, keys=chains, axis=1)
+    chains_df = time_filter_df(chains_df, start_date=start_date, end_date=end_date) 
     return chains_df
 
-def get_defi_llama_protocol_tvl(asset_slugs: Union[str, List]) -> Dict:
+#def get_chain_tvl(chains_in: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]) -> pd.
+
+def get_current_tvl(asset_slugs: Union[str, List]) -> Dict:
     """Retrive current protocol tvl for an asset
 
     Parameters
