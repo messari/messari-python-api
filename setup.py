@@ -19,7 +19,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    author='robertotalamas',
-    author_email='roberto.talamas@gmail.com',
+    author='Roberto Talamas, Michael Kremer',
+    author_email='roberto.talamas@gmail.com, kremeremichael@gmail.com',
     description='Messari API'
 )
