@@ -1,4 +1,4 @@
-# Global imports
+# Global Imports
 from string import Template
 from typing import Union, List, Dict
 from numpy import nan as Nan
@@ -6,55 +6,23 @@ import requests
 import datetime
 import pandas as pd
 
-# Local imports
-from messari.utils import validate_input, retrieve_data
-
-# URLS
-DL_PROTOCOLS_URL = "https://api.llama.fi/protocols"
-
-# TODO handle requests error, ie wrong url
-
-def get_defi_llama_protocols() -> pd.DataFrame:
-    """Returns basic information on all listed protocols, their current TVL and the changes to it in the last hour/day/week"""
-    protocols = requests.get(DL_PROTOCOLS_URL).json()
-
-    protocol_dict={}
-    for protocol in protocols:
-        protocol_dict[protocol["slug"]] = protocol
-
-    protocols_df = pd.DataFrame(protocol_dict)
-    return protocols_df
+# Local Imports
+from messari.utils import validate_input, retrieve_data, validate_datetime, time_filter_df
 
 ##########################
 # SETUP
 ##########################
-dl_get_chain_chart_url = "https://api.llama.fi/charts/"
+# DeFi Llama URLS
+DL_PROTOCOLS_URL = "https://api.llama.fi/protocols"
+DL_GLOBAL_TVL_URL = "https://api.llama.fi/charts/"
+DL_CURRENT_PROTOCOL_TVL_URL = Template("https://api.llama.fi/tvl/$slug")
+DL_CHAIN_TVL_URL = Template("https://api.llama.fi/charts/$chain")
+DL_GET_PROTOCOL_TVL_URL = Template("https://api.llama.fi/protocol/$slug")
+# TODO handle requests error, ie wrong url
 
-def get_defi_llama_slugs() -> List[str]:
-    protocols = requests.get(DL_PROTOCOLS_URL).json()
-    #protocols = retrieve_data(DL_PROTOCOLS_URL, {}, {})
-
-    dl_slugs=[]
-    for protocol in protocols:
-        if "slug" in protocol.keys():
-            dl_slugs.append(protocol["slug"])
-    return dl_slugs
-DL_SLUGS = get_defi_llama_slugs()
-#print(DL_SLUGS)
-
-DATETIME_FORMAT = "%Y-%m-%d"
-def validate_datetime(datetime_input: Union[str, datetime.datetime]) -> Union[datetime.datetime, None]:
-    if isinstance(datetime_input, str):
-        # NOTE Chosing to return just date component of datetime.datetime
-        return datetime.datetime.strptime(datetime_input, DATETIME_FORMAT).date()
-    elif isinstance(datetime_input, datetime.datetime):
-        # NOTE Chosing to return just date component of datetime.datetime
-        return datetime_input.date()
-    else:
-        raise ValueError("Input should be of type string 'YYYY-MM-DD' or datetime.datetime")
-
-#print(validate_datetime("2021-10-01"))
-
+##########################
+# HELPERS
+##########################
 def validate_dl_input(asset_slugs: Union[str, List]) -> Union[List, None]:
     """Wrapper around messari.utils.validate_input, validate input & check if it's supported by DeFi Llama
 
@@ -71,9 +39,8 @@ def validate_dl_input(asset_slugs: Union[str, List]) -> Union[List, None]:
     slugs = validate_input(asset_slugs)
 
     # TODO: taxonimy translations
-    # messari->dl
-    # 
 
+    # NOTE: this can likely be a one liner using sets but i haven't figured that out w/ WARNING print yet
     supported_slugs = []
     for slug in slugs:
         if slug in DL_SLUGS:
@@ -84,14 +51,8 @@ def validate_dl_input(asset_slugs: Union[str, List]) -> Union[List, None]:
 
     return supported_slugs
 
-
-##########################
-# HELPERS
-##########################
 def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
     """format a typica DF from DL, replace date & drop duplicates
-
-
 
     Parameters
     ----------
@@ -118,49 +79,38 @@ def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
     df_new = df_new[~df_new.index.duplicated(keep='last')]
     return df_new
 
-def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None, sort=True) -> pd.DataFrame:
-
-    filtered_df = df_in
-    if start_date:
-        start = validate_datetime(start_date)
-        filtered_df = filtered_df[start:]
-        pass
-
-    if end_date:
-        end = validate_datetime(end_date)
-        filtered_df = filtered_df[:end]
-        pass
-
-    # Sort ascending
-    if sort:
-        filtered_df.sort_index(inplace=True)
-
-    return filtered_df
-
-
 ##########################
 # API Wrappers
 ##########################
 def get_protocol_tvl_timeseries(asset_slugs: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
-    """Returns historical data on the TVL of a protocol along with some basic data on it. The fields `tokensInUsd` and `tokens` are only available for some protocols
+    """Returns times TVL of a protocol with token amounts as a pandas DataFrame indexed by df[protocol][chain][asset].
 
     Parameters
     ----------
         asset_slugs: str, list
             Single asset slug string or list of asset slugs (i.e. bitcoin)
 
+        start_date: str, datetime.datetime
+            Optional start date to set filter for tvl timeseries ("YYYY-MM-DD")
+
+        end_date: str, datetime.datetime
+            Optional end date to set filter for tvl timeseries ("YYYY-MM-DD")
+
     Returns
     -------
         DataFrame
-            pandas DataFrame of protocol TVL
+            pandas DataFrame of protocol TVL, indexed by df[protocol][chain][asset]
+            to look at total tvl across all chains, index with chain='all'
+            to look at total tvl across all tokens of a chain, asset='totalLiquidityUSD'
+            tokens can be indexed by native amount, asset='tokenName', or by USD amount, asset='tokenName_usd'
     """
     slugs = validate_dl_input(asset_slugs)
 
     protocols_dict={}
     slug_df_list=[]
     for slug in slugs:
-        dl_get_protocol_url = f"https://api.llama.fi/protocol/{slug}"
-        protocol = requests.get(dl_get_protocol_url).json()
+        endpoint_url = DL_GET_PROTOCOL_TVL_URL.substitute(slug=slug)
+        protocol = requests.get(endpoint_url).json()
 
 
         ###########################
@@ -208,7 +158,6 @@ def get_protocol_tvl_timeseries(asset_slugs: Union[str, List], start_date: Union
             chain_df = chainTvl_df.join(joint_tokens_df)
             chain_df_list.append(chain_df)
 
-        #print(pd.DataFrame(chainTvls))
 
         ###########################
         # This portion is basically grabbing tvl metrics for all chains combined
@@ -258,26 +207,27 @@ def get_protocol_tvl_timeseries(asset_slugs: Union[str, List], start_date: Union
     total_slugs_df = time_filter_df(total_slugs_df, start_date=start_date, end_date=end_date)
     return total_slugs_df
 
-#slugs = ["curve", "uniswap"]
-#tt = get_defi_llama_protocol(slugs)
-#print(tt)
-
 def get_global_tvl_timeseries(start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
     """Returns timeseries TVL from total of all Defi Llama supported protocols
+
+    Parameters
+    ----------
+        start_date: str, datetime.datetime
+            Optional start date to set filter for tvl timeseries ("YYYY-MM-DD")
+
+        end_date: str, datetime.datetime
+            Optional end date to set filter for tvl timeseries ("YYYY-MM-DD")
 
     Returns
     -------
         DataFrame
             DataFrame containing timeseries tvl data for every protocol
     """
-    charts = requests.get(dl_get_chain_chart_url).json()
-    df = pd.DataFrame(charts)
-    df.set_index(f'date', inplace=True)
-    df.index = pd.to_datetime(df.index, unit='s', origin='unix')
-    df = time_filter_df(df, start_date=start_date, end_date=end_date)
-    return df
-
-#print(get_defi_llama_charts())
+    global_tvl = requests.get(DL_GLOBAL_TVL_URL).json()
+    global_tvl_df = pd.DataFrame(global_tvl)
+    global_tvl_df = format_df(global_tvl_df)
+    global_tvl_df = time_filter_df(global_tvl_df, start_date=start_date, end_date=end_date)
+    return global_tvl_df
 
 def get_chain_tvl_timeseries(chains_in: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
     """Retrive timeseries TVL for a given chain
@@ -286,6 +236,12 @@ def get_chain_tvl_timeseries(chains_in: Union[str, List], start_date: Union[str,
     ----------
         asset_slugs: str, list
             Single asset slug string or list of asset slugs (i.e. bitcoin)
+
+        start_date: str, datetime.datetime
+            Optional start date to set filter for tvl timeseries ("YYYY-MM-DD")
+
+        end_date: str, datetime.datetime
+            Optional end date to set filter for tvl timeseries ("YYYY-MM-DD")
 
     Returns
     -------
@@ -296,18 +252,17 @@ def get_chain_tvl_timeseries(chains_in: Union[str, List], start_date: Union[str,
 
     chain_df_list=[]
     for chain in chains:
-        dl_get_charts_url = f"https://api.llama.fi/charts/{chain}"
-        response = requests.get(dl_get_charts_url).json()
+        endpoint_url = DL_CHAIN_TVL_URL.substitute(chain=chain)
+        response = requests.get(endpoint_url).json()
         chain_df = pd.DataFrame(response)
         chain_df = format_df(chain_df)
         chain_df_list.append(chain_df)
 
     # Join DataFrames from each chain & return
-    chains_df = pd.concat(chain_df_list, keys=chains, axis=1)
-    chains_df = time_filter_df(chains_df, start_date=start_date, end_date=end_date) 
+    chains_df = pd.concat(chain_df_list, axis=1)
+    chains_df.columns = chains
+    chains_df = time_filter_df(chains_df, start_date=start_date, end_date=end_date)
     return chains_df
-
-#def get_chain_tvl(chains_in: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]) -> pd.
 
 def get_current_tvl(asset_slugs: Union[str, List]) -> Dict:
     """Retrive current protocol tvl for an asset
@@ -319,19 +274,54 @@ def get_current_tvl(asset_slugs: Union[str, List]) -> Dict:
 
     Returns
     -------
-        Dict
-            dictionary with tvl for each slug {slug: tvl, ...}
+        DataFrame
+            Pandas Series for tvl indexed by each slug {slug: tvl, ...}
     """
     slugs = validate_input(asset_slugs)
 
     tvl_dict={}
     for slug in slugs:
-        endpoint_url = f"https://api.llama.fi/tvl/{slug}"
+        endpoint_url = DL_CURRENT_PROTOCOL_TVL_URL.substitute(slug=slug)
         tvl = requests.get(endpoint_url).json()
         if type(tvl) == float:
             tvl_dict[slug] = tvl
         else:
             print(f"ERROR: slug={slug}, MESSAGE: {tvl['message']}")
-    return tvl_dict
+
+    tvl_series = pd.Series(tvl_dict)
+    tvl_df = tvl_series.to_frame("tvl")
+    return tvl_df
+
+def get_defi_llama_protocols() -> pd.DataFrame:
+    """Returns basic information on all listed protocols, their current TVL and the changes to it in the last hour/day/week
+
+    Returns
+    -------
+        DataFrame
+            DataFrame with one column per DeFi Llama supported protocol
+    """
+    protocols = requests.get(DL_PROTOCOLS_URL).json()
+
+    protocol_dict={}
+    for protocol in protocols:
+        protocol_dict[protocol["slug"]] = protocol
+
+    protocols_df = pd.DataFrame(protocol_dict)
+    return protocols_df
+
+##########################
+# HELPERS
+##########################
+# annoyingly has to be included in this file?
+def get_defi_llama_slugs() -> List[str]:
+    protocols = requests.get(DL_PROTOCOLS_URL).json()
+    tt = get_defi_llama_protocols()
+    slugs_series = tt.loc['slug']
+    slugs_list = slugs_series.tolist()
+    return slugs_list
+
+# Store DL_SLUGS for global access
+DL_SLUGS = get_defi_llama_slugs()
+
 
 
