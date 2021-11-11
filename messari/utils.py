@@ -5,6 +5,7 @@ from typing import List, Union
 
 import pandas as pd
 import requests
+import datetime
 from pandas import DataFrame
 
 from messari import session
@@ -111,6 +112,23 @@ def validate_input(asset_input: Union[str, List]):
     else:
         raise ValueError('Input should be of type string or list')
 
+DATETIME_FORMAT = "%Y-%m-%d"
+def validate_datetime(datetime_input: Union[str, datetime.datetime]) -> Union[datetime.datetime, None]:
+    """Checks if input is datetime.datetime.
+
+    :param datetime_input: str, datetime.datetime
+        Single string "YYYY-MM-DD" or datetime.datetime
+    :return datetime.datetime.
+    :raises ValueError if input is neither a string (formatted correctly) or datetime.datetime
+    """
+    if isinstance(datetime_input, str):
+        # NOTE Chosing to return just date component of datetime.datetime
+        return datetime.datetime.strptime(datetime_input, DATETIME_FORMAT).date()
+    elif isinstance(datetime_input, datetime.datetime):
+        # NOTE Chosing to return just date component of datetime.datetime
+        return datetime_input.date()
+    else:
+        raise ValueError("Input should be of type string 'YYYY-MM-DD' or datetime.datetime")
 
 def unpack_list_of_dicts(list_of_dicts: List) -> Dict:
     """Unpack list of dictionaries to dictionary of dictionaries.
@@ -212,6 +230,35 @@ def timeseries_to_dataframe(response: Dict) -> DataFrame:
     # Create multindex DataFrame using list of dataframes & keys
     metric_data_df = pd.concat(df_list, keys=key_list, axis=1)
     return metric_data_df
+
+def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None, sort=True) -> pd.DataFrame:
+    """Convert filter timeseries indexed DataFrame
+
+    :param start_date: str
+        Optional starting date for filter
+    :param end_date: str
+        Optional end date for filter
+    :param sort: bool
+        Optionally override default sorting of output DataFrame
+    :return: pandas DataFrame
+    """
+
+    filtered_df = df_in
+    if start_date:
+        start = validate_datetime(start_date)
+        filtered_df = filtered_df[start:]
+        pass
+
+    if end_date:
+        end = validate_datetime(end_date)
+        filtered_df = filtered_df[:end]
+        pass
+
+    # Sort ascending
+    if sort:
+        filtered_df.sort_index(inplace=True)
+
+    return filtered_df
 
 
 # Token Terminal API utility functions

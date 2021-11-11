@@ -3,6 +3,8 @@ from string import Template
 from typing import Union, List, Dict
 from numpy import nan as Nan
 import requests
+import os
+import json
 import datetime
 import pandas as pd
 
@@ -23,6 +25,16 @@ DL_GET_PROTOCOL_TVL_URL = Template("https://api.llama.fi/protocol/$slug")
 ##########################
 # HELPERS
 ##########################
+current_path = os.path.dirname(__file__)
+if os.path.exists(os.path.join(current_path, "../messari_to_dl.json")): # this file is being called from an install
+    json_path = os.path.join(current_path, "../messari_to_dl.json")
+    messari_to_dl_dict = json.load(open(json_path, "r"))
+elif os.path.exists(os.path.join(current_path, "json/messari_to_dl.json")): # this file is being called from the project dir
+    json_path = os.path.join(current_path, "json/messari_to_dl.json")
+    messari_to_dl_dict = json.load(open(json_path, "r"))
+else: # Can't find .json mapping file, default to empty
+    messari_to_dl_dict = {}
+
 def validate_dl_input(asset_slugs: Union[str, List]) -> Union[List, None]:
     """Wrapper around messari.utils.validate_input, validate input & check if it's supported by DeFi Llama
 
@@ -38,16 +50,21 @@ def validate_dl_input(asset_slugs: Union[str, List]) -> Union[List, None]:
     """
     slugs = validate_input(asset_slugs)
 
-    # TODO: taxonimy translations
+    # Look through known Messari to DeFi Llama translations
+    slugs2=[]
+    for slug in slugs:
+        if slug in messari_to_dl_dict.keys():
+            slugs2.append(messari_to_dl_dict[slug])
+        else:
+            slugs2.append(slug)
 
     # NOTE: this can likely be a one liner using sets but i haven't figured that out w/ WARNING print yet
     supported_slugs = []
-    for slug in slugs:
+    for slug in slugs2:
         if slug in DL_SLUGS:
             supported_slugs.append(slug)
         else:
             print(f"WARNING: slug '{slug}' not supported by DeFi Llama")
-
 
     return supported_slugs
 
