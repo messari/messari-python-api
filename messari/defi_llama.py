@@ -9,7 +9,7 @@ import datetime
 import pandas as pd
 
 # Local Imports
-from messari.utils import validate_input, retrieve_data, validate_datetime, time_filter_df
+from messari.utils import validate_input, retrieve_data, validate_datetime, time_filter_df, get_taxonomy_dict
 
 ##########################
 # SETUP
@@ -25,15 +25,7 @@ DL_GET_PROTOCOL_TVL_URL = Template("https://api.llama.fi/protocol/$slug")
 ##########################
 # HELPERS
 ##########################
-current_path = os.path.dirname(__file__)
-if os.path.exists(os.path.join(current_path, "../messari_to_dl.json")): # this file is being called from an install
-    json_path = os.path.join(current_path, "../messari_to_dl.json")
-    messari_to_dl_dict = json.load(open(json_path, "r"))
-elif os.path.exists(os.path.join(current_path, "json/messari_to_dl.json")): # this file is being called from the project dir
-    json_path = os.path.join(current_path, "json/messari_to_dl.json")
-    messari_to_dl_dict = json.load(open(json_path, "r"))
-else: # Can't find .json mapping file, default to empty
-    messari_to_dl_dict = {}
+messari_to_dl_dict = get_taxonomy_dict("messari_to_dl.json")
 
 def validate_dl_input(asset_slugs: Union[str, List]) -> Union[List, None]:
     """Wrapper around messari.utils.validate_input, validate input & check if it's supported by DeFi Llama

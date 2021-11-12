@@ -5,7 +5,7 @@ from pandas import DataFrame
 
 from messari.utils import check_http_errors
 
-BASE_URL = 'https://data.messari.io/api/v1/markets'
+BASE_URL_MARKETS = 'https://data.messari.io/api/v1/markets'
 
 
 def get_all_markets(page: int = 1, limit: int = 20, to_dataframe: bool = True) -> Union[List[Dict], DataFrame]:
@@ -26,7 +26,7 @@ def get_all_markets(page: int = 1, limit: int = 20, to_dataframe: bool = True) -
             List of dictionaries or pandas DataFrame of markets indexed by exchange slug.
     """
     payload = {'page': page, 'limit': limit}
-    response_data = check_http_errors(BASE_URL, payload=payload)
+    response_data = check_http_errors(BASE_URL_MARKETS, payload=payload)
     if to_dataframe:
         return pd.DataFrame(response_data['data']).set_index('exchange_slug')
     return response_data['data']

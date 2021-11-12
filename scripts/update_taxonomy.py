@@ -10,12 +10,20 @@ import json
 import os
 
 import messari
-messari.MESSARI_API_KEY = '28166d37-3766-4f08-bb42-4469ab78fd0b'
+messari.MESSARI_API_KEY = ''
 
 ##########################
 # Get all DeFi Llama slugs
 ##########################
-from messari.defi_llama import DL_SLUGS
+# for this to work make sure messari lib is installed?
+from messari.dldc import DL_PROTOCOLS_URL
+protocols = requests.get(DL_PROTOCOLS_URL).json()
+protocol_dict={}
+for protocol in protocols:
+    protocol_dict[protocol["slug"]] = protocol
+protocols_df = pd.DataFrame(protocol_dict)
+slugs_series = protocols_df.loc['slug']
+DL_SLUGS = slugs_series.tolist()
 
 ########################
 # Get all messari assets
@@ -27,7 +35,7 @@ page=1
 messari_assets = get_all_assets(page=page, limit=limit)
 current_len = len(messari_assets)
 
-# NOTE: this will probably crash if one page len == limit and the nex page len == 0
+# NOTE: this will probably crash if one page len == limit and the next page len == 0
 while current_len == limit:
     page+=1
     # NOTE: pushing up against messari rate limiting here, not sure how to handle user experience
@@ -48,19 +56,18 @@ for asset in messari_assets:
         messari_to_dl_dict[symbol] = asset
 
 # Open hardcoded values and appened
-with open("json/messari_to_dl_hardcode.json", "r") as infile:
+with open("../json/messari_to_dl_hardcode.json", "r") as infile:
     messari_to_dl_hardcode = json.load(infile)
 
-
-
 for entry in messari_to_dl_hardcode:
-    messari_to_dl_dict[entry] = messari_to_dl_hardcode[entry]
-
     # If there is an overlap print about it to notify user
     if messari_to_dl_hardcode[entry] in messari_to_dl_dict.values():
         print(f"overlapping entry for {entry} using hardcoded value {messari_to_dl_hardcode[entry]}")
 
-with open("json/messari_to_dl.json", "w") as outfile:
+    messari_to_dl_dict[entry] = messari_to_dl_hardcode[entry]
+
+
+with open("../json/messari_to_dl.json", "w") as outfile:
     json.dump(messari_to_dl_dict, outfile)
 
 

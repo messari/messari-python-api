@@ -1,11 +1,12 @@
 from collections.abc import MutableMapping
 from string import Template
-from typing import Dict
-from typing import List, Union
+from typing import List, Union, Dict
 
 import pandas as pd
 import requests
 import datetime
+import os
+import json
 from pandas import DataFrame
 
 from messari import session
@@ -290,3 +291,49 @@ def response_to_df(resp):
     df.set_index('datetime', inplace=True)
     df.index = pd.to_datetime(df.index, format='%Y-%m-%dT%H:%M:%S').date # noqa
     return df
+
+
+# Mike copy pasting stuff
+# TODO, just want to import taxonomy from utils, then the json can be an f-string & work across diff taxonomies
+def get_taxonomy_dict(filename: str) -> Dict:
+    current_path = os.path.dirname(__file__)
+    if os.path.exists(os.path.join(current_path, f"../{filename}")): # this file is being called from an install
+        json_path = os.path.join(current_path, f"../{filename}")
+        taxonomy_dict = json.load(open(json_path, "r"))
+        # TODO check this below path
+    elif os.path.exists(os.path.join(current_path, f"../json/{filename}")): # this file is being called from the project dir
+        json_path = os.path.join(current_path, f"../json/{filename}")
+        taxonomy_dict = json.load(open(json_path, "r"))
+    else: # Can't find .json mapping file, default to empty
+        taxonomy_dict = {}
+    return taxonomy_dict
+
+def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
+    """format a typical DF from DL, replace date & drop duplicates
+
+    Parameters
+    ----------
+       df_in: pd.DataFrame
+           input DataFrame
+
+    Returns
+    -------
+       DataFrame
+           formated pandas DataFrame
+    """
+
+    # set date to index
+    df_new = df_in
+    if 'date' in df_in.columns:
+        df_new.set_index(f'date', inplace=True)
+        df_new.index = pd.to_datetime(df_new.index, unit='s', origin='unix')
+        df_new.index = df_new.index.date
+
+    # drop duplicates
+    # NOTE: sometimes DeFi Llama has duplicate dates, choosing to just keep the last
+    # NOTE: Data for duplicates is not the same
+    # TODO: Investigate which data should be kept (currently assuming last is more recent
+    df_new = df_new[~df_new.index.duplicated(keep='last')]
+    return df_new
+
+
