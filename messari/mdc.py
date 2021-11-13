@@ -27,6 +27,7 @@ class Messari(DataSource):
     def __init__(self, api_key=None):
         messari_api_key = {'x-messari-api-key': api_key}
         DataSource.__init__(self, api_dict=messari_api_key, taxonomy_dict=None)
+        #TODO, look into super() for __init__
 
     #######################
     # markets
@@ -513,7 +514,7 @@ slugs=["bitcoin", "ethereum"]
 #print(messari.get_asset_metrics(slugs))
 
 #print(messari.get_asset_market_data(slugs))
-#print(messari.get_metric_timeseries(slugs, 'price'))
+print(messari.get_metric_timeseries(slugs, 'price'))
 
 #############
 # TESTING
