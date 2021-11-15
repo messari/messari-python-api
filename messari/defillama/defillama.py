@@ -1,10 +1,14 @@
-from string import Template
-import requests
-from messari.datasource import DataSource
-from typing import Union, List, Dict
+# Global imports
 import datetime
+import requests
 import pandas as pd
-from messari.utils import validate_input, get_taxonomy_dict, format_df, time_filter_df
+from string import Template
+from typing import Union, List, Dict
+
+# Local imports
+from messari.utils import validate_input, get_taxonomy_dict, time_filter_df
+from messari.dataloader import DataLoader
+from .helpers import format_df
 
 ##########################
 # URL Endpoints
@@ -15,20 +19,12 @@ DL_CURRENT_PROTOCOL_TVL_URL = Template("https://api.llama.fi/tvl/$slug")
 DL_CHAIN_TVL_URL = Template("https://api.llama.fi/charts/$chain")
 DL_GET_PROTOCOL_TVL_URL = Template("https://api.llama.fi/protocol/$slug")
 
-##########################
-# DeFiLlama Class
-##########################
-class DefiLlama(DataSource):
+class DeFiLlama(DataLoader):
 
     def __init__(self):
         messari_to_dl_dict = get_taxonomy_dict("messari_to_dl.json")
-        DataSource.__init__(self, api_dict=None, taxonomy_dict=messari_to_dl_dict)
+        DataLoader.__init__(self, api_dict=None, taxonomy_dict=messari_to_dl_dict)
 
-        # TODO This may be hacky - call self function to get get slugs for validate?
-
-    ##########################
-    # API Wrappers
-    ##########################
     def get_protocol_tvl_timeseries(self, asset_slugs: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
         """Returns times TVL of a protocol with token amounts as a pandas DataFrame indexed by df[protocol][chain][asset].
 
@@ -57,7 +53,7 @@ class DefiLlama(DataSource):
         slug_df_list=[]
         for slug in slugs:
             endpoint_url = DL_GET_PROTOCOL_TVL_URL.substitute(slug=slug)
-            protocol = requests.get(endpoint_url).json()
+            protocol = self.get_response(endpoint_url)
 
 
             ###########################
@@ -170,7 +166,7 @@ class DefiLlama(DataSource):
            DataFrame
                DataFrame containing timeseries tvl data for every protocol
         """
-        global_tvl = requests.get(DL_GLOBAL_TVL_URL).json()
+        global_tvl = self.get_response(DL_GLOBAL_TVL_URL)
         global_tvl_df = pd.DataFrame(global_tvl)
         global_tvl_df = format_df(global_tvl_df)
         global_tvl_df = time_filter_df(global_tvl_df, start_date=start_date, end_date=end_date)
@@ -200,7 +196,7 @@ class DefiLlama(DataSource):
         chain_df_list=[]
         for chain in chains:
             endpoint_url = DL_CHAIN_TVL_URL.substitute(chain=chain)
-            response = requests.get(endpoint_url).json()
+            response = self.get_response(endpoint_url)
             chain_df = pd.DataFrame(response)
             chain_df = format_df(chain_df)
             chain_df_list.append(chain_df)
@@ -229,7 +225,7 @@ class DefiLlama(DataSource):
         tvl_dict={}
         for slug in slugs:
             endpoint_url = DL_CURRENT_PROTOCOL_TVL_URL.substitute(slug=slug)
-            tvl = requests.get(endpoint_url).json()
+            tvl = self.get_response(endpoint_url)
             if type(tvl) == float:
                 tvl_dict[slug] = tvl
             else:
@@ -247,7 +243,7 @@ class DefiLlama(DataSource):
         DataFrame
            DataFrame with one column per DeFi Llama supported protocol
         """
-        protocols = requests.get(DL_PROTOCOLS_URL).json()
+        protocols = self.get_response(DL_PROTOCOLS_URL)
 
         protocol_dict={}
         for protocol in protocols:
@@ -255,23 +251,3 @@ class DefiLlama(DataSource):
 
         protocols_df = pd.DataFrame(protocol_dict)
         return protocols_df
-
-
-#############
-# TESTING
-dl = DefiLlama()
-
-#############
-# TESTING
-protocols = ["uniswap", "curve"]
-chains = ["Avalanche", "Harmony"]
-start="2021-10-01"
-end="2021-10-10"
-
-#############
-# TESTING
-print(dl.get_protocols())
-#print(dl.get_current_tvl(protocols))
-#print(dl.get_chain_tvl_timeseries(chains, start_date=start, end_date=end))
-#print(dl.get_global_tvl_timeseries(start_date=start, end_date=end))
-#print(dl.get_protocol_tvl_timeseries(protocols, start_date=start, end_date=end))

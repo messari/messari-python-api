@@ -1,21 +1,10 @@
 from string import Template
 from typing import Union, List, Dict
-
-from pandas import DataFrame
-
-from messari.utils import validate_input, retrieve_data, timeseries_to_dataframe
-from string import Template
 import pandas as pd
-from pandas import DataFrame
-from typing import Dict, Union, List
 
-from messari.utils import fields_payload, convert_flatten
-from messari.utils import check_http_errors
-from messari.utils import retrieve_data
-from messari.utils import unpack_list_of_dicts
-from messari.utils import validate_input
-
-from datasource import DataSource
+from messari.dataloader import DataLoader
+from messari.utils import validate_input, convert_flatten, unpack_list_of_dicts
+from .helpers import fields_payload, timeseries_to_dataframe
 
 BASE_URL = 'https://data.messari.io/api/v1/assets'
 BASE_URL_V1 = 'https://data.messari.io/api/v1/assets'
@@ -23,16 +12,16 @@ BASE_URL_V2 = 'https://data.messari.io/api/v2/assets'
 BASE_URL_MARKETS = 'https://data.messari.io/api/v1/markets'
 
 
-class Messari(DataSource):
+class Messari(DataLoader):
     def __init__(self, api_key=None):
         messari_api_key = {'x-messari-api-key': api_key}
-        DataSource.__init__(self, api_dict=messari_api_key, taxonomy_dict=None)
+        DataLoader.__init__(self, api_dict=messari_api_key, taxonomy_dict=None)
         #TODO, look into super() for __init__
 
     #######################
     # markets
     #######################
-    def get_all_markets(self, page: int = 1, limit: int = 20, to_dataframe: bool = True) -> Union[List[Dict], DataFrame]:
+    def get_all_markets(self, page: int = 1, limit: int = 20, to_dataframe: bool = True) -> Union[List[Dict], pd.DataFrame]:
         """Get the list of all exchanges and pairs that our WebSocket-based market real-time market data API supports.
 
         Parameters
@@ -50,7 +39,7 @@ class Messari(DataSource):
                 List of dictionaries or pandas DataFrame of markets indexed by exchange slug.
         """
         payload = {'page': page, 'limit': limit}
-        response_data = check_http_errors(BASE_URL_MARKETS, payload=payload)
+        response_data = self.get_response(BASE_URL_MARKETS, params=payload)
         if to_dataframe:
             return pd.DataFrame(response_data['data']).set_index('exchange_slug')
         return response_data['data']
@@ -60,7 +49,7 @@ class Messari(DataSource):
     #######################
     def get_all_assets(self, page: int = 1, limit: int = 20, asset_fields: Union[str, List] = None,
                        asset_metric: str = None, asset_profile_metric: str = None,
-                       to_dataframe: bool = None) -> Union[Dict, DataFrame]:
+                       to_dataframe: bool = None) -> Union[Dict, pd.DataFrame]:
         """Get the paginated list of all assets including metrics and profile.
 
         Data is return only in JSON format when an asset profile is provided due to the high number
@@ -153,17 +142,17 @@ class Messari(DataSource):
             else:
                 raise ValueError('Only asset metrics can be returned as DataFrame. Make sure only metrics is specified in '
                                  'asset fields.')
-            response_data = check_http_errors(BASE_URL_V2, payload)
+            response_data = self.get_response(BASE_URL_V2, params=payload)
             response_data = unpack_list_of_dicts(response_data['data'])
             for key, value in response_data.items():
                 response_data[key] = convert_flatten(value)
             return pd.DataFrame.from_dict(response_data, orient='index')
-        response_data = check_http_errors(BASE_URL_V2, payload=payload)
+        response_data = self.get_response(BASE_URL_V2, params=payload)
         return unpack_list_of_dicts(response_data['data'])
 
 
     def get_asset(self, asset_slugs: Union[str, List], asset_fields: Union[str, List] = None, to_dataframe: bool = True) -> \
-            Union[Dict, DataFrame]:
+            Union[Dict, pd.DataFrame]:
         """Get basic metadata for an asset.
 
         Parameters
@@ -185,13 +174,19 @@ class Messari(DataSource):
         dict, DataFrame
             Dictionary or pandas DataFrame with asset metadata.
         """
-        print(asset_slugs)
         asset_slugs = validate_input(asset_slugs)
         payload = {}
         if asset_fields:
             payload['fields'] = fields_payload(asset_fields=asset_fields)
         base_url_template = Template(f'{BASE_URL_V1}/$asset_key')
-        response_data = retrieve_data(base_url_template, payload, asset_slugs)
+
+        response_data={}
+        for asset in asset_slugs:
+            url = base_url_template.substitute(asset_key=asset)
+            response = self.get_response(url, params=payload)
+            response_flat = convert_flatten(response['data'])
+            response_data[asset] = response_flat
+
         if to_dataframe:
             return pd.DataFrame.from_dict(response_data, orient='index')
         return response_data
@@ -230,12 +225,17 @@ class Messari(DataSource):
         if asset_profile_metric:
             payload['fields'] = fields_payload(asset_fields='id', asset_profile_metric=asset_profile_metric)
         base_url_template = Template(f'{BASE_URL_V2}/$asset_key/profile')
-        response_data = retrieve_data(base_url_template, payload, asset_slugs)
+        response_data={}
+        for asset in asset_slugs:
+            url = base_url_template.substitute(asset_key=asset)
+            response = self.get_response(url, params=payload)
+            response_flat = convert_flatten(response['data'])
+            response_data[asset] = response_flat
         return response_data
 
 
     def get_asset_metrics(self, asset_slugs: Union[str, List], asset_metric: str = None, to_dataframe: bool = True) -> \
-            Union[Dict, DataFrame]:
+            Union[Dict, pd.DataFrame]:
         """Get all the quantitative metrics for an asset.
 
         Parameters
@@ -282,13 +282,18 @@ class Messari(DataSource):
             # payload['fields'] = fields_payload(asset_fields='id', asset_metric=asset_metric)
             payload['fields'] = f'id,symbol,{asset_metric}'
         base_url_template = Template(f'{BASE_URL_V1}/$asset_key/metrics')
-        response_data = retrieve_data(base_url_template, payload, asset_slugs)
+        response_data = {}
+        for asset in asset_slugs:
+            url = base_url_template.substitute(asset_key=asset)
+            response = self.get_response(url, params=payload)
+            response_flat = convert_flatten(response['data'])
+            response_data[asset] = response_flat
         if to_dataframe:
             return pd.DataFrame.from_dict(response_data, orient='index')
         return response_data
 
 
-    def get_asset_market_data(self, asset_slugs: Union[str, List], to_dataframe: bool = True) -> Union[Dict, DataFrame]:
+    def get_asset_market_data(self, asset_slugs: Union[str, List], to_dataframe: bool = True) -> Union[Dict, pd.DataFrame]:
         """Get the latest market data for an asset.
 
         Parameters
@@ -309,7 +314,7 @@ class Messari(DataSource):
     # timeseries
     ##############################
     def get_metric_timeseries(self, asset_slugs: Union[str, List], asset_metric: str, start: str = None,
-                              end: str = None, interval: str = '1d', to_dataframe: bool = True) -> Union[Dict, DataFrame]:
+                              end: str = None, interval: str = '1d', to_dataframe: bool = True) -> Union[Dict, pd.DataFrame]:
         """Retrieve historical timeseries data for an asset.
 
         Parameters
@@ -491,30 +496,12 @@ class Messari(DataSource):
             payload['start'] = start
             payload['end'] = end
         base_url_template = Template(f'{BASE_URL}/$asset_key/metrics/{asset_metric}/time-series')
-        response_data = retrieve_data(base_url_template, payload, asset_slugs)
+        response_data = {}
+        for asset in asset_slugs:
+            url = base_url_template.substitute(asset_key=asset)
+            response = self.get_response(url, params=payload)
+            response_flat = convert_flatten(response['data'])
+            response_data[asset] = response_flat
         if to_dataframe:
             return timeseries_to_dataframe(response_data)
         return response_data
-
-
-#############
-# TESTING
-api_key=''
-messari = Messari(api_key=api_key)
-
-slugs=["bitcoin", "ethereum"]
-
-#############
-# TESTING
-#print(messari.get_all_markets())
-#print(messari.get_all_assets())
-#print(messari.get_asset(slugs))
-#print(messari.get_asset_profile(slugs))
-
-#print(messari.get_asset_metrics(slugs))
-
-#print(messari.get_asset_market_data(slugs))
-print(messari.get_metric_timeseries(slugs, 'price'))
-
-#############
-# TESTING

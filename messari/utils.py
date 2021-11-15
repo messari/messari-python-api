@@ -7,14 +7,9 @@ import requests
 import datetime
 import os
 import json
-from pandas import DataFrame
-
-from messari import session
-
-from messari import MESSARI_API_KEY
-
 import logging
 
+# Local imports
 """
 Inconsistent API usage between metrics and profile end points
 
@@ -24,7 +19,6 @@ doesn't work: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol
 works: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,profile/general
 doesn't work: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,general
 """
-
 
 def convert_flatten(response_json: Union[Dict, MutableMapping], parent_key: str = '', sep: str = '_') -> Dict:
     """Collapse JSON response to one single dictionary.
@@ -45,58 +39,6 @@ def convert_flatten(response_json: Union[Dict, MutableMapping], parent_key: str 
         else:
             items.append((new_key, v))
     return dict(items)
-
-
-def generate_urls(base_url: Template, asset_slugs: List) -> List:
-    """Create list of urls given multiple asset_slugs.
-
-    :param base_url: Template
-        Template url string.
-    :param asset_slugs: list
-        Single asset slug string or list of asset slugs (i.e. BTC).
-    :return List of string urls.
-    """
-    urls = [base_url.substitute(asset_key=asset_key) for asset_key in asset_slugs]
-    return urls
-
-
-def retrieve_data(base_url: Union[str, Template], payload: Dict, asset_slugs: List) -> Dict:
-    """Retrieve data from API.
-
-    :param base_url: str, Template
-        Template url API string.
-    :param payload: dict
-        Dictionary of query parameters.
-    :param asset_slugs: list
-        Single asset slug string or list of asset slugs (i.e. BTC).
-    :return Parsed JSON.
-    """
-    response_data = {}
-    urls = generate_urls(base_url, asset_slugs)
-    for url, asset in zip(urls, asset_slugs):
-        response_json = check_http_errors(url, payload=payload)
-        response_data[asset] = convert_flatten(response_json['data'])
-    return response_data
-
-
-def check_http_errors(url: str, payload: Dict) -> Union[Dict, None]:
-    """ Checks for HTTP errors when requesting data.
-
-    :param url: str
-        URL API string.
-    :param payload: dict
-        Dictionary of query parameters.
-    :return: JSON with requested data
-    :raises SystemError if HTTP error occurs
-    """
-    try:
-        response = session.get(url, params=payload, headers={
-            'x-messari-api-key': MESSARI_API_KEY})  # API call is what makes the process slow
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.HTTPError as e:
-        raise SystemError(e)
-
 
 def validate_input(asset_input: Union[str, List]):
     """Checks if input is list.
@@ -174,64 +116,6 @@ def find_and_update_asset_field(asset_fields: List, field: str, updated_field: s
     asset_fields[field_idx] = updated_field
     return asset_fields
 
-
-def fields_payload(asset_fields: Union[str, List], asset_metric: str = None, asset_profile_metric: str = None):
-    """Returns payload with fields parameter.
-
-    :param asset_fields: str, list
-        List of asset fields.
-    :param asset_metric: str
-        Single metric string to filter metric data.
-    :param asset_profile_metric: str
-        Single profile metric string to filter profile data.
-    :return String of fields query parameter.
-    """
-    asset_fields = validate_input(asset_fields)
-    if 'slug' not in asset_fields:
-        asset_fields = asset_fields + ['slug']
-    if asset_metric:
-        if 'metrics' not in asset_fields:
-            asset_fields = asset_fields + ['metrics']
-        # Ensure that metric is the last value in asset fields to successfully concatenate url
-        asset_fields = validate_asset_fields_list_order(asset_fields, 'metrics')
-        # Update metric in asset fields to include drill down asset metric
-        asset_fields = find_and_update_asset_field(asset_fields, 'metrics',
-                                                   '/'.join(['metrics', asset_metric]))
-    if asset_profile_metric:
-        if 'profile' not in asset_fields:
-            asset_fields = asset_fields + ['profile']
-        # Ensure that metric is the last value in asset fields to successfully concatenate url
-        asset_fields = validate_asset_fields_list_order(asset_fields, 'profile')
-        # Update metric in asset fields to include drill down asset metric
-        asset_fields = find_and_update_asset_field(asset_fields,
-                                                   'profile', '/'.join(['profile', asset_profile_metric]))
-
-    return ','.join(asset_fields)
-
-
-def timeseries_to_dataframe(response: Dict) -> DataFrame:
-    """Convert timeseries data to pandas dataframe
-
-    :param response: dict
-        Dictionary of asset time series data keyed by symbol
-    :return: pandas dataframe
-    """
-    df_list, key_list = [], []
-    for key, value in response.items():
-        key_list.append(key)
-        if isinstance(value['values'], list):
-            values_df = pd.DataFrame.from_records(value['values'],
-                                                  columns=[f'{name}' for name in value['parameters_columns']])
-            values_df.set_index(f'timestamp', inplace=True)
-            values_df.index = pd.to_datetime(values_df.index, unit='ms', origin='unix')  # noqa
-            df_list.append(values_df)
-        else:
-            logging.warning(f'Missing timeseries data for {key}')
-            continue
-    # Create multindex DataFrame using list of dataframes & keys
-    metric_data_df = pd.concat(df_list, keys=key_list, axis=1)
-    return metric_data_df
-
 def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None, sort=True) -> pd.DataFrame:
     """Convert filter timeseries indexed DataFrame
 
@@ -292,9 +176,6 @@ def response_to_df(resp):
     df.index = pd.to_datetime(df.index, format='%Y-%m-%dT%H:%M:%S').date # noqa
     return df
 
-
-# Mike copy pasting stuff
-# TODO, just want to import taxonomy from utils, then the json can be an f-string & work across diff taxonomies
 def get_taxonomy_dict(filename: str) -> Dict:
     current_path = os.path.dirname(__file__)
     if os.path.exists(os.path.join(current_path, f"../{filename}")): # this file is being called from an install
@@ -307,33 +188,3 @@ def get_taxonomy_dict(filename: str) -> Dict:
     else: # Can't find .json mapping file, default to empty
         taxonomy_dict = {}
     return taxonomy_dict
-
-def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
-    """format a typical DF from DL, replace date & drop duplicates
-
-    Parameters
-    ----------
-       df_in: pd.DataFrame
-           input DataFrame
-
-    Returns
-    -------
-       DataFrame
-           formated pandas DataFrame
-    """
-
-    # set date to index
-    df_new = df_in
-    if 'date' in df_in.columns:
-        df_new.set_index(f'date', inplace=True)
-        df_new.index = pd.to_datetime(df_new.index, unit='s', origin='unix')
-        df_new.index = df_new.index.date
-
-    # drop duplicates
-    # NOTE: sometimes DeFi Llama has duplicate dates, choosing to just keep the last
-    # NOTE: Data for duplicates is not the same
-    # TODO: Investigate which data should be kept (currently assuming last is more recent
-    df_new = df_new[~df_new.index.duplicated(keep='last')]
-    return df_new
-
-

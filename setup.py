@@ -9,7 +9,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
     name='messari',
     version='0.0.1',
-    packages=['tests', 'messari'],
+    packages=['tests', 'messari', 'messari.defillama', 'messari.messari'],
     url='',
     long_description=long_description,
     long_description_content_type='text/markdown',

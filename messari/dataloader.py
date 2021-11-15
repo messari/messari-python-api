@@ -1,13 +1,8 @@
 from typing import List, Union, Dict
+import requests
 from messari.utils import validate_input
-#from messari.utils import retrieve_data
-#from messari.utils import validate_datetime
-#from messari.utils import time_filter_df
-#from messari.utils import get_taxonomy_dict
 
-
-
-class DataSource:
+class DataLoader:
     #### init
     def __init__(self, api_dict: Dict, taxonomy_dict: Dict):
         self.api_dict = api_dict
@@ -33,7 +28,7 @@ class DataSource:
         :raises SystemError if HTTP error occurs
         """
         try:
-            response = self.session.get(url, params=params, headers=headers)
+            response = self.session.get(endpoint_url, params=params, headers=headers)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.HTTPError as e:
