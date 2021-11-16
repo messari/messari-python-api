@@ -1,3 +1,4 @@
+import logging
 from typing import Union, List, Dict
 import pandas as pd
 
@@ -37,6 +38,7 @@ def fields_payload(asset_fields: Union[str, List], asset_metric: str = None, ass
 
     return ','.join(asset_fields)
 
+
 def timeseries_to_dataframe(response: Dict) -> pd.DataFrame:
     """Convert timeseries data to pandas dataframe
 
@@ -59,4 +61,3 @@ def timeseries_to_dataframe(response: Dict) -> pd.DataFrame:
     # Create multindex DataFrame using list of dataframes & keys
     metric_data_df = pd.concat(df_list, keys=key_list, axis=1)
     return metric_data_df
-

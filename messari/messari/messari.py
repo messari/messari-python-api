@@ -16,12 +16,13 @@ class Messari(DataLoader):
     def __init__(self, api_key=None):
         messari_api_key = {'x-messari-api-key': api_key}
         DataLoader.__init__(self, api_dict=messari_api_key, taxonomy_dict=None)
-        #TODO, look into super() for __init__
+        # TODO, look into super() for __init__
 
     #######################
     # markets
     #######################
-    def get_all_markets(self, page: int = 1, limit: int = 20, to_dataframe: bool = True) -> Union[List[Dict], pd.DataFrame]:
+    def get_all_markets(self, page: int = 1, limit: int = 20, to_dataframe: bool = True) -> Union[
+        List[Dict], pd.DataFrame]:
         """Get the list of all exchanges and pairs that our WebSocket-based market real-time market data API supports.
 
         Parameters
@@ -140,8 +141,9 @@ class Messari(DataLoader):
                 else:
                     payload['fields'] = fields_payload(asset_fields=asset_fields)
             else:
-                raise ValueError('Only asset metrics can be returned as DataFrame. Make sure only metrics is specified in '
-                                 'asset fields.')
+                raise ValueError(
+                    'Only asset metrics can be returned as DataFrame. Make sure only metrics is specified in '
+                    'asset fields.')
             response_data = self.get_response(BASE_URL_V2, params=payload)
             response_data = unpack_list_of_dicts(response_data['data'])
             for key, value in response_data.items():
@@ -150,8 +152,8 @@ class Messari(DataLoader):
         response_data = self.get_response(BASE_URL_V2, params=payload)
         return unpack_list_of_dicts(response_data['data'])
 
-
-    def get_asset(self, asset_slugs: Union[str, List], asset_fields: Union[str, List] = None, to_dataframe: bool = True) -> \
+    def get_asset(self, asset_slugs: Union[str, List], asset_fields: Union[str, List] = None,
+                  to_dataframe: bool = True) -> \
             Union[Dict, pd.DataFrame]:
         """Get basic metadata for an asset.
 
@@ -180,7 +182,7 @@ class Messari(DataLoader):
             payload['fields'] = fields_payload(asset_fields=asset_fields)
         base_url_template = Template(f'{BASE_URL_V1}/$asset_key')
 
-        response_data={}
+        response_data = {}
         for asset in asset_slugs:
             url = base_url_template.substitute(asset_key=asset)
             response = self.get_response(url, params=payload)
@@ -190,7 +192,6 @@ class Messari(DataLoader):
         if to_dataframe:
             return pd.DataFrame.from_dict(response_data, orient='index')
         return response_data
-
 
     def get_asset_profile(self, asset_slugs: Union[str, List], asset_profile_metric: str = None) -> Dict:
         """Get all the qualitative information for an asset.
@@ -225,14 +226,13 @@ class Messari(DataLoader):
         if asset_profile_metric:
             payload['fields'] = fields_payload(asset_fields='id', asset_profile_metric=asset_profile_metric)
         base_url_template = Template(f'{BASE_URL_V2}/$asset_key/profile')
-        response_data={}
+        response_data = {}
         for asset in asset_slugs:
             url = base_url_template.substitute(asset_key=asset)
             response = self.get_response(url, params=payload)
             response_flat = convert_flatten(response['data'])
             response_data[asset] = response_flat
         return response_data
-
 
     def get_asset_metrics(self, asset_slugs: Union[str, List], asset_metric: str = None, to_dataframe: bool = True) -> \
             Union[Dict, pd.DataFrame]:
@@ -292,8 +292,8 @@ class Messari(DataLoader):
             return pd.DataFrame.from_dict(response_data, orient='index')
         return response_data
 
-
-    def get_asset_market_data(self, asset_slugs: Union[str, List], to_dataframe: bool = True) -> Union[Dict, pd.DataFrame]:
+    def get_asset_market_data(self, asset_slugs: Union[str, List], to_dataframe: bool = True) -> Union[
+        Dict, pd.DataFrame]:
         """Get the latest market data for an asset.
 
         Parameters
@@ -314,7 +314,8 @@ class Messari(DataLoader):
     # timeseries
     ##############################
     def get_metric_timeseries(self, asset_slugs: Union[str, List], asset_metric: str, start: str = None,
-                              end: str = None, interval: str = '1d', to_dataframe: bool = True) -> Union[Dict, pd.DataFrame]:
+                              end: str = None, interval: str = '1d', to_dataframe: bool = True) -> Union[
+        Dict, pd.DataFrame]:
         """Retrieve historical timeseries data for an asset.
 
         Parameters
