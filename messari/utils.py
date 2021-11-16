@@ -146,36 +146,6 @@ def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None
     return filtered_df
 
 
-# Token Terminal API utility functions
-# Need to add tests
-def token_terminal_request(url: str, api_key: str) -> Dict:
-    """
-    Function to make HTTPs requests to Token Terminal's API
-    :param url: str
-        Endpoint url
-    :param api_key: str
-        API key
-    :return: Data in JSON format
-    """
-    key = api_key
-    headers = {"Authorization": f"Bearer {key}"}
-    r = requests.get(url, headers=headers)
-    return r.json()
-
-
-def response_to_df(resp):
-    """
-    Transforms Token Terminal's JSON response to pandas DataFrame
-
-    :param resp: dict
-        API JSON response
-    :return: pandas DataFrame
-    """
-    df = pd.DataFrame(resp)
-    df.set_index('datetime', inplace=True)
-    df.index = pd.to_datetime(df.index, format='%Y-%m-%dT%H:%M:%S').date # noqa
-    return df
-
 def get_taxonomy_dict(filename: str) -> Dict:
     current_path = os.path.dirname(__file__)
     if os.path.exists(os.path.join(current_path, f"../{filename}")): # this file is being called from an install
