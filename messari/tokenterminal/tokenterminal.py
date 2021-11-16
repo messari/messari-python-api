@@ -4,7 +4,7 @@ from typing import List, Dict, Union
 import pandas as pd
 
 from messari.dataloader import DataLoader
-from messari.utils import validate_input, time_filter_df
+from messari.utils import get_taxonomy_dict, time_filter_df
 from .helpers import response_to_df
 
 """
@@ -19,7 +19,7 @@ class TokenTerminal(DataLoader):
 
     def __init__(self, api_key: str):
         tt_api_key = {"Authorization": f"Bearer {api_key}"}
-        messari_to_tt_dict = {} # TODO, this
+        messari_to_tt_dict = get_taxonomy_dict("messari_to_tt.json")
         DataLoader.__init__(self, api_dict=tt_api_key, taxonomy_dict=messari_to_tt_dict)
 
     def get_project_ids(self):
@@ -65,7 +65,6 @@ class TokenTerminal(DataLoader):
 
 
     def get_protocol_data(self, protocol_ids: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None, to_dataframe: bool = True):
-        # FIXME
         """
         Returns a time series of the latest data for a given project, ranging from metadata
         such as Twitter followers to more fundamental metrics such as Revenue, GMV, TVL and P/S ratios.
@@ -85,7 +84,7 @@ class TokenTerminal(DataLoader):
             dict, DataFrame
                 Dictionary or pandas DataFrame of asset data.
         """
-        protocols = validate_input(protocol_ids)
+        protocols = self.translate(protocol_ids)
 
         df_list = []
         for protocol in protocols:
@@ -97,7 +96,6 @@ class TokenTerminal(DataLoader):
             df_list.append(df)
 
         final_df = pd.concat(df_list, keys=protocols, axis=1)
-        # FIXME, sort must be false or this gets ruined?
         final_df = time_filter_df(final_df, start_date=start_date, end_date=end_date)
         return final_df
 
@@ -139,7 +137,8 @@ class TokenTerminal(DataLoader):
         """
         url_temp = Template(f'{BASE_URL}/$asset_key/metrics')
         metric_df = pd.DataFrame()
-        ids = validate_input(protocol_ids)
+        ids = self.translate(protocol_ids)
+
         for protocol_id in ids:
             url = url_temp.substitute(asset_key=protocol_id)
             data = self.get_response(url, headers=self.api_dict)

@@ -152,5 +152,6 @@ def get_taxonomy_dict(filename: str) -> Dict:
         json_path = os.path.join(current_path, f"../json/{filename}")
         taxonomy_dict = json.load(open(json_path, "r"))
     else: # Can't find .json mapping file, default to empty
+        print(f"ERROR: cannot find {filename}")
         taxonomy_dict = {}
     return taxonomy_dict
