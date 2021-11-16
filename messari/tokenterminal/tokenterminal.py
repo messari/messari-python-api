@@ -15,6 +15,7 @@ Need to add tests
 
 BASE_URL = 'https://api.tokenterminal.com/v1/projects'
 
+
 class TokenTerminal(DataLoader):
 
     def __init__(self, api_key: str):
@@ -34,7 +35,6 @@ class TokenTerminal(DataLoader):
         url = BASE_URL
         data = self.get_response(url, headers=self.api_dict)
         return [x['project_id'] for x in data]
-
 
     def get_all_protocol_data(self, to_dataframe=True):
         """
@@ -63,21 +63,21 @@ class TokenTerminal(DataLoader):
             return df_transposed
         return data
 
-
-    def get_protocol_data(self, protocol_ids: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None, to_dataframe: bool = True):
+    def get_protocol_data(self, protocol_ids: Union[str, List], start_date: Union[str, datetime.datetime] = None,
+                          end_date: Union[str, datetime.datetime] = None, to_dataframe: bool = True):
         """
         Returns a time series of the latest data for a given project, ranging from metadata
         such as Twitter followers to more fundamental metrics such as Revenue, GMV, TVL and P/S ratios.
 
         Parameters
         ----------
-            protocol_id: str, list
+           protocol_ids: str, list
                 String of protocol ID
            start_date: str, datetime.datetime
                Optional start date to set filter for timeseries ("YYYY-MM-DD")
            end_date: str, datetime.datetime
                Optional end date to set filter for timeseries ("YYYY-MM-DD")
-            to_dataframe: bool
+           to_dataframe: bool
                 Return data as pandas DataFrame or JSON. Default is set to DataFrame.
         Returns
         -------
@@ -92,15 +92,16 @@ class TokenTerminal(DataLoader):
             data = self.get_response(url, headers=self.api_dict)
             df = pd.DataFrame(data)
             df.set_index('datetime', inplace=True)
-            df.index = pd.to_datetime(df.index, format='%Y-%m-%dT%H:%M:%S').date # noqa
+            df.index = pd.to_datetime(df.index, format='%Y-%m-%dT%H:%M:%S').date  # noqa
             df_list.append(df)
 
         final_df = pd.concat(df_list, keys=protocols, axis=1)
         final_df = time_filter_df(final_df, start_date=start_date, end_date=end_date)
         return final_df
 
-
-    def get_historical_metric_data(self, protocol_ids: Union[str, List], metric: str, start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
+    def get_historical_metric_data(self, protocol_ids: Union[str, List], metric: str,
+                                   start_date: Union[str, datetime.datetime] = None,
+                                   end_date: Union[str, datetime.datetime] = None) -> pd.DataFrame:
         """
         Returns the time series of a specified metric for a given list of project.
 

@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 from typing import List, Dict, Union
 
+
 # Token Terminal API utility functions
 # Need to add tests
 # TODO, we don't really need this
