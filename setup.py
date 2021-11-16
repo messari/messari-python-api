@@ -9,10 +9,11 @@ long_description = (this_directory / "README.md").read_text()
 setup(
     name='messari',
     version='0.0.1',
-    packages=['tests', 'messari'],
+    packages=['tests', 'messari', 'messari.defillama', 'messari.messari', 'messari.tokenterminal'],
     url='',
     long_description=long_description,
     long_description_content_type='text/markdown',
+    data_files=['json/messari_to_dl.json', 'json/messari_to_tt.json'],
     license='MIT`',
     classifiers=[
         "Programming Language :: Python :: 3",
