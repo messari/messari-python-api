@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
     """format a typical DF from DL, replace date & drop duplicates
 
@@ -27,5 +28,3 @@ def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
     # TODO: Investigate which data should be kept (currently assuming last is more recent
     df_new = df_new[~df_new.index.duplicated(keep='last')]
     return df_new
-
-
