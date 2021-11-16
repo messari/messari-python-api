@@ -116,19 +116,19 @@ def find_and_update_asset_field(asset_fields: List, field: str, updated_field: s
     asset_fields[field_idx] = updated_field
     return asset_fields
 
-def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None, sort=True) -> pd.DataFrame:
+def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None) -> pd.DataFrame:
     """Convert filter timeseries indexed DataFrame
 
     :param start_date: str
         Optional starting date for filter
     :param end_date: str
         Optional end date for filter
-    :param sort: bool
-        Optionally override default sorting of output DataFrame
     :return: pandas DataFrame
     """
 
     filtered_df = df_in
+    filtered_df.sort_index(inplace=True) #Must sort ascending for this to work
+
     if start_date:
         start = validate_datetime(start_date)
         filtered_df = filtered_df[start:]
@@ -138,10 +138,6 @@ def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None
         end = validate_datetime(end_date)
         filtered_df = filtered_df[:end]
         pass
-
-    # Sort ascending
-    if sort:
-        filtered_df.sort_index(inplace=True)
 
     return filtered_df
 

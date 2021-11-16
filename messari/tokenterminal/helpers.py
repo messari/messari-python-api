@@ -15,5 +15,6 @@ def response_to_df(resp):
     """
     df = pd.DataFrame(resp)
     df.set_index('datetime', inplace=True)
-    df.index = pd.to_datetime(df.index, format='%Y-%m-%dT%H:%M:%S').date # noqa
+    df.index = pd.to_datetime(df.index, format='%Y-%m-%d')
+    df.index = df.index.date
     return df

@@ -98,7 +98,7 @@ class TokenTerminal(DataLoader):
 
         final_df = pd.concat(df_list, keys=protocols, axis=1)
         # FIXME, sort must be false or this gets ruined?
-        final_df = time_filter_df(final_df, start_date=start_date, end_date=end_date, sort=False)
+        final_df = time_filter_df(final_df, start_date=start_date, end_date=end_date)
         return final_df
 
 
@@ -146,7 +146,6 @@ class TokenTerminal(DataLoader):
             data_df = response_to_df(data)
             single_metric_df = data_df[metric].to_frame()
             single_metric_df.columns = [protocol_id]
-            # FIXME, sort must be false or this gets ruined?
-            single_metric_df = time_filter_df(single_metric_df, start_date=start_date, end_date=end_date, sort=False)
+            single_metric_df = time_filter_df(single_metric_df, start_date=start_date, end_date=end_date)
             metric_df = metric_df.join(single_metric_df, how='outer')
         return metric_df
