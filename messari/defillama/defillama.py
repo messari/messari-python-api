@@ -1,13 +1,13 @@
 # Global imports
 import datetime
-import requests
-import pandas as pd
 from string import Template
 from typing import Union, List, Dict
 
+import pandas as pd
+
+from messari.dataloader import DataLoader
 # Local imports
 from messari.utils import validate_input, get_taxonomy_dict, time_filter_df
-from messari.dataloader import DataLoader
 from .helpers import format_df
 
 ##########################
@@ -19,13 +19,16 @@ DL_CURRENT_PROTOCOL_TVL_URL = Template("https://api.llama.fi/tvl/$slug")
 DL_CHAIN_TVL_URL = Template("https://api.llama.fi/charts/$chain")
 DL_GET_PROTOCOL_TVL_URL = Template("https://api.llama.fi/protocol/$slug")
 
+
 class DeFiLlama(DataLoader):
 
     def __init__(self):
         messari_to_dl_dict = get_taxonomy_dict("messari_to_dl.mappings")
         DataLoader.__init__(self, api_dict=None, taxonomy_dict=messari_to_dl_dict)
 
-    def get_protocol_tvl_timeseries(self, asset_slugs: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
+    def get_protocol_tvl_timeseries(self, asset_slugs: Union[str, List],
+                                    start_date: Union[str, datetime.datetime] = None,
+                                    end_date: Union[str, datetime.datetime] = None) -> pd.DataFrame:
         """Returns times TVL of a protocol with token amounts as a pandas DataFrame indexed by df[protocol][chain][asset].
 
         Parameters
@@ -49,12 +52,11 @@ class DeFiLlama(DataLoader):
         """
         slugs = self.translate(asset_slugs)
 
-        protocols_dict={}
-        slug_df_list=[]
+        protocols_dict = {}
+        slug_df_list = []
         for slug in slugs:
             endpoint_url = DL_GET_PROTOCOL_TVL_URL.substitute(slug=slug)
             protocol = self.get_response(endpoint_url)
-
 
             ###########################
             # This portion is basically grabbing tvl metrics on a per chain basis
@@ -94,17 +96,14 @@ class DeFiLlama(DataLoader):
                 chainTvl_tokensInUsd_df = format_df(chainTvl_tokensInUsd_df)
                 chainTvl_tokensInUsd_df = chainTvl_tokensInUsd_df.add_suffix('_usd')
 
-
                 # concat tokens and tokensInUsd
                 joint_tokens_df = pd.concat([chainTvl_tokens_df, chainTvl_tokensInUsd_df], axis=1)
                 # Join total chain TVL w/ token TVL
                 chain_df = chainTvl_df.join(joint_tokens_df)
                 chain_df_list.append(chain_df)
 
-
             ###########################
             # This portion is basically grabbing tvl metrics for all chains combined
-
 
             ######################################
             # Get protocol token balances
@@ -150,7 +149,8 @@ class DeFiLlama(DataLoader):
         total_slugs_df = time_filter_df(total_slugs_df, start_date=start_date, end_date=end_date)
         return total_slugs_df
 
-    def get_global_tvl_timeseries(self, start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
+    def get_global_tvl_timeseries(self, start_date: Union[str, datetime.datetime] = None,
+                                  end_date: Union[str, datetime.datetime] = None) -> pd.DataFrame:
         """Returns timeseries TVL from total of all Defi Llama supported protocols
 
         Parameters
@@ -172,12 +172,13 @@ class DeFiLlama(DataLoader):
         global_tvl_df = time_filter_df(global_tvl_df, start_date=start_date, end_date=end_date)
         return global_tvl_df
 
-    def get_chain_tvl_timeseries(self, chains_in: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:
+    def get_chain_tvl_timeseries(self, chains_in: Union[str, List], start_date: Union[str, datetime.datetime] = None,
+                                 end_date: Union[str, datetime.datetime] = None) -> pd.DataFrame:
         """Retrive timeseries TVL for a given chain
 
         Parameters
         ----------
-           asset_slugs: str, list
+           chains_in: str, list
                Single asset slug string or list of asset slugs (i.e. bitcoin)
 
            start_date: str, datetime.datetime
@@ -193,7 +194,7 @@ class DeFiLlama(DataLoader):
         """
         chains = validate_input(chains_in)
 
-        chain_df_list=[]
+        chain_df_list = []
         for chain in chains:
             endpoint_url = DL_CHAIN_TVL_URL.substitute(chain=chain)
             response = self.get_response(endpoint_url)
@@ -222,7 +223,7 @@ class DeFiLlama(DataLoader):
         """
         slugs = validate_input(asset_slugs)
 
-        tvl_dict={}
+        tvl_dict = {}
         for slug in slugs:
             endpoint_url = DL_CURRENT_PROTOCOL_TVL_URL.substitute(slug=slug)
             tvl = self.get_response(endpoint_url)
@@ -245,7 +246,7 @@ class DeFiLlama(DataLoader):
         """
         protocols = self.get_response(DL_PROTOCOLS_URL)
 
-        protocol_dict={}
+        protocol_dict = {}
         for protocol in protocols:
             protocol_dict[protocol["slug"]] = protocol
 
