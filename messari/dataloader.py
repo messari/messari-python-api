@@ -2,28 +2,28 @@ from typing import List, Union, Dict
 import requests
 from messari.utils import validate_input
 
+
 class DataLoader:
-    #### init
     def __init__(self, api_dict: Dict, taxonomy_dict: Dict):
         self.api_dict = api_dict
         self.taxonomy_dict = taxonomy_dict
         self.session = requests.Session()
 
-    #### setters
     def set_api_dict(self, api_dict: Dict) -> None:
         self.api_dict = api_dict
 
     def set_taxonomy_dict(self, taxonomy_dict: Dict) -> None:
         self.taxonomy_dict = taxonomy_dict
 
-    #### functions
-    def get_response(self, endpoint_url: str, params: Dict=None, headers: Dict=None) -> Dict:
+    def get_response(self, endpoint_url: str, params: Dict = None, headers: Dict = None) -> Dict:
         """ Gets response from endpoint and checks for HTTP errors when requesting data.
 
-        :param url: str
+        :param endpoint_url: str
             URL API string.
-        :param payload: dict
+        :param params: dict
             Dictionary of query parameters.
+        :param headers: str:
+            Dictionary of headers
         :return: JSON with requested data
         :raises SystemError if HTTP error occurs
         """
@@ -34,7 +34,6 @@ class DataLoader:
         except requests.exceptions.HTTPError as e:
             raise SystemError(e)
 
-    #### used to translate taxonomy
     def translate(self, input_slugs: Union[str, List]) -> Union[List, None]:
         """Wrapper around messari.utils.validate_input, validate input & check if it's supported by DeFi Llama
 
@@ -57,9 +56,3 @@ class DataLoader:
             else:
                 translated_slugs.append(slug)
         return translated_slugs
-
-
-
-
-
-

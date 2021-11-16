@@ -1,15 +1,11 @@
+import datetime
+import json
+import os
 from collections.abc import MutableMapping
-from string import Template
 from typing import List, Union, Dict
 
 import pandas as pd
-import requests
-import datetime
-import os
-import json
-import logging
 
-# Local imports
 """
 Inconsistent API usage between metrics and profile end points
 
@@ -19,6 +15,7 @@ doesn't work: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol
 works: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,profile/general
 doesn't work: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,general
 """
+
 
 def convert_flatten(response_json: Union[Dict, MutableMapping], parent_key: str = '', sep: str = '_') -> Dict:
     """Collapse JSON response to one single dictionary.
@@ -40,6 +37,7 @@ def convert_flatten(response_json: Union[Dict, MutableMapping], parent_key: str 
             items.append((new_key, v))
     return dict(items)
 
+
 def validate_input(asset_input: Union[str, List]):
     """Checks if input is list.
 
@@ -55,7 +53,10 @@ def validate_input(asset_input: Union[str, List]):
     else:
         raise ValueError('Input should be of type string or list')
 
+
 DATETIME_FORMAT = "%Y-%m-%d"
+
+
 def validate_datetime(datetime_input: Union[str, datetime.datetime]) -> Union[datetime.datetime, None]:
     """Checks if input is datetime.datetime.
 
@@ -65,13 +66,14 @@ def validate_datetime(datetime_input: Union[str, datetime.datetime]) -> Union[da
     :raises ValueError if input is neither a string (formatted correctly) or datetime.datetime
     """
     if isinstance(datetime_input, str):
-        # NOTE Chosing to return just date component of datetime.datetime
-        return datetime.datetime.strptime(datetime_input, DATETIME_FORMAT).date()
+        # NOTE Choosing to return just date component of datetime.datetime
+        return datetime.datetime.strptime(datetime_input, DATETIME_FORMAT).date() # noqa
     elif isinstance(datetime_input, datetime.datetime):
-        # NOTE Chosing to return just date component of datetime.datetime
-        return datetime_input.date()
+        # NOTE Choosing to return just date component of datetime.datetime
+        return datetime_input.date() # noqa
     else:
         raise ValueError("Input should be of type string 'YYYY-MM-DD' or datetime.datetime")
+
 
 def unpack_list_of_dicts(list_of_dicts: List) -> Dict:
     """Unpack list of dictionaries to dictionary of dictionaries.
@@ -116,9 +118,12 @@ def find_and_update_asset_field(asset_fields: List, field: str, updated_field: s
     asset_fields[field_idx] = updated_field
     return asset_fields
 
-def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None) -> pd.DataFrame:
+
+def time_filter_df(df_in: pd.DataFrame, start_date: str = None, end_date: str = None) -> pd.DataFrame:
     """Convert filter timeseries indexed DataFrame
 
+    :param df_in: pd.DataFrame
+        Dataframe to filter
     :param start_date: str
         Optional starting date for filter
     :param end_date: str
@@ -127,7 +132,7 @@ def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None
     """
 
     filtered_df = df_in
-    filtered_df.sort_index(inplace=True) #Must sort ascending for this to work
+    filtered_df.sort_index(inplace=True)  # Must sort ascending for this to work
 
     if start_date:
         start = validate_datetime(start_date)
@@ -144,14 +149,15 @@ def time_filter_df(df_in: pd.DataFrame, start_date: str=None, end_date: str=None
 
 def get_taxonomy_dict(filename: str) -> Dict:
     current_path = os.path.dirname(__file__)
-    if os.path.exists(os.path.join(current_path, f"../{filename}")): # this file is being called from an install
+    if os.path.exists(os.path.join(current_path, f"../{filename}")):  # this file is being called from an install
         json_path = os.path.join(current_path, f"../{filename}")
         taxonomy_dict = json.load(open(json_path, "r"))
         # TODO check this below path
-    elif os.path.exists(os.path.join(current_path, f"../mappings/{filename}")): # this file is being called from the project dir
+    elif os.path.exists(
+            os.path.join(current_path, f"../mappings/{filename}")):  # this file is being called from the project dir
         json_path = os.path.join(current_path, f"../mappings/{filename}")
         taxonomy_dict = json.load(open(json_path, "r"))
-    else: # Can't find .mappings mapping file, default to empty
+    else:  # Can't find .mappings mapping file, default to empty
         print(f"ERROR: cannot find {filename}")
         taxonomy_dict = {}
     return taxonomy_dict
