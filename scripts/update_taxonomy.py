@@ -1,7 +1,7 @@
 ###########################################################################
 # The purpose of this is to update the messari taxonomy dictionaries. It is 
 # not meant to be included as part of the messari python package, rather it 
-# is meant to update json objects used by the messari python package for 
+# is meant to update mappings objects used by the messari python package for
 # taxonomy translation across different API's. This design is intentionally 
 # meant to just be run as a script, don't worry about wrapping anything 
 # into functions.
@@ -54,7 +54,7 @@ for asset in messari_assets:
         messari_to_dl_dict[symbol] = asset
 
 # Open hardcoded values and appened
-with open("../json/messari_to_dl_hardcode.json", "r") as infile:
+with open("../mappings/messari_to_dl_hardcode.json", "r") as infile:
     messari_to_dl_hardcode = json.load(infile)
 
 for entry in messari_to_dl_hardcode:
@@ -65,7 +65,7 @@ for entry in messari_to_dl_hardcode:
     messari_to_dl_dict[entry] = messari_to_dl_hardcode[entry]
 
 
-with open("../json/messari_to_dl.json", "w") as outfile:
+with open("../mappings/messari_to_dl.json", "w") as outfile:
     json.dump(messari_to_dl_dict, outfile)
 
 
@@ -96,7 +96,7 @@ for asset in messari_assets:
         messari_to_tt_dict[slug] = asset
         messari_to_tt_dict[symbol] = asset
 
-with open("../json/messari_to_tt_hardcode.json", "r") as infile:
+with open("../mappings/messari_to_tt_hardcode.json", "r") as infile:
     messari_to_tt_hardcode = json.load(infile)
 
 for entry in messari_to_tt_hardcode:
@@ -106,7 +106,7 @@ for entry in messari_to_tt_hardcode:
 
     messari_to_tt_dict[entry] = messari_to_tt_hardcode[entry]
 
-with open("../json/messari_to_tt.json", "w") as outfile:
+with open("../mappings/messari_to_tt.json", "w") as outfile:
     json.dump(messari_to_tt_dict, outfile)
 
 # Get not caught slugs

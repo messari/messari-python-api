@@ -22,7 +22,7 @@ DL_GET_PROTOCOL_TVL_URL = Template("https://api.llama.fi/protocol/$slug")
 class DeFiLlama(DataLoader):
 
     def __init__(self):
-        messari_to_dl_dict = get_taxonomy_dict("messari_to_dl.json")
+        messari_to_dl_dict = get_taxonomy_dict("messari_to_dl.mappings")
         DataLoader.__init__(self, api_dict=None, taxonomy_dict=messari_to_dl_dict)
 
     def get_protocol_tvl_timeseries(self, asset_slugs: Union[str, List], start_date: Union[str, datetime.datetime]=None, end_date: Union[str, datetime.datetime]=None) -> pd.DataFrame:

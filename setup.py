@@ -13,7 +13,7 @@ setup(
     url='',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    data_files=['json/messari_to_dl.json', 'json/messari_to_tt.json'],
+    data_files=['mappings/messari_to_dl.mappings', 'mappings/messari_to_tt.mappings'],
     license='MIT`',
     classifiers=[
         "Programming Language :: Python :: 3",
