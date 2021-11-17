@@ -20,7 +20,7 @@ class TokenTerminal(DataLoader):
 
     def __init__(self, api_key: str):
         tt_api_key = {"Authorization": f"Bearer {api_key}"}
-        messari_to_tt_dict = get_taxonomy_dict("messari_to_tt.mappings")
+        messari_to_tt_dict = get_taxonomy_dict("messari_to_tt.json")
         DataLoader.__init__(self, api_dict=tt_api_key, taxonomy_dict=messari_to_tt_dict)
 
     def get_project_ids(self):
