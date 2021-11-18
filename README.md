@@ -7,7 +7,7 @@ This documentation will provide the basic steps to start using messari’s pytho
 To install the messari package remotely:
 
 ```
-pip install git+https://github.com/messari/messari-python-api.git
+$> pip install git+https://github.com/messari/messari-python-api.git
 ```
 
 

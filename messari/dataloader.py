@@ -10,13 +10,23 @@ class DataLoader:
         self.session = requests.Session()
 
     def set_api_dict(self, api_dict: Dict) -> None:
+        """Sets a new dictionary to be used as an API key pair
+
+        :param api_dict: Dict
+            New API dictionary
+        """
         self.api_dict = api_dict
 
     def set_taxonomy_dict(self, taxonomy_dict: Dict) -> None:
+        """Sets a new dictionary to be used for taxonomy translations
+
+        :param taxonomy_dict: Dict
+            New taxonomy dictionary
+        """
         self.taxonomy_dict = taxonomy_dict
 
     def get_response(self, endpoint_url: str, params: Dict = None, headers: Dict = None) -> Dict:
-        """ Gets response from endpoint and checks for HTTP errors when requesting data.
+        """Gets response from endpoint and checks for HTTP errors when requesting data.
 
         :param endpoint_url: str
             URL API string.

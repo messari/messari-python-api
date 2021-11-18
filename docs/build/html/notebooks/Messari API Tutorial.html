@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messari Python API Tutorial &mdash; Messari  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="DeFi Llama Python API Tutorial" href="DeFiLlama%20API%20Tutorial.html" />
+    <link rel="prev" title="Welcome to Messari’s Documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Messari
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Messari Python API Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Library-Structure">Library Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Assets-Module">Assets Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Get-all-assets">Get all assets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Get-asset">Get asset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Get-asset-profile">Get asset profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Get-asset-metric">Get asset metric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Get-asset-market-data">Get asset market data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Markets-Module">Markets Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DeFiLlama%20API%20Tutorial.html">DeFi Llama Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TokenTerminal%20API%20Tutorial.html">Token Terminal Python API Tutorial</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Messari</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Messari Python API Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/Messari API Tutorial.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<img alt="messari_logo" src="https://raw.githubusercontent.com/messari/messari-python-api/feature/demo_notebooks/examples/notebooks/images/messari_python.PNG" />
+<section id="Messari-Python-API-Tutorial">
+<h1>Messari Python API Tutorial<a class="headerlink" href="#Messari-Python-API-Tutorial" title="Permalink to this headline"></a></h1>
+<p>This tutorial aims to be a quick guide to get you started using messari’s python library.</p>
+<p>The first thing is to authenticate your account. You can create an API key by first creating a <a class="reference external" href="https://messari.io/">messari account</a> and then navigating to <a class="reference external" href="https://messari.io/account/api">https://messari.io/account/api</a>.</p>
+<p>After generating an API, import the library and add your key by running:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>from messari.messari import Messari
+messari = Messari(&#39;your_api_key&#39;)
+</pre></div>
+</div>
+</div>
+<section id="Library-Structure">
+<h2>Library Structure<a class="headerlink" href="#Library-Structure" title="Permalink to this headline"></a></h2>
+<p>The library is structured in three main sections represented by three separate modules:</p>
+<ul class="simple">
+<li><p>Assets</p></li>
+<li><p>Makets</p></li>
+<li><p>Timeseries</p></li>
+</ul>
+</section>
+<section id="Assets-Module">
+<h2>Assets Module<a class="headerlink" href="#Assets-Module" title="Permalink to this headline"></a></h2>
+<p>The assets module contains all the functions to pull asset specific data. The functions follow a <a href="#id1"><span class="problematic" id="id2">get_</span></a>* convention for simplicity of use. The available data functions are:</p>
+<ul class="simple">
+<li><p>get_all_assets</p>
+<ul>
+<li><p>Get the paginated list of all assets including metrics and profile.</p></li>
+</ul>
+</li>
+<li><p>get_asset</p>
+<ul>
+<li><p>Get basic metadata for an asset.</p></li>
+</ul>
+</li>
+<li><p>get_asset_market_data</p>
+<ul>
+<li><p>Get the latest market data for an asset.</p></li>
+</ul>
+</li>
+<li><p>get_asset_metrics</p>
+<ul>
+<li><p>Get all the quantitative metrics for an asset.</p></li>
+</ul>
+</li>
+<li><p>get_asset_profile</p>
+<ul>
+<li><p>Get all the qualitative information for an asset.</p></li>
+</ul>
+</li>
+</ul>
+<section id="Get-all-assets">
+<h3>Get all assets<a class="headerlink" href="#Get-all-assets" title="Permalink to this headline"></a></h3>
+<p>If you are interested in getting bulk data for all assets that Messari supports use the get_all_assets function. The function returns lots of data so the default returned value is a python dictionary with asset slugs as keys and the asset data as the values.</p>
+<p>The parameters of the function are: * page: Page number starting at 1. Increment value to paginate through results. * limit: Limit of assets to return. Default is 20, max value is 500. * asset_fields: Single filter string or list of fields to filter data. Available fields include: * id * name * slug * metrics * profile</p>
+<ul class="simple">
+<li><p>asset_metric: Single metric string to filter metric data. Available asset metrics include:</p>
+<ul>
+<li><p>market_data</p></li>
+<li><p>marketcap</p></li>
+<li><p>supply</p></li>
+<li><p>blockchain_stats_24_hours</p></li>
+<li><p>market_data_liquidity</p></li>
+<li><p>all_time_high</p></li>
+<li><p>cycle_low</p></li>
+<li><p>token_sale_stats</p></li>
+<li><p>staking_stats</p></li>
+<li><p>mining_stats</p></li>
+<li><p>developer_activity</p></li>
+<li><p>roi_data</p></li>
+<li><p>roi_by_year</p></li>
+<li><p>risk_metrics</p></li>
+<li><p>misc_data</p></li>
+<li><p>lend_rates</p></li>
+<li><p>borrow_rates</p></li>
+<li><p>loan_data</p></li>
+<li><p>reddit</p></li>
+<li><p>on_chain_data</p></li>
+<li><p>exchange_flows</p></li>
+<li><p>alert_messages</p></li>
+</ul>
+</li>
+<li><p>asset_profile_metric: Single profile metric string to filter profile data.</p>
+<ul>
+<li><p>general</p></li>
+<li><p>contributors</p></li>
+<li><p>advisors</p></li>
+<li><p>investors</p></li>
+<li><p>ecosystem</p></li>
+<li><p>economics</p></li>
+<li><p>technology</p></li>
+<li><p>governance</p></li>
+<li><p>metadata</p></li>
+</ul>
+</li>
+<li><p>to_dataframe: Return data as pandas DataFrame or JSON. Default is set to JSON.</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>response_data = messari.get_all_assets()
+</pre></div>
+</div>
+</div>
+<p>You can turned the results to a nice pandas DataFrame if the only information you are requesting is <strong>metric data</strong>.</p>
+<p>NOTE: <strong>If you include any other asset fields or pass an asset profile metric the function will return an error</strong>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>response_data_df = messari.get_all_assets(asset_fields=[&#39;metrics&#39;], to_dataframe=True)
+response_data_df.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>metrics_market_data_price_usd</th>
+      <th>metrics_market_data_price_btc</th>
+      <th>metrics_market_data_price_eth</th>
+      <th>metrics_market_data_volume_last_24_hours</th>
+      <th>metrics_market_data_real_volume_last_24_hours</th>
+      <th>metrics_market_data_volume_last_24_hours_overstatement_multiple</th>
+      <th>metrics_market_data_percent_change_usd_last_1_hour</th>
+      <th>metrics_market_data_percent_change_btc_last_1_hour</th>
+      <th>metrics_market_data_percent_change_eth_last_1_hour</th>
+      <th>metrics_market_data_percent_change_usd_last_24_hours</th>
+      <th>...</th>
+      <th>metrics_supply_distribution_supply_in_contracts_usd</th>
+      <th>metrics_supply_distribution_supply_in_contracts_native_units</th>
+      <th>metrics_supply_distribution_supply_shielded</th>
+      <th>metrics_supply_distribution_supply_in_top_100_addresses</th>
+      <th>metrics_supply_distribution_supply_in_top_10_percent_addresses</th>
+      <th>metrics_supply_distribution_supply_in_top_1_percent_addresses</th>
+      <th>metrics_supply_distribution_supply_in_utxo_in_loss</th>
+      <th>metrics_supply_distribution_supply_in_utxo_in_profit</th>
+      <th>metrics_alert_messages</th>
+      <th>slug</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>bitcoin</th>
+      <td>63549.138557</td>
+      <td>1.000000</td>
+      <td>14.000438</td>
+      <td>6.696020e+09</td>
+      <td>5.615102e+09</td>
+      <td>1.192502</td>
+      <td>-0.827104</td>
+      <td>0.000000</td>
+      <td>-0.262311</td>
+      <td>-1.232825</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>2.791041e+06</td>
+      <td>1.869062e+07</td>
+      <td>1.729667e+07</td>
+      <td>272579.562794</td>
+      <td>1.860070e+07</td>
+      <td>None</td>
+      <td>bitcoin</td>
+    </tr>
+    <tr>
+      <th>ethereum</th>
+      <td>4551.458697</td>
+      <td>0.071621</td>
+      <td>1.000000</td>
+      <td>5.426996e+09</td>
+      <td>4.641549e+09</td>
+      <td>1.169221</td>
+      <td>-0.566278</td>
+      <td>0.263001</td>
+      <td>0.000000</td>
+      <td>-0.543660</td>
+      <td>...</td>
+      <td>1.367004e+11</td>
+      <td>2.965612e+07</td>
+      <td>None</td>
+      <td>4.592305e+07</td>
+      <td>1.169773e+08</td>
+      <td>1.142389e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>ethereum</td>
+    </tr>
+    <tr>
+      <th>binance-coin</th>
+      <td>631.461714</td>
+      <td>0.009937</td>
+      <td>0.138997</td>
+      <td>1.027663e+09</td>
+      <td>9.102840e+08</td>
+      <td>1.128948</td>
+      <td>-0.784175</td>
+      <td>0.043287</td>
+      <td>-0.219138</td>
+      <td>-2.646269</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>binance-coin</td>
+    </tr>
+    <tr>
+      <th>tether</th>
+      <td>1.002894</td>
+      <td>0.000016</td>
+      <td>0.000221</td>
+      <td>3.636292e+10</td>
+      <td>2.092726e+10</td>
+      <td>1.737586</td>
+      <td>-0.070167</td>
+      <td>0.763250</td>
+      <td>0.498937</td>
+      <td>-0.773392</td>
+      <td>...</td>
+      <td>7.379604e+09</td>
+      <td>7.377586e+09</td>
+      <td>None</td>
+      <td>1.730566e+10</td>
+      <td>3.745281e+10</td>
+      <td>3.609309e+10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>tether</td>
+    </tr>
+    <tr>
+      <th>solana</th>
+      <td>234.662429</td>
+      <td>0.003693</td>
+      <td>0.051645</td>
+      <td>1.589884e+09</td>
+      <td>1.178056e+09</td>
+      <td>1.349582</td>
+      <td>-2.070842</td>
+      <td>-1.254111</td>
+      <td>-1.513132</td>
+      <td>-0.639508</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>solana</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 370 columns</p>
+</div></div>
+</div>
+<p>Additionally, you can filter the metric data by passing an asset metric. For example you can get all the mining statistics for all the assets in the first page.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>metric = &#39;mining_stats&#39;
+response_data_df_market_data = messari.get_all_assets(asset_metric=metric, to_dataframe=True)
+response_data_df_market_data.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>slug</th>
+      <th>metrics_mining_stats_mining_algo</th>
+      <th>metrics_mining_stats_network_hash_rate</th>
+      <th>metrics_mining_stats_available_on_nicehash_percent</th>
+      <th>metrics_mining_stats_1_hour_attack_cost</th>
+      <th>metrics_mining_stats_24_hours_attack_cost</th>
+      <th>metrics_mining_stats_attack_appeal</th>
+      <th>metrics_mining_stats_hash_rate</th>
+      <th>metrics_mining_stats_hash_rate_30d_average</th>
+      <th>metrics_mining_stats_mining_revenue_per_hash_usd</th>
+      <th>metrics_mining_stats_mining_revenue_per_hash_native_units</th>
+      <th>metrics_mining_stats_mining_revenue_per_hash_per_second_usd</th>
+      <th>metrics_mining_stats_mining_revenue_per_hash_per_second_native_units</th>
+      <th>metrics_mining_stats_mining_revenue_from_fees_percent_last_24_hours</th>
+      <th>metrics_mining_stats_mining_revenue_native</th>
+      <th>metrics_mining_stats_mining_revenue_usd</th>
+      <th>metrics_mining_stats_mining_revenue_total</th>
+      <th>metrics_mining_stats_average_difficulty</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>bitcoin</th>
+      <td>bitcoin</td>
+      <td>SHA-256</td>
+      <td>175785 PH/s</td>
+      <td>0.204757</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>1.753464e+08</td>
+      <td>1.578817e+08</td>
+      <td>0.000004</td>
+      <td>6.500000e-11</td>
+      <td>0.367195</td>
+      <td>0.000006</td>
+      <td>0.890598</td>
+      <td>990.067517</td>
+      <td>None</td>
+      <td>3.554869e+10</td>
+      <td>2.246731e+13</td>
+    </tr>
+    <tr>
+      <th>ethereum</th>
+      <td>ethereum</td>
+      <td>Ethash</td>
+      <td>812 TH/s</td>
+      <td>3.804177</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>8.070931e+02</td>
+      <td>NaN</td>
+      <td>0.959108</td>
+      <td>2.080714e-04</td>
+      <td>82866.973737</td>
+      <td>17.977368</td>
+      <td>78.515707</td>
+      <td>14509.409289</td>
+      <td>None</td>
+      <td>2.431323e+10</td>
+      <td>1.099016e+16</td>
+    </tr>
+    <tr>
+      <th>binance-coin</th>
+      <td>binance-coin</td>
+      <td>None</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>tether</th>
+      <td>tether</td>
+      <td>None</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>solana</th>
+      <td>solana</td>
+      <td>None</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Lastly, if you are interested in getting metrics for all available assets, you can loop through all pages creating a pandas DataFrame per page then merging them all together!</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>import pandas as pd
+dfs = [] # list to hold metric DataFrames
+for i in range(1, 5, 1):
+    df = messari.get_all_assets(page=1, limit=500, asset_metric=&#39;marketcap&#39;, to_dataframe=True)
+    dfs.append(df)
+merged_df = pd.concat(dfs)
+print(f&#39;Number of assets in DataFrame {len(merged_df)}&#39;)
+merged_df.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Number of assets in DataFrame 2000
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>slug</th>
+      <th>metrics_marketcap_rank</th>
+      <th>metrics_marketcap_marketcap_dominance_percent</th>
+      <th>metrics_marketcap_current_marketcap_usd</th>
+      <th>metrics_marketcap_y_2050_marketcap_usd</th>
+      <th>metrics_marketcap_y_plus10_marketcap_usd</th>
+      <th>metrics_marketcap_liquid_marketcap_usd</th>
+      <th>metrics_marketcap_volume_turnover_last_24_hours_percent</th>
+      <th>metrics_marketcap_realized_marketcap_usd</th>
+      <th>metrics_marketcap_outstanding_marketcap_usd</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>bitcoin</th>
+      <td>bitcoin</td>
+      <td>1</td>
+      <td>43.232673</td>
+      <td>1.208326e+12</td>
+      <td>1.343606e+12</td>
+      <td>1.322402e+12</td>
+      <td>1.208853e+12</td>
+      <td>0.475198</td>
+      <td>4.571419e+11</td>
+      <td>1.227371e+12</td>
+    </tr>
+    <tr>
+      <th>ethereum</th>
+      <td>ethereum</td>
+      <td>2</td>
+      <td>19.194453</td>
+      <td>5.364731e+11</td>
+      <td>6.177026e+11</td>
+      <td>5.600073e+11</td>
+      <td>5.305415e+11</td>
+      <td>0.896623</td>
+      <td>2.662798e+11</td>
+      <td>5.414160e+11</td>
+    </tr>
+    <tr>
+      <th>binance-coin</th>
+      <td>binance-coin</td>
+      <td>3</td>
+      <td>3.788568</td>
+      <td>1.058881e+11</td>
+      <td>6.348166e+10</td>
+      <td>6.877961e+10</td>
+      <td>6.877961e+10</td>
+      <td>1.355334</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>tether</th>
+      <td>tether</td>
+      <td>4</td>
+      <td>2.651714</td>
+      <td>7.411376e+10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>3.784762e+10</td>
+      <td>3.784412e+10</td>
+    </tr>
+    <tr>
+      <th>solana</th>
+      <td>solana</td>
+      <td>5</td>
+      <td>2.572619</td>
+      <td>7.190312e+10</td>
+      <td>2.241007e+11</td>
+      <td>1.759675e+11</td>
+      <td>1.188495e+11</td>
+      <td>1.020476</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Get-asset">
+<h3>Get asset<a class="headerlink" href="#Get-asset" title="Permalink to this headline"></a></h3>
+<p>The <em>get_asset</em> function is very useful when you are trying to get the metadata of an asset. The default value back from this functions is a pandas DataFrame</p>
+<p>The paremeters of the function are:</p>
+<ul class="simple">
+<li><p>asset_slugs: Single asset slug string or list of asset slugs (i.e. bitcoin).</p></li>
+<li><p>asset_fields: Single filter string or list of fields to filter data. Available fields include:</p>
+<ul>
+<li><p>id</p></li>
+<li><p>symbol</p></li>
+<li><p>name</p></li>
+<li><p>slug</p></li>
+</ul>
+</li>
+<li><p>to_dataframe: Return data as DataFrame or JSON. Default is set to DataFrame.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>assets = [&#39;bitcoin&#39;, &#39;ethereum&#39;, &#39;tether&#39;]
+asset_metadata = messari.get_asset(asset_slugs=assets)
+asset_metadata.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>symbol</th>
+      <th>name</th>
+      <th>slug</th>
+      <th>contract_addresses</th>
+      <th>_internal_temp_agora_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>bitcoin</th>
+      <td>1e31218a-e44e-4285-820c-8282ee222035</td>
+      <td>BTC</td>
+      <td>Bitcoin</td>
+      <td>bitcoin</td>
+      <td>[]</td>
+      <td>9793eae6-f374-46b4-8764-c2d224429791</td>
+    </tr>
+    <tr>
+      <th>ethereum</th>
+      <td>21c795f5-1bfd-40c3-858e-e9d7e820c6d0</td>
+      <td>ETH</td>
+      <td>Ethereum</td>
+      <td>ethereum</td>
+      <td>[{'platform': 'avalanche', 'contract_address':...</td>
+      <td>263d8b01-5a96-41f0-85d5-09687bbbf7ca</td>
+    </tr>
+    <tr>
+      <th>tether</th>
+      <td>51f8ea5e-f426-4f40-939a-db7e05495374</td>
+      <td>USDT</td>
+      <td>Tether</td>
+      <td>tether</td>
+      <td>[{'platform': 'arbitrum-one', 'contract_addres...</td>
+      <td>1eaf063a-b8dd-4cfb-95dd-a06338565720</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>If you are only interested in some fields, you filter the data by passing the asset fields of interest.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>fields = [&#39;id&#39;, &#39;name&#39;]
+asset_metadata_filtered = messari.get_asset(asset_slugs=assets, asset_fields=fields)
+asset_metadata_filtered.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>name</th>
+      <th>slug</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>bitcoin</th>
+      <td>1e31218a-e44e-4285-820c-8282ee222035</td>
+      <td>Bitcoin</td>
+      <td>bitcoin</td>
+    </tr>
+    <tr>
+      <th>ethereum</th>
+      <td>21c795f5-1bfd-40c3-858e-e9d7e820c6d0</td>
+      <td>Ethereum</td>
+      <td>ethereum</td>
+    </tr>
+    <tr>
+      <th>tether</th>
+      <td>51f8ea5e-f426-4f40-939a-db7e05495374</td>
+      <td>Tether</td>
+      <td>tether</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Get-asset-profile">
+<h3>Get asset profile<a class="headerlink" href="#Get-asset-profile" title="Permalink to this headline"></a></h3>
+<p>The <em>get_asset_profile</em> function can be used to get profile information about an asset. The default value back from this functions is a python dictionary due to the high number of text fileds.</p>
+<p>The paremeters of the function are:</p>
+<ul class="simple">
+<li><p>asset_slugs: Single asset slug string or list of asset slugs (i.e. bitcoin).</p></li>
+<li><p>asset_profile_metric: Single profile metric string to filter profile data. Available metrics include:</p>
+<ul>
+<li><p>general</p></li>
+<li><p>contributors</p></li>
+<li><p>advisors</p></li>
+<li><p>investors</p></li>
+<li><p>ecosystem</p></li>
+<li><p>economics</p></li>
+<li><p>technology</p></li>
+<li><p>governance</p></li>
+<li><p>metadata</p></li>
+</ul>
+</li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>asset_profile_data = messari.get_asset_profile(asset_slugs=assets)
+asset_profile_data[&#39;bitcoin&#39;][&#39;profile_general_overview_project_details&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;Bitcoin is the first &lt;a href=&#34;https://messari.io/resource/distributed-systems&#34;&gt;distributed consensus-based&lt;/a&gt;, censorship-resistant, permissionless, peer-to-peer payment settlement network with a provably scarce, programmable, native currency. Bitcoin (BTC), the native asset of the Bitcoin blockchain, is the world\&#39;s first digital currency without a central bank or administrator. The Bitcoin network is an emergent decentralized monetary institution that exists through the interplay between &lt;a href=&#34;https://messari.io/resource/node&#34;&gt;full nodes&lt;/a&gt;, &lt;a href=&#34;https://messari.io/resource/mining&#34;&gt;miners&lt;/a&gt;, and developers. It is set by a social contract that is created and opted into by the users of the network and hardened through &lt;a href=&#34;https://messari.io/c/resource/game-theory&#34;&gt;game theory&lt;/a&gt; and &lt;a href=&#34;https://messari.io/resource/cryptography&#34;&gt;cryptography&lt;/a&gt;. Bitcoin is the first, oldest, and largest cryptocurrency in the world.&#39;
+</pre></div></div>
+</div>
+<p>You can filter the results by passing an asset profile metric. For example, if you are interested in looking at the investor list of Uniswap, you can get it by running:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>asset = &#39;Uniswap&#39;
+profile_metric = &#39;investors&#39;
+governance_data = messari.get_asset_profile(asset_slugs=asset, asset_profile_metric=profile_metric)
+governance_data
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;Uniswap&#39;: {&#39;id&#39;: &#39;1d51479d-68f6-4886-8644-2a55ea9007bf&#39;,
+  &#39;slug&#39;: &#39;uniswap&#39;,
+  &#39;profile_investors_individuals&#39;: [],
+  &#39;profile_investors_organizations&#39;: [{&#39;slug&#39;: &#39;coinbase-ventures&#39;,
+    &#39;name&#39;: &#39;Coinbase Ventures&#39;,
+    &#39;logo&#39;: &#39;https://messari.s3.amazonaws.com/images/agora-images/HVEeWmV4_400x400.png&#39;,
+    &#39;description&#39;: &#39;Coinbase Ventures invests in companies building the open financial system. It provides financing to early-stage companies that have the teams and ideas that can move the cryptoasset industry forward.&#39;},
+   {&#39;slug&#39;: &#39;defiance-capital&#39;,
+    &#39;name&#39;: &#39;Defiance Capital&#39;,
+    &#39;logo&#39;: &#39;https://messari.s3.amazonaws.com/images/agora-images/0%3Fe%3D1609372800%26v%3Dbeta%26t%3D2wLf66PgCxyDRFc1oqSaql8bXLUiujOQY_YzpuTdjzU&#39;,
+    &#39;description&#39;: &#39;Leading DeFi focused Cryptoasset Fund combining fundamental research and activist investment strategy.&#39;},
+   {&#39;slug&#39;: &#39;paradigm&#39;,
+    &#39;name&#39;: &#39;Paradigm&#39;,
+    &#39;logo&#39;: &#39;https://messari.s3.amazonaws.com/images/agora-images/gv546pvglklhdkr64jpe&#39;,
+    &#39;description&#39;: &#39;A digital asset investment firm&#39;},
+   {&#39;slug&#39;: &#39;three-arrows-capital&#39;,
+    &#39;name&#39;: &#39;Three Arrows Capital&#39;,
+    &#39;logo&#39;: &#39;https://messari.s3.amazonaws.com/images/agora-images/EZPJ3XBUwAACZ0E.jpg&#39;,
+    &#39;description&#39;: &#39;Three Arrows Capital Pte. Ltd. is a hedge fund manager established in 2012 and focused on providing superior risk-adjusted returns, founded by Su Zhu and Kyle Davies.&#39;},
+   {&#39;slug&#39;: &#39;parafi-capital&#39;,
+    &#39;name&#39;: &#39;ParaFi Capital&#39;,
+    &#39;logo&#39;: &#39;https://messari.s3.amazonaws.com/images/agora-images/HjNuqyoH_400x400.jpg&#39;,
+    &#39;description&#39;: None},
+   {&#39;slug&#39;: &#39;delphi-digital&#39;,
+    &#39;name&#39;: &#39;Delphi Digital&#39;,
+    &#39;logo&#39;: &#39;https://messari.s3.amazonaws.com/images/agora-images/iNTyjk96_400x400.jpg&#39;,
+    &#39;description&#39;: &#39;Delphi Digital is an independent research and consulting boutique specializing in the digital asset market.&#39;}]}}
+</pre></div></div>
+</div>
+</section>
+<section id="Get-asset-metric">
+<h3>Get asset metric<a class="headerlink" href="#Get-asset-metric" title="Permalink to this headline"></a></h3>
+<p>The <em>get_asset_metric</em> function allows you to pull quantitative data for an asset. The default value back from this function is a pandas DataFrame.</p>
+<p>The paremeters of the function are:</p>
+<ul class="simple">
+<li><p>asset_slugs: Single asset slug string or list of asset slugs (i.e. bitcoin).</p></li>
+<li><p>asset_metric: Single metric string to filter metric data. Available metrics include:</p>
+<ul>
+<li><p>market_data</p></li>
+<li><p>marketcap</p></li>
+<li><p>supply</p></li>
+<li><p>blockchain_stats_24_hours</p></li>
+<li><p>market_data_liquidity</p></li>
+<li><p>all_time_high</p></li>
+<li><p>cycle_low</p></li>
+<li><p>token_sale_stats</p></li>
+<li><p>staking_stats</p></li>
+<li><p>mining_stats</p></li>
+<li><p>developer_activity</p></li>
+<li><p>roi_data</p></li>
+<li><p>roi_by_year</p></li>
+<li><p>risk_metrics</p></li>
+<li><p>misc_data</p></li>
+<li><p>lend_rates</p></li>
+<li><p>borrow_rates</p></li>
+<li><p>loan_data</p></li>
+<li><p>reddit</p></li>
+<li><p>on_chain_data</p></li>
+<li><p>exchange_flows</p></li>
+<li><p>alert_messages</p></li>
+</ul>
+</li>
+<li><p>to_dataframe: Return data as DataFrame or JSON. Default is set to DataFrame.</p></li>
+</ul>
+<p>The function will return all avaiable metrics for the assets supplied.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>asset_metric_df = messari.get_asset_metrics(asset_slugs=assets)
+asset_metric_df.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>symbol</th>
+      <th>name</th>
+      <th>slug</th>
+      <th>contract_addresses</th>
+      <th>_internal_temp_agora_id</th>
+      <th>market_data_price_usd</th>
+      <th>market_data_price_btc</th>
+      <th>market_data_price_eth</th>
+      <th>market_data_volume_last_24_hours</th>
+      <th>...</th>
+      <th>supply_distribution_supply_in_addresses_balance_greater_1_native_units</th>
+      <th>supply_distribution_supply_in_contracts_usd</th>
+      <th>supply_distribution_supply_in_contracts_native_units</th>
+      <th>supply_distribution_supply_shielded</th>
+      <th>supply_distribution_supply_in_top_100_addresses</th>
+      <th>supply_distribution_supply_in_top_10_percent_addresses</th>
+      <th>supply_distribution_supply_in_top_1_percent_addresses</th>
+      <th>supply_distribution_supply_in_utxo_in_loss</th>
+      <th>supply_distribution_supply_in_utxo_in_profit</th>
+      <th>alert_messages</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>bitcoin</th>
+      <td>1e31218a-e44e-4285-820c-8282ee222035</td>
+      <td>BTC</td>
+      <td>Bitcoin</td>
+      <td>bitcoin</td>
+      <td>[]</td>
+      <td>9793eae6-f374-46b4-8764-c2d224429791</td>
+      <td>63877.744122</td>
+      <td>1.000000</td>
+      <td>14.003232</td>
+      <td>6.696020e+09</td>
+      <td>...</td>
+      <td>1.787605e+07</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+      <td>2.791041e+06</td>
+      <td>1.869062e+07</td>
+      <td>1.729667e+07</td>
+      <td>272579.562794</td>
+      <td>1.860070e+07</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>ethereum</th>
+      <td>21c795f5-1bfd-40c3-858e-e9d7e820c6d0</td>
+      <td>ETH</td>
+      <td>Ethereum</td>
+      <td>ethereum</td>
+      <td>[{'platform': 'avalanche', 'contract_address':...</td>
+      <td>263d8b01-5a96-41f0-85d5-09687bbbf7ca</td>
+      <td>4572.992315</td>
+      <td>0.071590</td>
+      <td>1.000000</td>
+      <td>5.426996e+09</td>
+      <td>...</td>
+      <td>1.153521e+08</td>
+      <td>1.367004e+11</td>
+      <td>2.965612e+07</td>
+      <td>None</td>
+      <td>4.592305e+07</td>
+      <td>1.169773e+08</td>
+      <td>1.142389e+08</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>tether</th>
+      <td>51f8ea5e-f426-4f40-939a-db7e05495374</td>
+      <td>USDT</td>
+      <td>Tether</td>
+      <td>tether</td>
+      <td>[{'platform': 'arbitrum-one', 'contract_addres...</td>
+      <td>1eaf063a-b8dd-4cfb-95dd-a06338565720</td>
+      <td>1.003057</td>
+      <td>0.000016</td>
+      <td>0.000220</td>
+      <td>3.636292e+10</td>
+      <td>...</td>
+      <td>3.783364e+10</td>
+      <td>7.379604e+09</td>
+      <td>7.377586e+09</td>
+      <td>None</td>
+      <td>1.730566e+10</td>
+      <td>3.745281e+10</td>
+      <td>3.609309e+10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 375 columns</p>
+</div></div>
+</div>
+<p>Also, you can provide an asset metric to filter the metrics data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>metric = &#39;marketcap&#39;
+asset_metric_df_marketcap = messari.get_asset_metrics(asset_slugs=assets, asset_metric=metric)
+asset_metric_df_marketcap.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>symbol</th>
+      <th>marketcap_rank</th>
+      <th>marketcap_marketcap_dominance_percent</th>
+      <th>marketcap_current_marketcap_usd</th>
+      <th>marketcap_y_2050_marketcap_usd</th>
+      <th>marketcap_y_plus10_marketcap_usd</th>
+      <th>marketcap_liquid_marketcap_usd</th>
+      <th>marketcap_volume_turnover_last_24_hours_percent</th>
+      <th>marketcap_realized_marketcap_usd</th>
+      <th>marketcap_outstanding_marketcap_usd</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>bitcoin</th>
+      <td>1e31218a-e44e-4285-820c-8282ee222035</td>
+      <td>BTC</td>
+      <td>1</td>
+      <td>43.218651</td>
+      <td>1.206339e+12</td>
+      <td>1.341395e+12</td>
+      <td>1.320226e+12</td>
+      <td>1.206865e+12</td>
+      <td>0.475864</td>
+      <td>4.571419e+11</td>
+      <td>1.227371e+12</td>
+    </tr>
+    <tr>
+      <th>ethereum</th>
+      <td>21c795f5-1bfd-40c3-858e-e9d7e820c6d0</td>
+      <td>ETH</td>
+      <td>2</td>
+      <td>19.189260</td>
+      <td>5.356194e+11</td>
+      <td>6.167196e+11</td>
+      <td>5.591161e+11</td>
+      <td>5.296972e+11</td>
+      <td>0.897591</td>
+      <td>2.662798e+11</td>
+      <td>5.414160e+11</td>
+    </tr>
+    <tr>
+      <th>tether</th>
+      <td>51f8ea5e-f426-4f40-939a-db7e05495374</td>
+      <td>USDT</td>
+      <td>4</td>
+      <td>2.655952</td>
+      <td>7.413415e+10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>3.784762e+10</td>
+      <td>3.784412e+10</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Get-asset-market-data">
+<h3>Get asset market data<a class="headerlink" href="#Get-asset-market-data" title="Permalink to this headline"></a></h3>
+<p>The <em>get_asset_market_data</em> function pull the latest market data for an asset. The default value back from this function is a pandas DataFrame.</p>
+<p>The paremeters of the function are:</p>
+<ul class="simple">
+<li><p>asset_slugs: Single asset slug string or list of asset slugs (i.e. bitcoin).</p></li>
+<li><p>to_dataframe: Return data as DataFrame or JSON. Default is set to DataFrame.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>market_data = messari.get_asset_market_data(asset_slugs=assets)
+market_data.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>symbol</th>
+      <th>market_data_price_usd</th>
+      <th>market_data_price_btc</th>
+      <th>market_data_price_eth</th>
+      <th>market_data_volume_last_24_hours</th>
+      <th>market_data_real_volume_last_24_hours</th>
+      <th>market_data_volume_last_24_hours_overstatement_multiple</th>
+      <th>market_data_percent_change_usd_last_1_hour</th>
+      <th>market_data_percent_change_btc_last_1_hour</th>
+      <th>...</th>
+      <th>market_data_ohlcv_last_1_hour_high</th>
+      <th>market_data_ohlcv_last_1_hour_low</th>
+      <th>market_data_ohlcv_last_1_hour_close</th>
+      <th>market_data_ohlcv_last_1_hour_volume</th>
+      <th>market_data_ohlcv_last_24_hour_open</th>
+      <th>market_data_ohlcv_last_24_hour_high</th>
+      <th>market_data_ohlcv_last_24_hour_low</th>
+      <th>market_data_ohlcv_last_24_hour_close</th>
+      <th>market_data_ohlcv_last_24_hour_volume</th>
+      <th>market_data_last_trade_at</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>bitcoin</th>
+      <td>1e31218a-e44e-4285-820c-8282ee222035</td>
+      <td>BTC</td>
+      <td>63895.998103</td>
+      <td>1.000000</td>
+      <td>14.003232</td>
+      <td>6.696020e+09</td>
+      <td>5.743741e+09</td>
+      <td>1.165794</td>
+      <td>-0.109754</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>64143.421918</td>
+      <td>63387.991540</td>
+      <td>63897.011656</td>
+      <td>3.345042e+08</td>
+      <td>64197.144700</td>
+      <td>66395.435549</td>
+      <td>63387.152997</td>
+      <td>63895.998103</td>
+      <td>6.741573e+09</td>
+      <td>2021-11-15T21:06:13.498Z</td>
+    </tr>
+    <tr>
+      <th>ethereum</th>
+      <td>21c795f5-1bfd-40c3-858e-e9d7e820c6d0</td>
+      <td>ETH</td>
+      <td>4574.191597</td>
+      <td>0.071588</td>
+      <td>1.000000</td>
+      <td>5.426996e+09</td>
+      <td>4.757243e+09</td>
+      <td>1.140786</td>
+      <td>0.057229</td>
+      <td>0.166956</td>
+      <td>...</td>
+      <td>4579.045515</td>
+      <td>4542.824040</td>
+      <td>4574.409617</td>
+      <td>2.546684e+08</td>
+      <td>4550.062092</td>
+      <td>4771.906982</td>
+      <td>4539.207138</td>
+      <td>4574.191597</td>
+      <td>5.409993e+09</td>
+      <td>2021-11-15T21:06:13.976Z</td>
+    </tr>
+    <tr>
+      <th>tether</th>
+      <td>51f8ea5e-f426-4f40-939a-db7e05495374</td>
+      <td>USDT</td>
+      <td>1.003025</td>
+      <td>0.000016</td>
+      <td>0.000220</td>
+      <td>3.636292e+10</td>
+      <td>2.145719e+10</td>
+      <td>1.694673</td>
+      <td>-0.040783</td>
+      <td>0.066726</td>
+      <td>...</td>
+      <td>1.007714</td>
+      <td>0.998665</td>
+      <td>1.003238</td>
+      <td>1.195032e+09</td>
+      <td>1.010482</td>
+      <td>1.016971</td>
+      <td>0.993462</td>
+      <td>1.003025</td>
+      <td>2.631996e+10</td>
+      <td>2021-11-15T21:06:13.889Z</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 25 columns</p>
+</div></div>
+</div>
+</section>
+</section>
+<section id="Markets-Module">
+<h2>Markets Module<a class="headerlink" href="#Markets-Module" title="Permalink to this headline"></a></h2>
+<p>The <em>get_all_markets</em> function pulls all information of all the exchanges and pairs supported by Messari’s API. The default return value of this function is a pandas DataFrame.</p>
+<p>The paremeters of the function are:</p>
+<ul class="simple">
+<li><p>page: Page number starting at 1. Increment value to paginate through results.</p></li>
+<li><p>limit: Limit of assets to return. Default is 20, max value is 500.</p></li>
+<li><p>to_dataframe: Return data as DataFrame or list of dictionaries. Default is set to DataFrame.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>markets_df = messari.get_all_markets()
+markets_df.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>exchange_id</th>
+      <th>base_asset_id</th>
+      <th>quote_asset_id</th>
+      <th>class</th>
+      <th>trade_start</th>
+      <th>trade_end</th>
+      <th>version</th>
+      <th>excluded_from_price</th>
+      <th>exchange_name</th>
+      <th>base_asset_symbol</th>
+      <th>quote_asset_symbol</th>
+      <th>pair</th>
+      <th>price_usd</th>
+      <th>vwap_weight</th>
+      <th>volume_last_24_hours</th>
+      <th>has_real_volume</th>
+      <th>deviation_from_vwap_percent</th>
+      <th>last_trade_at</th>
+    </tr>
+    <tr>
+      <th>exchange_slug</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>uniswap</th>
+      <td>0006addf-d3d2-491a-8a66-36236445c527</td>
+      <td>6efbfc8a-18c9-4c6f-aa78-feea100521cf</td>
+      <td>3f548a16-866f-4e2c-b3e9-5df6d32d9083</td>
+      <td>51f8ea5e-f426-4f40-939a-db7e05495374</td>
+      <td>spot</td>
+      <td>2020-08-30T16:40:06Z</td>
+      <td>None</td>
+      <td>1</td>
+      <td>False</td>
+      <td>Uniswap (v2)</td>
+      <td>UOS</td>
+      <td>USDT</td>
+      <td>UOS-USDT</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>False</td>
+      <td>NaN</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>yobit</th>
+      <td>000bd377-28be-488c-80cc-cd18e90ba3ff</td>
+      <td>2087a29e-6a27-4d51-ba3b-d9f112f93c38</td>
+      <td>c10e0960-9175-4c44-9390-86a8de17c2a1</td>
+      <td>1e31218a-e44e-4285-820c-8282ee222035</td>
+      <td>spot</td>
+      <td>2019-04-12T10:49:20Z</td>
+      <td>2019-04-25T18:24:16Z</td>
+      <td>1</td>
+      <td>True</td>
+      <td>YoBit</td>
+      <td>LUC</td>
+      <td>BTC</td>
+      <td>LUC-BTC</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>False</td>
+      <td>NaN</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>binance</th>
+      <td>000de500-0515-4d00-8e73-be8b327cc298</td>
+      <td>d8b0ea44-1963-451e-ac37-aead4ba3b4c7</td>
+      <td>6d667f96-24f2-420b-9a22-73f5cd594bcf</td>
+      <td>1e31218a-e44e-4285-820c-8282ee222035</td>
+      <td>spot</td>
+      <td>2019-09-24T18:58:30Z</td>
+      <td>None</td>
+      <td>1</td>
+      <td>False</td>
+      <td>Binance</td>
+      <td>XTZ</td>
+      <td>BTC</td>
+      <td>XTZ-BTC</td>
+      <td>5.720711</td>
+      <td>1.0</td>
+      <td>3.398368e+06</td>
+      <td>True</td>
+      <td>0.002639</td>
+      <td>2021-11-15T21:06:00Z</td>
+    </tr>
+    <tr>
+      <th>binance</th>
+      <td>000ef1f2-89e2-4096-b02f-feaa11b7467d</td>
+      <td>d8b0ea44-1963-451e-ac37-aead4ba3b4c7</td>
+      <td>577bebe9-f569-44a1-aed8-0484325fddf2</td>
+      <td>7dc551ba-cfed-4437-a027-386044415e3e</td>
+      <td>spot</td>
+      <td>2020-09-15T20:51:42Z</td>
+      <td>2021-09-30T08:59:59Z</td>
+      <td>1</td>
+      <td>False</td>
+      <td>Binance</td>
+      <td>SWRV</td>
+      <td>BNB</td>
+      <td>SWRV-BNB</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>False</td>
+      <td>NaN</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>binance</th>
+      <td>000f7f7c-5994-4c18-92f2-1ff37f167665</td>
+      <td>d8b0ea44-1963-451e-ac37-aead4ba3b4c7</td>
+      <td>362f0140-ecdd-4205-b8a0-36f0fd5d8167</td>
+      <td>74cc014e-d925-496a-928b-b43c0393c455</td>
+      <td>spot</td>
+      <td>2021-03-19T08:00:00Z</td>
+      <td>None</td>
+      <td>1</td>
+      <td>False</td>
+      <td>Binance</td>
+      <td>ADA</td>
+      <td>RUB</td>
+      <td>ADA-RUB</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>False</td>
+      <td>NaN</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The <em>get_metric_timeseries</em> function allows you to pull time series data for a number of metrics. The default return value of this function is a pandas DataFrame.</p>
+<p>The paremeters of the function are:</p>
+<ul class="simple">
+<li><p>asset_slugs: Single asset slug string or list of asset slugs (i.e. bitcoin).</p></li>
+<li><p>asset_metric: Single metric string to filter timeseries data. Available metrics include:</p>
+<ul>
+<li><p>blk.cnt</p>
+<ul>
+<li><p>The sum count of blocks created each day.</p></li>
+</ul>
+</li>
+<li><p>txn.fee.avg</p>
+<ul>
+<li><p>The USD value of the mean fee per transaction.</p></li>
+</ul>
+</li>
+<li><p>txn.cnt</p>
+<ul>
+<li><p>The sum count of transactions that interval. Transactions represent a bundle of intended actions to alter the ledger initiated by a user (human or machine). Transactions are counted whether they execute or not and whether they result in the transfer of native units.</p></li>
+</ul>
+</li>
+<li><p>txn.tsfr.val.adj</p>
+<ul>
+<li><p>The sum USD value of all native units transferred removing noise and certain artifacts.</p></li>
+</ul>
+</li>
+<li><p>sply.circ</p>
+<ul>
+<li><p>The circulating supply acknowledges that tokens may be held by projects/foundations which have no intent to sell down their positions, but which have not locked up supply in a formal contract. Thus, circulating supply does not include known project treasury holdings (which can be significant). Note that an investor must carefully consider both liquid and circulating supplies when evaluating an asset, and the two can vary significantly. A risk of depending entirely on circulating supply
+is that the number can change dramatically based on discretionary sales from project treasuries.</p></li>
+</ul>
+</li>
+<li><p>mcap.circ</p>
+<ul>
+<li><p>The circulating marketcap is the price of the asset multiplied by the circulating supply. If no price is found for an asset because no trades occurred, the last price of the last trade is used. After 30 days with no trades, a marketcap of 0 is reported until trading resumes.</p></li>
+</ul>
+</li>
+<li><p>reddit.subscribers</p>
+<ul>
+<li><p>The number of subscribers on the asset’s primary subreddit</p></li>
+</ul>
+</li>
+<li><p>iss.rate</p>
+<ul>
+<li><p>The percentage of new native units (continuous) issued over that interval, extrapolated to one year (i.e., multiplied by 365), and divided by the current supply at the end of that interval. Also referred to as the annual inflation rate.</p></li>
+</ul>
+</li>
+<li><p>mcap.realized</p>
+<ul>
+<li><p>The sum USD value based on the USD closing price on the day that a native unit last moved (i.e., last transacted) for all native units.</p></li>
+</ul>
+</li>
+<li><p>bitwise.volume</p>
+<ul>
+<li><p>It is well known that many exchanges conduct wash trading practices in order to inflate trading volume. They are incentivized to report inflated volumes in order to attract traders. “Bitwise Volume” refers to the total volume over 10 exchanges identified by Bitwise to be free of wash trading activities. They tend to be regulated exchanges. However, that does not necessarily mean that the volume reported by other exchanges is 100% wash trades. As such, the Bitwise Volume underestimates
+the total volume.</p></li>
+</ul>
+</li>
+<li><p>txn.tsfr.val.avg</p>
+<ul>
+<li><p>The sum USD value of native units transferred divided by the count of transfers (i.e., the mean “size” in USD of a transfer).</p></li>
+</ul>
+</li>
+<li><p>act.addr.cnt</p>
+<ul>
+<li><p>The sum count of unique addresses that were active in the network (either as a recipient or originator of a ledger change) that interval. All parties in a ledger change action (recipients and originators) are counted. Individual addresses are not double-counted.</p></li>
+</ul>
+</li>
+<li><p>fees.ntv</p>
+<ul>
+<li><p>The sum of all fees paid to miners in native units. Fees do not include new issuance.</p></li>
+</ul>
+</li>
+<li><p>exch.flow.in.usd.incl</p>
+<ul>
+<li><p>The sum USD value sent to exchanges that interval, including exchange to exchange activity.</p></li>
+</ul>
+</li>
+<li><p>blk.size.byte</p>
+<ul>
+<li><p>The sum of the size (in bytes) of all blocks created each day.</p></li>
+</ul>
+</li>
+<li><p>txn.tsfr.val.med</p>
+<ul>
+<li><p>The median transfer value in US dollars.</p></li>
+</ul>
+</li>
+<li><p>exch.flow.in.ntv.incl</p>
+<ul>
+<li><p>The amount of the asset sent to exchanges that interval, including exchange to exchange activity.</p></li>
+</ul>
+</li>
+<li><p>exch.flow.out.usd</p>
+<ul>
+<li><p>The sum USD value withdrawn from exchanges that interval, excluding exchange to exchange activity.’</p></li>
+</ul>
+</li>
+<li><p>txn.vol</p>
+<ul>
+<li><p>The sum USD value of all native units transferred (i.e., the aggregate size in USD of all transfers).</p></li>
+</ul>
+</li>
+<li><p>fees</p>
+<ul>
+<li><p>The sum USD value of all fees paid to miners that interval. Fees do not include new issuance.</p></li>
+</ul>
+</li>
+<li><p>exch.flow.out.ntv.incl</p>
+<ul>
+<li><p>The amount of the asset withdrawn from exchanges that interval, including exchange to exchange activity.</p></li>
+</ul>
+</li>
+<li><p>exch.flow.out.usd.incl</p>
+<ul>
+<li><p>The sum USD value withdrawn from exchanges that interval, including exchange to exchange activity.</p></li>
+</ul>
+</li>
+<li><p>txn.fee.med</p>
+<ul>
+<li><p>The USD value of the median fee per transaction.</p></li>
+</ul>
+</li>
+<li><p>min.rev.ntv</p>
+<ul>
+<li><p>The sum of all miner revenue, which constitutes fees plus newly issued native units.</p></li>
+</ul>
+</li>
+<li><p>exch.sply.usd</p>
+<ul>
+<li><p>The sum USD value of all native units held in hot or cold exchange wallets.</p></li>
+</ul>
+</li>
+<li><p>diff.avg</p>
+<ul>
+<li><p>The mean difficulty of finding a hash that meets the protocol-designated requirement (i.e., the difficulty of finding a new block) that interval. The requirement is unique to each applicable cryptocurrency protocol.</p></li>
+</ul>
+</li>
+<li><p>daily.shp</p>
+<ul>
+<li><p>The Sharpe ratio (performance of the asset compared to a “risk-free” asset) over a window of time).</p></li>
+</ul>
+</li>
+<li><p>txn.tsfr.cnt</p>
+<ul>
+<li><p>The sum count of transfers that interval. Transfers represent movements of native units from one ledger entity to another distinct ledger entity. Only transfers that are the result of a transaction and that have a positive (non-zero) value are counted.</p></li>
+</ul>
+</li>
+<li><p>exch.flow.in.ntv</p>
+<ul>
+<li><p>The amount of the asset sent to exchanges that interval, excluding exchange to exchange activity.</p></li>
+</ul>
+</li>
+<li><p>new.iss.usd</p>
+<ul>
+<li><p>The sum USD value of new native units issued that interval. Only those native units that are issued by a protocol-mandated continuous emission schedule are included (i.e., units manually released from escrow or otherwise disbursed are not included).</p></li>
+</ul>
+</li>
+<li><p>mcap.dom</p>
+<ul>
+<li><p>The marketcap dominance is the asset’s percentage share of total crypto circulating marketcap.</p></li>
+</ul>
+</li>
+<li><p>daily.vol</p>
+<ul>
+<li><p>The annualized standard-deviation of daily returns over a window of time.</p></li>
+</ul>
+</li>
+<li><p>reddit.active.users</p>
+<ul>
+<li><p>The number of active users on the asset’s primary subreddit</p></li>
+</ul>
+</li>
+<li><p>exch.sply</p>
+<ul>
+<li><p>The sum of all native units held in hot or cold exchange wallets</p></li>
+</ul>
+</li>
+<li><p>nvt.adj</p>
+<ul>
+<li><p>The ratio of the network value (or market capitalization, current supply) divided by the adjusted transfer value. Also referred to as NVT.</p></li>
+</ul>
+</li>
+<li><p>exch.flow.out.ntv</p>
+<ul>
+<li><p>The amount of the asset withdrawn from exchanges that interval, excluding exchange to exchange activity.</p></li>
+</ul>
+</li>
+<li><p>min.rev.usd</p>
+<ul>
+<li><p>The sum USD value of all miner revenue, which constitutes fees plus newly issued native units, represented as the US dollar amount earned if all native units were sold at the closing price on the same day.</p></li>
+</ul>
+</li>
+<li><p>bitwise.price</p>
+<ul>
+<li><p>Volume weighted average price over Bitwise 10 exchanges.</p></li>
+</ul>
+</li>
+<li><p>new.iss.ntv</p>
+<ul>
+<li><p>The sum of new native units issued that interval. Only those native units that are issued by a protocol-mandated continuous emission schedule are included (i.e., units manually released from escrow or otherwise disbursed are not included).</p></li>
+</ul>
+</li>
+<li><p>blk.size.bytes.avg</p>
+<ul>
+<li><p>The mean size (in bytes) of all blocks created.</p></li>
+</ul>
+</li>
+<li><p>hashrate</p>
+<ul>
+<li><p>The mean rate at which miners are solving hashes that interval.</p></li>
+</ul>
+</li>
+<li><p>exch.flow.in.usd</p>
+<ul>
+<li><p>The sum USD value sent to exchanges that interval, excluding exchange to exchange activity.</p></li>
+</ul>
+</li>
+<li><p>price</p>
+<ul>
+<li><p>Volume weighted average price computed using Messari Methodology</p></li>
+</ul>
+</li>
+<li><p>real.vol</p>
+<ul>
+<li><p>It is well known that many exchanges conduct wash trading practices in order to inflate trading volume. They are incentivized to report inflated volumes in order to attract traders. “Real Volume” refers to the total volume on the exchanges that we believe with high level of confidence are free of wash trading activities. However, that does not necessarily mean that the volume reported by other exchanges is 100% wash trades. As such, the Messari “Real Volume” applies a penalty to these
+exchanges to discount the volume believed to come from wash trading activity. For more information, see our methodology page.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>start: Starting date string for timeseries data. A default start date will provided if not specified.</p></li>
+<li><p>end: Ending date string for timeseries data. A default end date will provided if not specified.</p></li>
+<li><p>interval: Interval of timeseries data. Default value is set to 1d. For any given interval, at most 2016 points will be returned. For example, with interval=5m, the maximum range of the request is 2016 * 5 minutes = 7 days. With interval=1h, the maximum range is 2016 * 1 hour = 84 days. Exceeding the maximum range will result in an error, which can be solved by reducing the date range specified in the request. Interval options include:</p>
+<ul>
+<li><p>1m</p></li>
+<li><p>5m</p></li>
+<li><p>15m</p></li>
+<li><p>30m</p></li>
+<li><p>1hr</p></li>
+<li><p>1d</p></li>
+<li><p>1w</p></li>
+</ul>
+</li>
+<li><p>to_dataframe: Return data as DataFrame or JSON. Default is set to DataFrame.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>metric = &#39;price&#39;
+start = &#39;2020-06-01&#39;
+end = &#39;2021-01-01&#39;
+timeseries_df = messari.get_metric_timeseries(asset_slugs=assets, asset_metric=metric, start=start, end=end)
+timeseries_df
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="5" halign="left">bitcoin</th>
+      <th colspan="5" halign="left">ethereum</th>
+      <th colspan="5" halign="left">tether</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>open</th>
+      <th>high</th>
+      <th>low</th>
+      <th>close</th>
+      <th>volume</th>
+      <th>open</th>
+      <th>high</th>
+      <th>low</th>
+      <th>close</th>
+      <th>volume</th>
+      <th>open</th>
+      <th>high</th>
+      <th>low</th>
+      <th>close</th>
+      <th>volume</th>
+    </tr>
+    <tr>
+      <th>timestamp</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2020-06-01</th>
+      <td>9446.359337</td>
+      <td>10411.368446</td>
+      <td>9415.969996</td>
+      <td>10207.837560</td>
+      <td>2.546875e+09</td>
+      <td>231.418675</td>
+      <td>251.880973</td>
+      <td>230.555621</td>
+      <td>248.420898</td>
+      <td>8.967023e+08</td>
+      <td>0.999376</td>
+      <td>1.031920</td>
+      <td>0.992700</td>
+      <td>1.001592</td>
+      <td>4.317591e+09</td>
+    </tr>
+    <tr>
+      <th>2020-06-02</th>
+      <td>10207.170730</td>
+      <td>10235.407915</td>
+      <td>9247.901259</td>
+      <td>9519.293396</td>
+      <td>4.445485e+09</td>
+      <td>247.088209</td>
+      <td>253.667458</td>
+      <td>224.949475</td>
+      <td>237.718348</td>
+      <td>1.048456e+09</td>
+      <td>1.002874</td>
+      <td>1.008979</td>
+      <td>0.982826</td>
+      <td>1.000406</td>
+      <td>5.734804e+09</td>
+    </tr>
+    <tr>
+      <th>2020-06-03</th>
+      <td>9528.264497</td>
+      <td>9694.116996</td>
+      <td>9376.263171</td>
+      <td>9665.937361</td>
+      <td>1.789072e+09</td>
+      <td>237.857362</td>
+      <td>245.205872</td>
+      <td>233.249205</td>
+      <td>244.559197</td>
+      <td>4.947757e+08</td>
+      <td>0.998064</td>
+      <td>1.011970</td>
+      <td>0.992956</td>
+      <td>1.000404</td>
+      <td>2.841139e+09</td>
+    </tr>
+    <tr>
+      <th>2020-06-04</th>
+      <td>9656.485925</td>
+      <td>9883.971306</td>
+      <td>9449.824258</td>
+      <td>9788.178936</td>
+      <td>2.183610e+09</td>
+      <td>244.445697</td>
+      <td>246.610619</td>
+      <td>235.973443</td>
+      <td>243.221280</td>
+      <td>6.650226e+08</td>
+      <td>1.001681</td>
+      <td>1.011502</td>
+      <td>0.983112</td>
+      <td>1.000884</td>
+      <td>3.353472e+09</td>
+    </tr>
+    <tr>
+      <th>2020-06-05</th>
+      <td>9790.242751</td>
+      <td>9856.404984</td>
+      <td>9586.252232</td>
+      <td>9617.090421</td>
+      <td>1.965504e+09</td>
+      <td>243.344371</td>
+      <td>247.945284</td>
+      <td>239.014255</td>
+      <td>239.974526</td>
+      <td>5.535803e+08</td>
+      <td>1.001512</td>
+      <td>1.005469</td>
+      <td>0.988998</td>
+      <td>1.000122</td>
+      <td>3.036441e+09</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2020-12-28</th>
+      <td>26248.564564</td>
+      <td>27469.396137</td>
+      <td>26069.019129</td>
+      <td>27032.289152</td>
+      <td>5.653047e+09</td>
+      <td>684.007261</td>
+      <td>747.146848</td>
+      <td>680.802699</td>
+      <td>729.225118</td>
+      <td>4.131698e+09</td>
+      <td>0.998800</td>
+      <td>1.009537</td>
+      <td>0.988917</td>
+      <td>0.998043</td>
+      <td>1.323048e+10</td>
+    </tr>
+    <tr>
+      <th>2020-12-29</th>
+      <td>27036.832984</td>
+      <td>27387.310760</td>
+      <td>25832.269524</td>
+      <td>27360.005185</td>
+      <td>5.558736e+09</td>
+      <td>729.372510</td>
+      <td>739.503440</td>
+      <td>688.494556</td>
+      <td>731.413028</td>
+      <td>2.731104e+09</td>
+      <td>0.998220</td>
+      <td>1.009277</td>
+      <td>0.982313</td>
+      <td>0.998654</td>
+      <td>1.281210e+10</td>
+    </tr>
+    <tr>
+      <th>2020-12-30</th>
+      <td>27363.633892</td>
+      <td>28999.010850</td>
+      <td>27337.600922</td>
+      <td>28886.315853</td>
+      <td>7.442424e+09</td>
+      <td>731.617969</td>
+      <td>758.444774</td>
+      <td>716.975766</td>
+      <td>752.458953</td>
+      <td>2.537980e+09</td>
+      <td>1.000533</td>
+      <td>1.008489</td>
+      <td>0.986462</td>
+      <td>1.000573</td>
+      <td>1.245562e+10</td>
+    </tr>
+    <tr>
+      <th>2020-12-31</th>
+      <td>28893.616815</td>
+      <td>29304.876699</td>
+      <td>27852.684695</td>
+      <td>28961.164191</td>
+      <td>7.007439e+09</td>
+      <td>752.636151</td>
+      <td>756.208116</td>
+      <td>722.118872</td>
+      <td>737.255391</td>
+      <td>2.125796e+09</td>
+      <td>1.000973</td>
+      <td>1.013499</td>
+      <td>0.980359</td>
+      <td>1.002135</td>
+      <td>1.049599e+10</td>
+    </tr>
+    <tr>
+      <th>2021-01-01</th>
+      <td>28963.116282</td>
+      <td>29674.366390</td>
+      <td>28692.320100</td>
+      <td>29402.176951</td>
+      <td>5.206879e+09</td>
+      <td>737.183725</td>
+      <td>750.432877</td>
+      <td>716.538809</td>
+      <td>730.756766</td>
+      <td>1.702361e+09</td>
+      <td>1.001124</td>
+      <td>1.013243</td>
+      <td>0.991402</td>
+      <td>1.002321</td>
+      <td>1.136276e+10</td>
+    </tr>
+  </tbody>
+</table>
+<p>215 rows × 15 columns</p>
+</div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to Messari’s Documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="DeFiLlama%20API%20Tutorial.html" class="btn btn-neutral float-right" title="DeFi Llama Python API Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Roberto Talamas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

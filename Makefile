@@ -7,6 +7,10 @@ python_ver='python3.9'
 install:
 	$(python_ver) setup.py install
 
+# Make documentation
+docs:
+	cd docs/ && make html
+
 # Clean up after build
 clean:
 	rm -r build dist messari.egg-info
