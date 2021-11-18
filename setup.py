@@ -13,8 +13,7 @@ setup(
     url='',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    include_package_data=True,
-    data_files=['mappings/messari_to_dl.json', 'mappings/messari_to_tt.json'],
+    package_data={'': ['mappings/messari_to_dl.json', 'mappings/messari_to_tt.json']},
     license='MIT`',
     classifiers=[
         "Programming Language :: Python :: 3",
