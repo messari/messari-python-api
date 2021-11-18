@@ -28,14 +28,14 @@ DL_SLUGS = slugs_series.tolist()
 ########################
 m = Messari()
 
-limit=500
-page=1
+limit = 500
+page = 1
 messari_assets = m.get_all_assets(page=page, limit=limit)
 current_len = len(messari_assets)
 
 # NOTE: this will probably crash if one page len == limit and the next page len == 0
 while current_len == limit:
-    page+=1
+    page += 1
     # NOTE: pushing up against messari rate limiting here, not sure how to handle user experience
     new_assets = m.get_all_assets(page=page, limit=limit)
     messari_assets.update(new_assets)
@@ -44,7 +44,7 @@ while current_len == limit:
 #########################################
 # Create Messari to DeFi Llama dictionary
 #########################################
-messari_to_dl_dict={}
+messari_to_dl_dict = {}
 for asset in messari_assets:
     if asset in DL_SLUGS:
         # Messari is case insensitive & DeFi Llama is always lowercase so drop to lower()
@@ -54,7 +54,7 @@ for asset in messari_assets:
         messari_to_dl_dict[symbol] = asset
 
 # Open hardcoded values and appened
-with open("../mappings/messari_to_dl_hardcode.json", "r") as infile:
+with open("../messari/mappings/messari_to_dl_hardcode.json", "r") as infile:
     messari_to_dl_hardcode = json.load(infile)
 
 for entry in messari_to_dl_hardcode:
@@ -64,10 +64,8 @@ for entry in messari_to_dl_hardcode:
 
     messari_to_dl_dict[entry] = messari_to_dl_hardcode[entry]
 
-
-with open("../mappings/messari_to_dl.json", "w") as outfile:
+with open("../messari/mappings/messari_to_dl.json", "w") as outfile:
     json.dump(messari_to_dl_dict, outfile)
-
 
 # Get not caught slugs
 caught_dl_slugs = list(set(messari_to_dl_dict.values()))
@@ -76,18 +74,17 @@ print(not_translated)
 print(len(caught_dl_slugs))
 print(len(not_translated))
 
-
-
 #########################################
 # Create Messari to Token Terminal dictionary
 #########################################
 from messari.tokenterminal import TokenTerminal
-API_KEY='API_KEY_HERE'
+
+API_KEY = 'API_KEY_HERE'
 tt = TokenTerminal(api_key=API_KEY)
 
 TT_SLUGS = tt.get_project_ids()
 
-messari_to_tt_dict={}
+messari_to_tt_dict = {}
 for asset in messari_assets:
     if asset in TT_SLUGS:
         # Messari is case insensitive & DeFi Llama is always lowercase so drop to lower()
@@ -96,7 +93,7 @@ for asset in messari_assets:
         messari_to_tt_dict[slug] = asset
         messari_to_tt_dict[symbol] = asset
 
-with open("../mappings/messari_to_tt_hardcode.json", "r") as infile:
+with open("../messari/mappings/messari_to_tt_hardcode.json", "r") as infile:
     messari_to_tt_hardcode = json.load(infile)
 
 for entry in messari_to_tt_hardcode:
@@ -106,7 +103,7 @@ for entry in messari_to_tt_hardcode:
 
     messari_to_tt_dict[entry] = messari_to_tt_hardcode[entry]
 
-with open("../mappings/messari_to_tt.json", "w") as outfile:
+with open("../messari/mappings/messari_to_tt.json", "w") as outfile:
     json.dump(messari_to_tt_dict, outfile)
 
 # Get not caught slugs
