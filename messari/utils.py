@@ -154,8 +154,8 @@ def get_taxonomy_dict(filename: str) -> Dict:
         taxonomy_dict = json.load(open(json_path, "r"))
         # TODO check this below path
     elif os.path.exists(
-            os.path.join(current_path, f"../mappings/{filename}")):  # this file is being called from the project dir
-        json_path = os.path.join(current_path, f"../mappings/{filename}")
+            os.path.join(current_path, f"mappings/{filename}")):  # this file is being called from the project dir
+        json_path = os.path.join(current_path, f"mappings/{filename}")
         taxonomy_dict = json.load(open(json_path, "r"))
     else:  # Can't find .mappings mapping file, default to empty
         print(f"ERROR: cannot find {filename}")
