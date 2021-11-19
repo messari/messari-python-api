@@ -18,7 +18,7 @@ The first step is installing messari. messari is a python project, so it can be 
 other python library. Every Operating System should have Python pre-installed,
 so you should just have to run::
 
-   pip install git+https://github.com/messari/messari-python-api.git
+   $> pip install git+https://github.com/messari/messari-python-api.git
 
 Authentication
 ==============
@@ -35,8 +35,16 @@ account at https://messari.io/ and navigate to https://messari.io/account/api to
 
 Once you generate an API key, import messari then set your API key by running::
 
-   import messari
-   messari.MESSARI_API_KEY = 'add_your_api_key'
+   # Import Messari API wrapper
+   from messari.messari import Messari
+
+   # Set up Messari instance
+   MESSARI_API_KEY = 'add_your_api_key'
+   messari = Messari(api_key=MESSARI_API_KEY)
+
+   # Run a quick demo
+   markets_df = messari.get_all_markets()
+   markets_df.head()
 
 
 .. note::
@@ -61,6 +69,10 @@ Check out our examples `here <https://github.com/messari/messari-python-api/blob
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+   notebooks/Messari API Tutorial.ipynb
+   notebooks/DeFiLlama API Tutorial.ipynb
+   notebooks/TokenTerminal API Tutorial.ipynb
 
 
 Indices and tables

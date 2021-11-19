@@ -4,19 +4,36 @@ from messari.utils import validate_input
 
 
 class DataLoader:
+    """This class is meant to represent a base wrapper around
+    a variety of different API's used as data sources
+    """
     def __init__(self, api_dict: Dict, taxonomy_dict: Dict):
         self.api_dict = api_dict
         self.taxonomy_dict = taxonomy_dict
         self.session = requests.Session()
 
+    def __del__(self):
+        self.session.close()
+
+
     def set_api_dict(self, api_dict: Dict) -> None:
+        """Sets a new dictionary to be used as an API key pair
+
+        :param api_dict: Dict
+            New API dictionary
+        """
         self.api_dict = api_dict
 
     def set_taxonomy_dict(self, taxonomy_dict: Dict) -> None:
+        """Sets a new dictionary to be used for taxonomy translations
+
+        :param taxonomy_dict: Dict
+            New taxonomy dictionary
+        """
         self.taxonomy_dict = taxonomy_dict
 
     def get_response(self, endpoint_url: str, params: Dict = None, headers: Dict = None) -> Dict:
-        """ Gets response from endpoint and checks for HTTP errors when requesting data.
+        """Gets response from endpoint and checks for HTTP errors when requesting data.
 
         :param endpoint_url: str
             URL API string.
@@ -35,7 +52,8 @@ class DataLoader:
             raise SystemError(e)
 
     def translate(self, input_slugs: Union[str, List]) -> Union[List, None]:
-        """Wrapper around messari.utils.validate_input, validate input & check if it's supported by DeFi Llama
+        """Wrapper around messari.utils.validate_input,
+        validate input & check if it's supported by DeFi Llama
 
         Parameters
         ----------

@@ -5,7 +5,8 @@ import pandas as pd
 from messari.utils import validate_input, validate_asset_fields_list_order, find_and_update_asset_field
 
 
-def fields_payload(asset_fields: Union[str, List], asset_metric: str = None, asset_profile_metric: str = None):
+def fields_payload(asset_fields: Union[str, List], 
+                   asset_metric: str = None, asset_profile_metric: str = None):
     """Returns payload with fields parameter.
 
     :param asset_fields: str, list
@@ -33,8 +34,7 @@ def fields_payload(asset_fields: Union[str, List], asset_metric: str = None, ass
         # Ensure that metric is the last value in asset fields to successfully concatenate url
         asset_fields = validate_asset_fields_list_order(asset_fields, 'profile')
         # Update metric in asset fields to include drill down asset metric
-        asset_fields = find_and_update_asset_field(asset_fields,
-                                                   'profile', '/'.join(['profile', asset_profile_metric]))
+        asset_fields = find_and_update_asset_field(asset_fields, 'profile', '/'.join(['profile', asset_profile_metric]))
 
     return ','.join(asset_fields)
 

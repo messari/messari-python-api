@@ -15,6 +15,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -38,10 +39,9 @@
               <!-- Local TOC -->
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">messari package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-messari.assets">messari.assets module</a></li>
-<li><a class="reference internal" href="#module-messari.markets">messari.markets module</a></li>
-<li><a class="reference internal" href="#module-messari.timeseries">messari.timeseries module</a></li>
+<li><a class="reference internal" href="#messari-class">Messari Class</a></li>
+<li><a class="reference internal" href="#defillama-class">DeFiLlama Class</a></li>
+<li><a class="reference internal" href="#tokenterminal-class">TokenTerminal Class</a></li>
 </ul>
 </li>
 </ul>
@@ -70,16 +70,83 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="messari-package">
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="messari-package">
 <h1>messari package<a class="headerlink" href="#messari-package" title="Permalink to this headline"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
-</section>
-<section id="module-messari.assets">
-<span id="messari-assets-module"></span><h2>messari.assets module<a class="headerlink" href="#module-messari.assets" title="Permalink to this headline"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="messari.assets.get_all_assets">
-<span class="sig-prename descclassname"><span class="pre">messari.assets.</span></span><span class="sig-name descname"><span class="pre">get_all_assets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_fields</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_profile_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.assets.get_all_assets" title="Permalink to this definition"></a></dt>
+<section id="messari-class">
+<h2>Messari Class<a class="headerlink" href="#messari-class" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="messari.messari.messari.Messari">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">messari.messari.messari.</span></span><span class="sig-name descname"><span class="pre">Messari</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#messari.messari.messari.Messari" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">messari.dataloader.DataLoader</span></code></p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.messari.messari.Messari.get_all_assets" title="messari.messari.messari.Messari.get_all_assets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_assets</span></code></a>([page, limit, asset_fields, ...])</p></td>
+<td><p>Get the paginated list of all assets including metrics and profile.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.messari.messari.Messari.get_all_markets" title="messari.messari.messari.Messari.get_all_markets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_markets</span></code></a>([page, limit, to_dataframe])</p></td>
+<td><p>Get the list of all exchanges and pairs that our WebSocket-based market real-time market data API supports.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.messari.messari.Messari.get_asset" title="messari.messari.messari.Messari.get_asset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_asset</span></code></a>(asset_slugs[, asset_fields, ...])</p></td>
+<td><p>Get basic metadata for an asset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.messari.messari.Messari.get_asset_market_data" title="messari.messari.messari.Messari.get_asset_market_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_asset_market_data</span></code></a>(asset_slugs[, ...])</p></td>
+<td><p>Get the latest market data for an asset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.messari.messari.Messari.get_asset_metrics" title="messari.messari.messari.Messari.get_asset_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_asset_metrics</span></code></a>(asset_slugs[, ...])</p></td>
+<td><p>Get all the quantitative metrics for an asset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.messari.messari.Messari.get_asset_profile" title="messari.messari.messari.Messari.get_asset_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_asset_profile</span></code></a>(asset_slugs[, ...])</p></td>
+<td><p>Get all the qualitative information for an asset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.messari.messari.Messari.get_metric_timeseries" title="messari.messari.messari.Messari.get_metric_timeseries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metric_timeseries</span></code></a>(asset_slugs, asset_metric)</p></td>
+<td><p>Retrieve historical timeseries data for an asset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_response</span></code>(endpoint_url[, params, headers])</p></td>
+<td><p>Gets response from endpoint and checks for HTTP errors when requesting data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_api_dict</span></code>(api_dict)</p></td>
+<td><p>Sets a new dictionary to be used as an API key pair</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_taxonomy_dict</span></code>(taxonomy_dict)</p></td>
+<td><p>Sets a new dictionary to be used for taxonomy translations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code>(input_slugs)</p></td>
+<td><p>Wrapper around messari.utils.validate_input, validate input &amp; check if it's supported by DeFi Llama</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.messari.messari.Messari.get_all_assets">
+<span class="sig-name descname"><span class="pre">get_all_assets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_fields</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_profile_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.messari.messari.Messari.get_all_assets" title="Permalink to this definition"></a></dt>
 <dd><p>Get the paginated list of all assets including metrics and profile.</p>
 <p>Data is return only in JSON format when an asset profile is provided due to the high number
 of text fields. The keys of the object are assets and the value is the associated asset data.</p>
@@ -165,9 +232,37 @@ Available metrics include:</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="messari.assets.get_asset">
-<span class="sig-prename descclassname"><span class="pre">messari.assets.</span></span><span class="sig-name descname"><span class="pre">get_asset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_fields</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.assets.get_asset" title="Permalink to this definition"></a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.messari.messari.Messari.get_all_markets">
+<span class="sig-name descname"><span class="pre">get_all_markets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.messari.messari.Messari.get_all_markets" title="Permalink to this definition"></a></dt>
+<dd><p>Get the list of all exchanges and pairs that our WebSocket-based market real-time market data API supports.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>page: int</strong></dt><dd><blockquote>
+<div><p>Page number starting at 1. Increment value to paginate through results.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>limit: int</dt><dd><p>Limit of assets to return. Default is 20, max value is 500.</p>
+</dd>
+<dt>to_dataframe: bool</dt><dd><p>Return data as DataFrame or list of dictionaries. Default is set to DataFrame.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>list, DataFrame</dt><dd><p>List of dictionaries or pandas DataFrame of markets indexed by exchange slug.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.messari.messari.Messari.get_asset">
+<span class="sig-name descname"><span class="pre">get_asset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_fields</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.messari.messari.Messari.get_asset" title="Permalink to this definition"></a></dt>
 <dd><p>Get basic metadata for an asset.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -198,9 +293,9 @@ Available fields include:</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="messari.assets.get_asset_market_data">
-<span class="sig-prename descclassname"><span class="pre">messari.assets.</span></span><span class="sig-name descname"><span class="pre">get_asset_market_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.assets.get_asset_market_data" title="Permalink to this definition"></a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.messari.messari.Messari.get_asset_market_data">
+<span class="sig-name descname"><span class="pre">get_asset_market_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.messari.messari.Messari.get_asset_market_data" title="Permalink to this definition"></a></dt>
 <dd><p>Get the latest market data for an asset.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -224,9 +319,9 @@ Available fields include:</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="messari.assets.get_asset_metrics">
-<span class="sig-prename descclassname"><span class="pre">messari.assets.</span></span><span class="sig-name descname"><span class="pre">get_asset_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.assets.get_asset_metrics" title="Permalink to this definition"></a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.messari.messari.Messari.get_asset_metrics">
+<span class="sig-name descname"><span class="pre">get_asset_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.messari.messari.Messari.get_asset_metrics" title="Permalink to this definition"></a></dt>
 <dd><p>Get all the quantitative metrics for an asset.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -279,9 +374,9 @@ Available metrics include:</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="messari.assets.get_asset_profile">
-<span class="sig-prename descclassname"><span class="pre">messari.assets.</span></span><span class="sig-name descname"><span class="pre">get_asset_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_profile_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#messari.assets.get_asset_profile" title="Permalink to this definition"></a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.messari.messari.Messari.get_asset_profile">
+<span class="sig-name descname"><span class="pre">get_asset_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_profile_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#messari.messari.messari.Messari.get_asset_profile" title="Permalink to this definition"></a></dt>
 <dd><p>Get all the qualitative information for an asset.</p>
 <p>Data is return only in JSON format due to high number of text fields. The keys of the object
 are assets and the value is the associated asset data.</p>
@@ -321,43 +416,9 @@ Available metrics include:</p>
 </dl>
 </dd></dl>
 
-</section>
-<section id="module-messari.markets">
-<span id="messari-markets-module"></span><h2>messari.markets module<a class="headerlink" href="#module-messari.markets" title="Permalink to this headline"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="messari.markets.get_all_markets">
-<span class="sig-prename descclassname"><span class="pre">messari.markets.</span></span><span class="sig-name descname"><span class="pre">get_all_markets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.markets.get_all_markets" title="Permalink to this definition"></a></dt>
-<dd><p>Get the list of all exchanges and pairs that our WebSocket-based market real-time market data API supports.</p>
-<dl class="field-list">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl>
-<dt><strong>page: int</strong></dt><dd><blockquote>
-<div><p>Page number starting at 1. Increment value to paginate through results.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>limit: int</dt><dd><p>Limit of assets to return. Default is 20, max value is 500.</p>
-</dd>
-<dt>to_dataframe: bool</dt><dd><p>Return data as DataFrame or list of dictionaries. Default is set to DataFrame.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>list, DataFrame</dt><dd><p>List of dictionaries or pandas DataFrame of markets indexed by exchange slug.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-messari.timeseries">
-<span id="messari-timeseries-module"></span><h2>messari.timeseries module<a class="headerlink" href="#module-messari.timeseries" title="Permalink to this headline"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="messari.timeseries.get_metric_timeseries">
-<span class="sig-prename descclassname"><span class="pre">messari.timeseries.</span></span><span class="sig-name descname"><span class="pre">get_metric_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'1d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.timeseries.get_metric_timeseries" title="Permalink to this definition"></a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.messari.messari.Messari.get_metric_timeseries">
+<span class="sig-name descname"><span class="pre">get_metric_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'1d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#messari.messari.messari.Messari.get_metric_timeseries" title="Permalink to this definition"></a></dt>
 <dd><p>Retrieve historical timeseries data for an asset.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -673,6 +734,335 @@ for information.</p>
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="defillama-class">
+<h2>DeFiLlama Class<a class="headerlink" href="#defillama-class" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="messari.defillama.defillama.DeFiLlama">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">messari.defillama.defillama.</span></span><span class="sig-name descname"><span class="pre">DeFiLlama</span></span><a class="headerlink" href="#messari.defillama.defillama.DeFiLlama" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">messari.dataloader.DataLoader</span></code></p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.defillama.defillama.DeFiLlama.get_chain_tvl_timeseries" title="messari.defillama.defillama.DeFiLlama.get_chain_tvl_timeseries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_chain_tvl_timeseries</span></code></a>(chains_in[, ...])</p></td>
+<td><p>Retrive timeseries TVL for a given chain</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.defillama.defillama.DeFiLlama.get_current_tvl" title="messari.defillama.defillama.DeFiLlama.get_current_tvl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_current_tvl</span></code></a>(asset_slugs)</p></td>
+<td><p>Retrive current protocol tvl for an asset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.defillama.defillama.DeFiLlama.get_global_tvl_timeseries" title="messari.defillama.defillama.DeFiLlama.get_global_tvl_timeseries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_tvl_timeseries</span></code></a>([start_date, end_date])</p></td>
+<td><p>Returns timeseries TVL from total of all Defi Llama supported protocols</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.defillama.defillama.DeFiLlama.get_protocol_tvl_timeseries" title="messari.defillama.defillama.DeFiLlama.get_protocol_tvl_timeseries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_protocol_tvl_timeseries</span></code></a>(asset_slugs[, ...])</p></td>
+<td><p>Returns times TVL of a protocol with token amounts as a pandas DataFrame indexed by df[protocol][chain][asset].</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.defillama.defillama.DeFiLlama.get_protocols" title="messari.defillama.defillama.DeFiLlama.get_protocols"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_protocols</span></code></a>()</p></td>
+<td><p>Returns basic information on all listed protocols, their current TVL and the changes to it in the last hour/day/week</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_response</span></code>(endpoint_url[, params, headers])</p></td>
+<td><p>Gets response from endpoint and checks for HTTP errors when requesting data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_api_dict</span></code>(api_dict)</p></td>
+<td><p>Sets a new dictionary to be used as an API key pair</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_taxonomy_dict</span></code>(taxonomy_dict)</p></td>
+<td><p>Sets a new dictionary to be used for taxonomy translations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code>(input_slugs)</p></td>
+<td><p>Wrapper around messari.utils.validate_input, validate input &amp; check if it's supported by DeFi Llama</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.defillama.defillama.DeFiLlama.get_chain_tvl_timeseries">
+<span class="sig-name descname"><span class="pre">get_chain_tvl_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chains_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.defillama.defillama.DeFiLlama.get_chain_tvl_timeseries" title="Permalink to this definition"></a></dt>
+<dd><p>Retrive timeseries TVL for a given chain</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>chains_in: str, list</strong></dt><dd><blockquote>
+<div><p>Single asset slug string or list of asset slugs (i.e. bitcoin)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>start_date: str, datetime.datetime</dt><dd><p>Optional start date to set filter for tvl timeseries (“YYYY-MM-DD”)</p>
+</dd>
+<dt>end_date: str, datetime.datetime</dt><dd><p>Optional end date to set filter for tvl timeseries (“YYYY-MM-DD”)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>DataFrame</dt><dd><p>DataFrame containing timeseries tvl data for each chain</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.defillama.defillama.DeFiLlama.get_current_tvl">
+<span class="sig-name descname"><span class="pre">get_current_tvl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#messari.defillama.defillama.DeFiLlama.get_current_tvl" title="Permalink to this definition"></a></dt>
+<dd><p>Retrive current protocol tvl for an asset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>asset_slugs: str, list</strong></dt><dd><p>Single asset slug string or list of asset slugs (i.e. bitcoin)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>DataFrame</dt><dd><p>Pandas Series for tvl indexed by each slug {slug: tvl, …}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.defillama.defillama.DeFiLlama.get_global_tvl_timeseries">
+<span class="sig-name descname"><span class="pre">get_global_tvl_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.defillama.defillama.DeFiLlama.get_global_tvl_timeseries" title="Permalink to this definition"></a></dt>
+<dd><p>Returns timeseries TVL from total of all Defi Llama supported protocols</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>start_date: str, datetime.datetime</strong></dt><dd><blockquote>
+<div><p>Optional start date to set filter for tvl timeseries (“YYYY-MM-DD”)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>end_date: str, datetime.datetime</dt><dd><p>Optional end date to set filter for tvl timeseries (“YYYY-MM-DD”)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>DataFrame</dt><dd><p>DataFrame containing timeseries tvl data for every protocol</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.defillama.defillama.DeFiLlama.get_protocol_tvl_timeseries">
+<span class="sig-name descname"><span class="pre">get_protocol_tvl_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.defillama.defillama.DeFiLlama.get_protocol_tvl_timeseries" title="Permalink to this definition"></a></dt>
+<dd><p>Returns times TVL of a protocol with token amounts as a pandas DataFrame indexed by df[protocol][chain][asset].</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>asset_slugs: str, list</strong></dt><dd><blockquote>
+<div><p>Single asset slug string or list of asset slugs (i.e. bitcoin)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>start_date: str, datetime.datetime</dt><dd><p>Optional start date to set filter for tvl timeseries (“YYYY-MM-DD”)</p>
+</dd>
+<dt>end_date: str, datetime.datetime</dt><dd><p>Optional end date to set filter for tvl timeseries (“YYYY-MM-DD”)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>DataFrame</dt><dd><p>pandas DataFrame of protocol TVL, indexed by df[protocol][chain][asset]
+to look at total tvl across all chains, index with chain=’all’
+to look at total tvl across all tokens of a chain, asset=’totalLiquidityUSD’
+tokens can be indexed by native amount, asset=’tokenName’, or by USD amount, asset=’tokenName_usd’</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.defillama.defillama.DeFiLlama.get_protocols">
+<span class="sig-name descname"><span class="pre">get_protocols</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.defillama.defillama.DeFiLlama.get_protocols" title="Permalink to this definition"></a></dt>
+<dd><p>Returns basic information on all listed protocols, their current TVL and the changes to it in the last hour/day/week</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>DataFrame</dt><dd><p>DataFrame with one column per DeFi Llama supported protocol</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="tokenterminal-class">
+<h2>TokenTerminal Class<a class="headerlink" href="#tokenterminal-class" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="messari.tokenterminal.tokenterminal.TokenTerminal">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">messari.tokenterminal.tokenterminal.</span></span><span class="sig-name descname"><span class="pre">TokenTerminal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#messari.tokenterminal.tokenterminal.TokenTerminal" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">messari.dataloader.DataLoader</span></code></p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.tokenterminal.tokenterminal.TokenTerminal.get_all_protocol_data" title="messari.tokenterminal.tokenterminal.TokenTerminal.get_all_protocol_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_protocol_data</span></code></a>([to_dataframe])</p></td>
+<td><p>Returns an overview of latest data for all projects, ranging from metadata such as launch dates, logos brand colors and Twitter followers to more fundamental metrics such as Revenue, GMV, TVL and P/S ratios.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.tokenterminal.tokenterminal.TokenTerminal.get_historical_metric_data" title="messari.tokenterminal.tokenterminal.TokenTerminal.get_historical_metric_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_historical_metric_data</span></code></a>(protocol_ids, metric)</p></td>
+<td><p>Returns the time series of a specified metric for a given list of project.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.tokenterminal.tokenterminal.TokenTerminal.get_project_ids" title="messari.tokenterminal.tokenterminal.TokenTerminal.get_project_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_project_ids</span></code></a>()</p></td>
+<td><p>Returns all the project ids available in Token Terminal</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.tokenterminal.tokenterminal.TokenTerminal.get_protocol_data" title="messari.tokenterminal.tokenterminal.TokenTerminal.get_protocol_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_protocol_data</span></code></a>(protocol_ids[, ...])</p></td>
+<td><p>Returns a time series of the latest data for a given project, ranging from metadata such as Twitter followers to more fundamental metrics such as Revenue, GMV, TVL and P/S ratios.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_response</span></code>(endpoint_url[, params, headers])</p></td>
+<td><p>Gets response from endpoint and checks for HTTP errors when requesting data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_api_dict</span></code>(api_dict)</p></td>
+<td><p>Sets a new dictionary to be used as an API key pair</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_taxonomy_dict</span></code>(taxonomy_dict)</p></td>
+<td><p>Sets a new dictionary to be used for taxonomy translations</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code>(input_slugs)</p></td>
+<td><p>Wrapper around messari.utils.validate_input, validate input &amp; check if it's supported by DeFi Llama</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.tokenterminal.tokenterminal.TokenTerminal.get_all_protocol_data">
+<span class="sig-name descname"><span class="pre">get_all_protocol_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#messari.tokenterminal.tokenterminal.TokenTerminal.get_all_protocol_data" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an overview of latest data for all projects, ranging from metadata
+such as launch dates, logos brand colors and Twitter followers to more
+fundamental metrics such as Revenue, GMV, TVL and P/S ratios.</p>
+<p>The data is updated every 10 minutes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>to_dataframe: bool</strong></dt><dd><p>Return data as pandas DataFrame or JSON. Default is set to JSON.</p>
+</dd>
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd><dl class="simple">
+<dt>dict, DataFrame</dt><dd><p>Dictionary or pandas DataFrame of asset data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.tokenterminal.tokenterminal.TokenTerminal.get_historical_metric_data">
+<span class="sig-name descname"><span class="pre">get_historical_metric_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protocol_ids</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.tokenterminal.tokenterminal.TokenTerminal.get_historical_metric_data" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the time series of a specified metric for a given list of project.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>protocol_ids: str, list</strong></dt><dd><blockquote>
+<div><blockquote>
+<div><p>List of project IDs</p>
+</div></blockquote>
+<dl>
+<dt>metric: str</dt><dd><p>Single metric string to filter data.
+Available metrics include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>price,</p></li>
+<li><p>market_cap</p></li>
+<li><p>market_cap_circulating</p></li>
+<li><p>market_cap_fully_diluted</p></li>
+<li><p>volume</p></li>
+<li><p>vol_mc</p></li>
+<li><p>pe</p></li>
+<li><p>ps</p></li>
+<li><p>tvl</p></li>
+<li><p>gmv</p></li>
+<li><p>revenue</p></li>
+<li><p>revenue_supply_side</p></li>
+<li><p>revenue_protocol</p></li>
+<li><p>token_incentives</p></li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>start_date: str, datetime.datetime</dt><dd><p>Optional start date to set filter for timeseries (“YYYY-MM-DD”)</p>
+</dd>
+<dt>end_date: str, datetime.datetime</dt><dd><p>Optional end date to set filter for timeseries (“YYYY-MM-DD”)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>DataFrame</dt><dd><p>pandas DataFrame with asset metric data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.tokenterminal.tokenterminal.TokenTerminal.get_project_ids">
+<span class="sig-name descname"><span class="pre">get_project_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#messari.tokenterminal.tokenterminal.TokenTerminal.get_project_ids" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the project ids available in Token Terminal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>List</dt><dd><p>List of token ids.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.tokenterminal.tokenterminal.TokenTerminal.get_protocol_data">
+<span class="sig-name descname"><span class="pre">get_protocol_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protocol_ids</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataframe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#messari.tokenterminal.tokenterminal.TokenTerminal.get_protocol_data" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a time series of the latest data for a given project, ranging from metadata
+such as Twitter followers to more fundamental metrics such as Revenue, GMV, TVL and P/S ratios.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>protocol_ids: str, list</strong></dt><dd><blockquote>
+<div><p>String of protocol ID</p>
+</div></blockquote>
+<dl class="simple">
+<dt>start_date: str, datetime.datetime</dt><dd><p>Optional start date to set filter for timeseries (“YYYY-MM-DD”)</p>
+</dd>
+<dt>end_date: str, datetime.datetime</dt><dd><p>Optional end date to set filter for timeseries (“YYYY-MM-DD”)</p>
+</dd>
+<dt>to_dataframe: bool</dt><dd><p>Return data as pandas DataFrame or JSON. Default is set to DataFrame.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd><dl class="simple">
+<dt>dict, DataFrame</dt><dd><p>Dictionary or pandas DataFrame of asset data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
