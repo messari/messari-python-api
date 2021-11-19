@@ -23,7 +23,8 @@ class Messari(DataLoader):
     #######################
     def get_all_markets(self, page: int = 1, limit: int = 20, to_dataframe: bool = True) -> Union[
         List[Dict], pd.DataFrame]:
-        """Get the list of all exchanges and pairs that our WebSocket-based market real-time market data API supports.
+        """Get the list of all exchanges and pairs that our
+        WebSocket-based market real-time market data API supports.
 
         Parameters
         ----------
@@ -53,10 +54,12 @@ class Messari(DataLoader):
                        to_dataframe: bool = None) -> Union[Dict, pd.DataFrame]:
         """Get the paginated list of all assets including metrics and profile.
 
-        Data is return only in JSON format when an asset profile is provided due to the high number
-        of text fields. The keys of the object are assets and the value is the associated asset data.
+        Data is return only in JSON format when an asset profile is provided due
+        to the high number of text fields. The keys of the object are assets and
+        the value is the associated asset data.
 
-        The function can return a pandas DataFrame only when asset metric data is requested.
+        The function can return a pandas DataFrame only when asset metric data is 
+        requested.
 
         Parameters
         ----------
@@ -121,7 +124,7 @@ class Messari(DataLoader):
         if asset_fields:
             payload['fields'] = fields_payload(asset_fields=asset_fields, asset_metric=asset_metric,
                                                asset_profile_metric=asset_profile_metric)
-        # DataFrame can only be returned if asset metric is provided or if metrics is the only asset field
+        # DataFrame returned if asset metric is provided or if metrics is the only asset field
         if to_dataframe:
             # DataFrame can't be returned because profile data has been requested.
             if asset_profile_metric:
@@ -131,12 +134,14 @@ class Messari(DataLoader):
             # DataFrame can be returned because only metrics has been requested
             if asset_metric and not asset_fields:
                 asset_fields = ['metrics']
-                payload['fields'] = fields_payload(asset_fields=asset_fields, asset_metric=asset_metric)
+                payload['fields'] = fields_payload(asset_fields=asset_fields,
+                                                   asset_metric=asset_metric)
             # DataFrame can be returned because only metrics has been requested
             elif asset_fields and all(elem == 'metrics' for elem in asset_fields):
                 # If asset metric is supplied, filter data based on metric
                 if asset_metric:
-                    payload['fields'] = fields_payload(asset_fields=asset_fields, asset_metric=asset_metric)
+                    payload['fields'] = fields_payload(asset_fields=asset_fields,
+                                                       asset_metric=asset_metric)
                 # Else return all metrics
                 else:
                     payload['fields'] = fields_payload(asset_fields=asset_fields)
@@ -193,7 +198,8 @@ class Messari(DataLoader):
             return pd.DataFrame.from_dict(response_data, orient='index')
         return response_data
 
-    def get_asset_profile(self, asset_slugs: Union[str, List], asset_profile_metric: str = None) -> Dict:
+    def get_asset_profile(self, asset_slugs: Union[str, List],
+                          asset_profile_metric: str = None) -> Dict:
         """Get all the qualitative information for an asset.
 
         Data is return only in JSON format due to high number of text fields. The keys of the object
@@ -224,7 +230,8 @@ class Messari(DataLoader):
         asset_slugs = validate_input(asset_slugs)
         payload = {}
         if asset_profile_metric:
-            payload['fields'] = fields_payload(asset_fields='id', asset_profile_metric=asset_profile_metric)
+            payload['fields'] = fields_payload(asset_fields='id',
+                                               asset_profile_metric=asset_profile_metric)
         base_url_template = Template(f'{BASE_URL_V2}/$asset_key/profile')
         response_data = {}
         for asset in asset_slugs:
@@ -234,8 +241,9 @@ class Messari(DataLoader):
             response_data[asset] = response_flat
         return response_data
 
-    def get_asset_metrics(self, asset_slugs: Union[str, List], asset_metric: str = None, to_dataframe: bool = True) -> \
-            Union[Dict, pd.DataFrame]:
+    def get_asset_metrics(self, asset_slugs: Union[str, List],
+                          asset_metric: str = None, to_dataframe: bool = True) -> \
+                          Union[Dict, pd.DataFrame]:
         """Get all the quantitative metrics for an asset.
 
         Parameters
@@ -278,7 +286,8 @@ class Messari(DataLoader):
         asset_slugs = validate_input(asset_slugs)
         payload = {}
         if asset_metric:
-            # Using fields payload function will work once API is fixed. See inconsistent API usage example note.
+            # Using fields payload function will work once API is fixed.
+            # See inconsistent API usage example note.
             # payload['fields'] = fields_payload(asset_fields='id', asset_metric=asset_metric)
             payload['fields'] = f'id,symbol,{asset_metric}'
         base_url_template = Template(f'{BASE_URL_V1}/$asset_key/metrics')
@@ -292,8 +301,8 @@ class Messari(DataLoader):
             return pd.DataFrame.from_dict(response_data, orient='index')
         return response_data
 
-    def get_asset_market_data(self, asset_slugs: Union[str, List], to_dataframe: bool = True) -> Union[
-        Dict, pd.DataFrame]:
+    def get_asset_market_data(self, asset_slugs: Union[str, List],
+                              to_dataframe: bool = True) -> Union[Dict, pd.DataFrame]:
         """Get the latest market data for an asset.
 
         Parameters
@@ -308,14 +317,15 @@ class Messari(DataLoader):
             dict, DataFrame
                 Dictionary or pandas DataFrame with asset market data.
         """
-        return self.get_asset_metrics(asset_slugs=asset_slugs, asset_metric='market_data', to_dataframe=to_dataframe)
+        return self.get_asset_metrics(asset_slugs=asset_slugs,
+                                      asset_metric='market_data', to_dataframe=to_dataframe)
 
     ##############################
     # timeseries
     ##############################
-    def get_metric_timeseries(self, asset_slugs: Union[str, List], asset_metric: str, start: str = None,
-                              end: str = None, interval: str = '1d', to_dataframe: bool = True) -> Union[
-        Dict, pd.DataFrame]:
+    def get_metric_timeseries(self, asset_slugs: Union[str, List], asset_metric: str,
+                              start: str = None, end: str = None, interval: str = '1d',
+                              to_dataframe: bool = True) -> Union[Dict, pd.DataFrame]:
         """Retrieve historical timeseries data for an asset.
 
         Parameters
@@ -465,13 +475,14 @@ class Messari(DataLoader):
             interval: str
                 Interval of timeseries data. Default value is set to 1d.
 
-                For any given interval, at most 2016 points will be returned. For example, with interval=5m,
-                the maximum range of the request is 2016 * 5 minutes = 7 days. With interval=1h, the
-                maximum range is 2016 * 1 hour = 84 days. Exceeding the maximum range will result in
-                an error, which can be solved by reducing the date range specified in the request.
+                For any given interval, at most 2016 points will be returned. For example,
+                with interval=5m, the maximum range of the request is 2016 * 5 minutes = 7 days.
+                With interval=1h, the maximum range is 2016 * 1 hour = 84 days.
+                Exceeding the maximum range will result in an error,
+                which can be solved by reducing the date range specified in the request.
 
-                Anything under 1 day requires an enterprise subscription. Please email enterprise@messari.io
-                for information.
+                Anything under 1 day requires an enterprise subscription.
+                Please email enterprise@messari.io for information.
 
                 Interval options include:
                     - 1m

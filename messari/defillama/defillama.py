@@ -52,8 +52,8 @@ class DeFiLlama(DataLoader):
         """
         slugs = self.translate(asset_slugs)
 
-        protocols_dict = {}
-        slug_df_list = []
+        protocols_dict: Dict = {}
+        slug_df_list: List = []
         for slug in slugs:
             endpoint_url = DL_GET_PROTOCOL_TVL_URL.substitute(slug=slug)
             protocol = self.get_response(endpoint_url)

@@ -1,22 +1,17 @@
 from string import Template
 import datetime
-from typing import List, Dict, Union
+from typing import List, Union
 import pandas as pd
 
 from messari.dataloader import DataLoader
 from messari.utils import get_taxonomy_dict, time_filter_df
 from .helpers import response_to_df
 
-"""
-The revenue module is powered by the Token Terminal API.
-
-Need to add tests
-"""
-
-BASE_URL = 'https://api.tokenterminal.com/v1/projects'
-
+BASE_URL = "https://api.tokenterminal.com/v1/projects"
 
 class TokenTerminal(DataLoader):
+    """This class is a wrapper for the Token Terminal API
+    """
 
     def __init__(self, api_key: str):
         tt_api_key = {"Authorization": f"Bearer {api_key}"}
@@ -57,17 +52,19 @@ class TokenTerminal(DataLoader):
         data = self.get_response(url, headers=self.api_dict)
         if to_dataframe:
             df = pd.DataFrame(data)
-            df.set_index(f'project_id', inplace=True)
+            df.set_index('project_id', inplace=True)
             df.index.name = None
             df_transposed = df.transpose()
             return df_transposed
         return data
 
-    def get_protocol_data(self, protocol_ids: Union[str, List], start_date: Union[str, datetime.datetime] = None,
-                          end_date: Union[str, datetime.datetime] = None, to_dataframe: bool = True):
+    def get_protocol_data(self, protocol_ids: Union[str, List],
+                          start_date: Union[str, datetime.datetime] = None,
+                          end_date: Union[str, datetime.datetime] = None) -> pd.DataFrame:
         """
-        Returns a time series of the latest data for a given project, ranging from metadata
-        such as Twitter followers to more fundamental metrics such as Revenue, GMV, TVL and P/S ratios.
+        Returns a time series of the latest data for a given project,
+        ranging from metadata such as Twitter followers to more fundamental
+        metrics such as Revenue, GMV, TVL and P/S ratios.
 
         Parameters
         ----------
@@ -146,6 +143,7 @@ class TokenTerminal(DataLoader):
             data_df = response_to_df(data)
             single_metric_df = data_df[metric].to_frame()
             single_metric_df.columns = [protocol_id]
-            single_metric_df = time_filter_df(single_metric_df, start_date=start_date, end_date=end_date)
+            single_metric_df = time_filter_df(single_metric_df, 
+                                              start_date=start_date, end_date=end_date)
             metric_df = metric_df.join(single_metric_df, how='outer')
         return metric_df

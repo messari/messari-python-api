@@ -1,4 +1,5 @@
 from messari.defillama import DeFiLlama
+import sys
 from messari.utils import validate_input
 import pandas as pd
 import numpy as np
@@ -60,10 +61,9 @@ arguments = parser.parse_args()
 
 #### Get protocol
 if arguments.protocol is not None:
-    # TODO fix
     protocols = validate_input(arguments.protocol)
 else:
-    exit()
+    sys.exit()
 
 
 #### Get start & end date
@@ -76,14 +76,14 @@ if arguments.end is not None:
 else:
     end = None
 
+# Set fonts & colors
 plt.rcParams.update({'font.size': 13})
-colors = ['#233A4F', '#C767DD', '#CDE5BA', '#75D9E3', '#4A90FF', '#FF9400', '#75AAFD', '#FFA7A7', '#7030A0', '#FFC000']
+colors = ['#233A4F', '#C767DD', '#CDE5BA', '#75D9E3', '#4A90FF',
+          '#FF9400', '#75AAFD', '#FFA7A7', '#7030A0', '#FFC000']
 sns.set_palette(sns.color_palette(colors))
 
+# Get & clean TVL data from DeFiLlama
 dl = DeFiLlama()
-protocols = ['aave']
-#start = '2021-01-01'
-#end = '2021-11-16'
 protocol_tvls = dl.get_protocol_tvl_timeseries(protocols, start_date=start, end_date=end)
 df = clean_tvl_data(protocol_tvls)
 
@@ -99,8 +99,8 @@ Position = range(1, total_subplots + 1)
 fig = plt.figure(constrained_layout=True, figsize=(20, total_subplots*3))
 fig.suptitle(f'{protocol_name} TVL Decomposition by Chain', fontsize=25)
 for k, chain in enumerate(list(df.columns.levels[0])):
-  # add every single subplot to the figure with a for loop
-    sns.set_style("whitegrid")
+    # add every single subplot to the figure with a for loop
+    sns.set_style('whitegrid')
     sns.despine()
     ax = fig.add_subplot(Rows, cols, Position[k])
     df[chain].plot(kind='area', linewidth=0, ax=ax)
@@ -117,7 +117,7 @@ for k, chain in enumerate(list(df.columns.levels[0])):
     ax.set_xlim([df[chain].index[0], df[chain].index[-1]])
     ax.set_xlabel('Date')
     if chain == 'all':
-        ax.set_title(f'Aggregate TVL Decomposition')
+        ax.set_title('Aggregate TVL Decomposition')
     else:
         ax.set_title(f'{chain} TVL Decomposition')
 
