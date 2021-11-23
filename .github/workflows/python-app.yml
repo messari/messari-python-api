@@ -27,3 +27,8 @@ jobs:
     - name: Lint with pylint
       run: |
         make check
+    - name: Run unit tests
+      env:
+        MESSARI_API_KEY: ${{ secrets.MESSARI_API_KEY }}
+      run: |
+        make test
