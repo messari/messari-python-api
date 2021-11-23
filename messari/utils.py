@@ -158,9 +158,8 @@ def get_taxonomy_dict(filename: str) -> Dict:
             taxonomy_dict = json.load(file)
             file.close()
     # this file is being called from the project dir
-    elif os.path.exists(
-            os.path.join(current_path, f"../mappings/{filename}")):
-        json_path = os.path.join(current_path, f"../mappings/{filename}")
+    elif os.path.exists(os.path.join(current_path, f"mappings/{filename}")):
+        json_path = os.path.join(current_path, f"mappings/{filename}")
         with open(json_path, "r", encoding="utf-8") as file:
             taxonomy_dict = json.load(file)
             file.close()
