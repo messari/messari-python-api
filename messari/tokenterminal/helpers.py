@@ -1,3 +1,6 @@
+"""This module is dedicated to helpers for the TokenTerminal class"""
+
+
 from typing import Dict
 import pandas as pd
 

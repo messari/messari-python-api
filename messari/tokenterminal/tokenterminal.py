@@ -1,3 +1,5 @@
+"""This module is meant to contain the TokenTerminal class"""
+
 from string import Template
 import datetime
 from typing import List, Union
@@ -7,15 +9,16 @@ from messari.dataloader import DataLoader
 from messari.utils import get_taxonomy_dict, time_filter_df
 from .helpers import response_to_df
 
-BASE_URL = "https://api.tokenterminal.com/v1/projects"
+
+BASE_URL = 'https://api.tokenterminal.com/v1/projects'
 
 class TokenTerminal(DataLoader):
     """This class is a wrapper for the Token Terminal API
     """
 
     def __init__(self, api_key: str):
-        tt_api_key = {"Authorization": f"Bearer {api_key}"}
-        messari_to_tt_dict = get_taxonomy_dict("messari_to_tt.json")
+        tt_api_key = {'Authorization': f'Bearer {api_key}'}
+        messari_to_tt_dict = get_taxonomy_dict('messari_to_tt.json')
         DataLoader.__init__(self, api_dict=tt_api_key, taxonomy_dict=messari_to_tt_dict)
 
     def get_project_ids(self):
@@ -143,7 +146,7 @@ class TokenTerminal(DataLoader):
             data_df = response_to_df(data)
             single_metric_df = data_df[metric].to_frame()
             single_metric_df.columns = [protocol_id]
-            single_metric_df = time_filter_df(single_metric_df, 
+            single_metric_df = time_filter_df(single_metric_df,
                                               start_date=start_date, end_date=end_date)
             metric_df = metric_df.join(single_metric_df, how='outer')
         return metric_df

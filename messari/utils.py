@@ -1,3 +1,5 @@
+"""This module is dedicated to utilites used by multiple classes"""
+
 import datetime
 import json
 import os
@@ -6,15 +8,13 @@ from typing import List, Union, Dict
 
 import pandas as pd
 
-"""
-Inconsistent API usage between metrics and profile end points
-
-works: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol,marketcap
-doesn't work: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol,metrics/markecap
-
-works: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,profile/general
-doesn't work: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,general
-"""
+# Inconsistent API usage between metrics and profile end points
+#
+# works: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol,marketcap
+# doesn't work: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol,metrics/markecap
+#
+# works: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,profile/general
+# doesn't work: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,general
 
 
 def convert_flatten(response_json: Union[Dict, MutableMapping],
@@ -120,7 +120,8 @@ def find_and_update_asset_field(asset_fields: List, field: str, updated_field: s
     return asset_fields
 
 
-def time_filter_df(df_in: pd.DataFrame, start_date: str = None, end_date: str = None) -> pd.DataFrame:
+def time_filter_df(df_in: pd.DataFrame, start_date: str = None,
+                   end_date: str = None) -> pd.DataFrame:
     """Convert filter timeseries indexed DataFrame
 
     :param df_in: pd.DataFrame
@@ -153,16 +154,16 @@ def get_taxonomy_dict(filename: str) -> Dict:
     # this file is being called from an install
     if os.path.exists(os.path.join(current_path, f"../{filename}")):
         json_path = os.path.join(current_path, f"../{filename}")
-        file = open(json_path, "r", encoding="utf=8")
-        taxonomy_dict = json.load(file)
-        file.close()
+        with open(json_path, "r", encoding="utf=8") as file:
+            taxonomy_dict = json.load(file)
+            file.close()
     # this file is being called from the project dir
     elif os.path.exists(
             os.path.join(current_path, f"../mappings/{filename}")):
         json_path = os.path.join(current_path, f"../mappings/{filename}")
-        file = open(json_path, "r", encoding="utf-8")
-        taxonomy_dict = json.load(file)
-        file.close()
+        with open(json_path, "r", encoding="utf-8") as file:
+            taxonomy_dict = json.load(file)
+            file.close()
     else:  # Can't find .mappings mapping file, default to empty
         print(f"ERROR: cannot find {filename}")
         taxonomy_dict = {}

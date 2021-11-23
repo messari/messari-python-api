@@ -1,3 +1,6 @@
+"""This module is dedicated to helpers for the DeFiLlama class"""
+
+
 import pandas as pd
 
 
@@ -18,7 +21,7 @@ def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
     # set date to index
     df_new = df_in
     if 'date' in df_in.columns:
-        df_new.set_index(f'date', inplace=True)
+        df_new.set_index('date', inplace=True)
         df_new.index = pd.to_datetime(df_new.index, unit='s', origin='unix')
         df_new.index = df_new.index.date
 
