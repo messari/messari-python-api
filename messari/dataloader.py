@@ -1,3 +1,6 @@
+"""This module is meant to contain the DataLoader class"""
+
+
 from typing import List, Union, Dict
 import requests
 from messari.utils import validate_input
@@ -49,7 +52,8 @@ class DataLoader:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.HTTPError as e:
-            raise SystemError(e)
+            # NOTE if this doesn't work remove 'from e'
+            raise SystemError(e) from e
 
     def translate(self, input_slugs: Union[str, List]) -> Union[List, None]:
         """Wrapper around messari.utils.validate_input,
