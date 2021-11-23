@@ -31,5 +31,6 @@ jobs:
     - name: Run Unit Tests
       env:
         MESSARI_API_KEY: ${{ secrets.MESSARI_API_KEY }}
+        TOKEN_TERMINAL_API_KEY: ${{ secrets.TOKEN_TERMINAL_API_KEY }}
       run: |
         make test
