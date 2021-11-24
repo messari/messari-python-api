@@ -120,8 +120,8 @@ def find_and_update_asset_field(asset_fields: List, field: str, updated_field: s
     return asset_fields
 
 
-def time_filter_df(df_in: pd.DataFrame, start_date: str = None,
-                   end_date: str = None) -> pd.DataFrame:
+def time_filter_df(df_in: pd.DataFrame, start_date: Union[str, datetime.datetime] = None,
+                   end_date: Union[str, datetime.datetime] = None) -> pd.DataFrame:
     """Convert filter timeseries indexed DataFrame
 
     :param df_in: pd.DataFrame
