@@ -1,0 +1,508 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "b650d739",
+   "metadata": {},
+   "source": [
+    "# Solscan Llama Python API Tutorial"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "90d1e1be",
+   "metadata": {},
+   "source": [
+    "This tutorial aims to be a quick guide to get you started using the Solscan API integrated into messari's python library."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "4f68f0a5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from messari.solscan import Solscan\n",
+    "ss = Solscan()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9817299a",
+   "metadata": {},
+   "source": [
+    "## get_last_block"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b9e965ac",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "e8a14b29",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "SystemError",
+     "evalue": "403 Client Error: Forbidden for url: https://public-api.solscan.io/block/last",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mHTTPError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/usr/local/lib/python3.9/site-packages/messari-0.0.1-py3.9.egg/messari/dataloader.py\u001b[0m in \u001b[0;36mget_response\u001b[0;34m(self, endpoint_url, params, headers)\u001b[0m\n\u001b[1;32m     51\u001b[0m             \u001b[0mresponse\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msession\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mendpoint_url\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mparams\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mparams\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mheaders\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mheaders\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 52\u001b[0;31m             \u001b[0mresponse\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mraise_for_status\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     53\u001b[0m             \u001b[0;32mreturn\u001b[0m \u001b[0mresponse\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjson\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/usr/local/Cellar/jupyterlab/3.1.9/libexec/lib/python3.9/site-packages/requests/models.py\u001b[0m in \u001b[0;36mraise_for_status\u001b[0;34m(self)\u001b[0m\n\u001b[1;32m    952\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mhttp_error_msg\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 953\u001b[0;31m             \u001b[0;32mraise\u001b[0m \u001b[0mHTTPError\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mhttp_error_msg\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mresponse\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    954\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mHTTPError\u001b[0m: 403 Client Error: Forbidden for url: https://public-api.solscan.io/block/last",
+      "\nThe above exception was the direct cause of the following exception:\n",
+      "\u001b[0;31mSystemError\u001b[0m                               Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/0z/kwj7z5bd6rz4n3hl73_qgnn40000gn/T/ipykernel_13750/757918426.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mlast_block\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mss\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_last_block\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      2\u001b[0m \u001b[0mlast_block\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/usr/local/lib/python3.9/site-packages/messari-0.0.1-py3.9.egg/messari/solscan/solscan.py\u001b[0m in \u001b[0;36mget_last_block\u001b[0;34m(self)\u001b[0m\n\u001b[1;32m     47\u001b[0m         \u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     48\u001b[0m         \"\"\"\n\u001b[0;32m---> 49\u001b[0;31m         \u001b[0mlast_blocks\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_response\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mBLOCK_LAST_URL\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     50\u001b[0m         \u001b[0mlast_blocks_df\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mpd\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mDataFrame\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mlast_blocks\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     51\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0mlast_blocks_df\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/usr/local/lib/python3.9/site-packages/messari-0.0.1-py3.9.egg/messari/dataloader.py\u001b[0m in \u001b[0;36mget_response\u001b[0;34m(self, endpoint_url, params, headers)\u001b[0m\n\u001b[1;32m     54\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mrequests\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mexceptions\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mHTTPError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     55\u001b[0m             \u001b[0;31m# NOTE if this doesn't work remove 'from e'\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 56\u001b[0;31m             \u001b[0;32mraise\u001b[0m \u001b[0mSystemError\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     57\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     58\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mtranslate\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0minput_slugs\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0mUnion\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mstr\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mList\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m->\u001b[0m \u001b[0mUnion\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mList\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mSystemError\u001b[0m: 403 Client Error: Forbidden for url: https://public-api.solscan.io/block/last"
+     ]
+    }
+   ],
+   "source": [
+    "last_block = ss.get_last_block()\n",
+    "last_block"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c300dc7b",
+   "metadata": {},
+   "source": [
+    "## get_block_transactions"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5aca33a6",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "db99472c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "block_transactions = ss.get_block_transactions()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "82d9d711",
+   "metadata": {},
+   "source": [
+    "## get_block"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1e036a6c",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5d8be762",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "block = ss.get_block()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6c16199e",
+   "metadata": {},
+   "source": [
+    "## get_last_transaction"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8ce969b5",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4d1d8ebc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "last_transaction = ss.get_last_transaction()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "04e717ec",
+   "metadata": {},
+   "source": [
+    "## get_transaction"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e81cc337",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7e2dec25",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "transaction = ss.get_transactio()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "712683e0",
+   "metadata": {},
+   "source": [
+    "## get_account_tokens"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "47cef0af",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fd9375b2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "account_tokens = ss.get_account_tokens()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cd642db0",
+   "metadata": {},
+   "source": [
+    "## get_account_transactions"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "408d559b",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "84ca501c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "account_transactions = ss.get_account_transactions()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "abd13677",
+   "metadata": {},
+   "source": [
+    "## get_account_stake"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b489cff6",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2e3cb212",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "account_stake = ss.get_account_stake()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0c2c3590",
+   "metadata": {},
+   "source": [
+    "## get_account_spl_transactions"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1d6f5ec2",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ff3216d3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "account_spl_transactions = ss.get_account_spl_transactions()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "aa361ae2",
+   "metadata": {},
+   "source": [
+    "## get_account_sol_transactions"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9190b7e1",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8438449b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "account_sol_transactions = ss.get_account_sol_transactions()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8ec1cd74",
+   "metadata": {},
+   "source": [
+    "## get_account_export_transactions"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9b00d645",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "036bfd94",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "account_export_transactions = ss.get_account_export_transactions()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "926543db",
+   "metadata": {},
+   "source": [
+    "## get_account"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f30ee307",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6d0eb9c5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "account = ss.get_account()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c0745b0d",
+   "metadata": {},
+   "source": [
+    "## get_token_holders"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3d3414c8",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7962c21e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "token_holders = ss.get_token_holders()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "427d3ea2",
+   "metadata": {},
+   "source": [
+    "## get_token_meta"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "658beba7",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8ce3b294",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "token_meta = ss.get_token_meta()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "02548683",
+   "metadata": {},
+   "source": [
+    "## get_token_info"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6e68b5d3",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0d4de18d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "token_info = ss.get_token_info()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "46328243",
+   "metadata": {},
+   "source": [
+    "## get_market_info"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fc2dc8a0",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f7703e30",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "market_info = ss.get_market_info()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5838a289",
+   "metadata": {},
+   "source": [
+    "## get_chain_info"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1ce903b3",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "2ea16ec8",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "SystemError",
+     "evalue": "403 Client Error: Forbidden for url: https://public-api.solscan.io/chaininfo",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mHTTPError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m/usr/local/lib/python3.9/site-packages/messari-0.0.1-py3.9.egg/messari/dataloader.py\u001b[0m in \u001b[0;36mget_response\u001b[0;34m(self, endpoint_url, params, headers)\u001b[0m\n\u001b[1;32m     51\u001b[0m             \u001b[0mresponse\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msession\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mendpoint_url\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mparams\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mparams\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mheaders\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mheaders\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 52\u001b[0;31m             \u001b[0mresponse\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mraise_for_status\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     53\u001b[0m             \u001b[0;32mreturn\u001b[0m \u001b[0mresponse\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjson\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/usr/local/Cellar/jupyterlab/3.1.9/libexec/lib/python3.9/site-packages/requests/models.py\u001b[0m in \u001b[0;36mraise_for_status\u001b[0;34m(self)\u001b[0m\n\u001b[1;32m    952\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mhttp_error_msg\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 953\u001b[0;31m             \u001b[0;32mraise\u001b[0m \u001b[0mHTTPError\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mhttp_error_msg\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mresponse\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    954\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mHTTPError\u001b[0m: 403 Client Error: Forbidden for url: https://public-api.solscan.io/chaininfo",
+      "\nThe above exception was the direct cause of the following exception:\n",
+      "\u001b[0;31mSystemError\u001b[0m                               Traceback (most recent call last)",
+      "\u001b[0;32m/var/folders/0z/kwj7z5bd6rz4n3hl73_qgnn40000gn/T/ipykernel_13750/2211055570.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mchain_info\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mss\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_chain_info\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      2\u001b[0m \u001b[0mchain_info\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/usr/local/lib/python3.9/site-packages/messari-0.0.1-py3.9.egg/messari/solscan/solscan.py\u001b[0m in \u001b[0;36mget_chain_info\u001b[0;34m(self)\u001b[0m\n\u001b[1;32m    230\u001b[0m         \u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    231\u001b[0m         \"\"\"\n\u001b[0;32m--> 232\u001b[0;31m         \u001b[0mchain_info\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_response\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mCHAIN_INFO_URL\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    233\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0mchain_info\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/usr/local/lib/python3.9/site-packages/messari-0.0.1-py3.9.egg/messari/dataloader.py\u001b[0m in \u001b[0;36mget_response\u001b[0;34m(self, endpoint_url, params, headers)\u001b[0m\n\u001b[1;32m     54\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mrequests\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mexceptions\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mHTTPError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     55\u001b[0m             \u001b[0;31m# NOTE if this doesn't work remove 'from e'\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 56\u001b[0;31m             \u001b[0;32mraise\u001b[0m \u001b[0mSystemError\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     57\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     58\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mtranslate\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0minput_slugs\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0mUnion\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mstr\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mList\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m->\u001b[0m \u001b[0mUnion\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mList\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mSystemError\u001b[0m: 403 Client Error: Forbidden for url: https://public-api.solscan.io/chaininfo"
+     ]
+    }
+   ],
+   "source": [
+    "chain_info = ss.get_chain_info()\n",
+    "chain_info"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cce02b7a",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

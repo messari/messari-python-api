@@ -24,3 +24,28 @@ TokenTerminal Class
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+DeepDAO Class
+=============
+
+.. autoclass:: messari.deepdao.deepdao.DeepDAO
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Solscan Class
+=============
+
+.. autoclass:: messari.solscan.solscan.Solscan
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Etherscan Class
+===============
+
+.. autoclass:: messari.etherscan.Etherscan
+   :members:
+   :undoc-members:
+   :show-inheritance:

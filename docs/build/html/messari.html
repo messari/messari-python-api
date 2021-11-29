@@ -41,6 +41,9 @@
 <li class="toctree-l1"><a class="reference internal" href="notebooks/Messari%20API%20Tutorial.html">Messari Python API Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/DeFiLlama%20API%20Tutorial.html">DeFi Llama Python API Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/TokenTerminal%20API%20Tutorial.html">Token Terminal Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/DeepDAO%20API%20Tutorial.html">Deep DAO Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Solscan%20API%20Tutorial.html">Solscan Llama Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Etherscan%20API%20Tutorial.html">Etherscan Python API Tutorial</a></li>
 </ul>
 
         </div>
@@ -1094,6 +1097,601 @@ metrics such as Revenue, GMV, TVL and P/S ratios.</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="deepdao-class">
+<h2>DeepDAO Class<a class="headerlink" href="#deepdao-class" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">messari.deepdao.deepdao.</span></span><span class="sig-name descname"><span class="pre">DeepDAO</span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">messari.dataloader.DataLoader</span></code></p>
+<p>This class is a wrapper around the DeepDAO API</p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_id_dict" title="messari.deepdao.deepdao.DeepDAO.get_id_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_id_dict</span></code></a>()</p></td>
+<td><p>Returns Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_info" title="messari.deepdao.deepdao.DeepDAO.get_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_info</span></code></a>(dao_slugs)</p></td>
+<td><p>Returns Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_organizations" title="messari.deepdao.deepdao.DeepDAO.get_organizations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_organizations</span></code></a>()</p></td>
+<td><p>Returns basic info for all Deep DAO tracked organizations Returns -------    DataFrame        pandas DataFrame of Deep DAO organizations info</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_overview" title="messari.deepdao.deepdao.DeepDAO.get_overview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_overview</span></code></a>()</p></td>
+<td><p>Returns Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_people" title="messari.deepdao.deepdao.DeepDAO.get_people"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_people</span></code></a>([num_people])</p></td>
+<td><p>Returns Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_rankings" title="messari.deepdao.deepdao.DeepDAO.get_rankings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rankings</span></code></a>()</p></td>
+<td><p>Returns various rankings for organizations tracked by Deep DAO Returns -------    DataFrame        pandas DataFrame of Deep DAO organizations rankings</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_response</span></code>(endpoint_url[, params, headers])</p></td>
+<td><p>Gets response from endpoint and checks for HTTP errors when requesting data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_summary" title="messari.deepdao.deepdao.DeepDAO.get_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_summary</span></code></a>()</p></td>
+<td><p>Returns Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_tokens" title="messari.deepdao.deepdao.DeepDAO.get_tokens"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tokens</span></code></a>()</p></td>
+<td><p>Returns Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_users" title="messari.deepdao.deepdao.DeepDAO.get_users"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_users</span></code></a>(users_input)</p></td>
+<td><p>Returns Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_users_proposals" title="messari.deepdao.deepdao.DeepDAO.get_users_proposals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_users_proposals</span></code></a>(users_input)</p></td>
+<td><p>Returns Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.deepdao.deepdao.DeepDAO.get_users_votes" title="messari.deepdao.deepdao.DeepDAO.get_users_votes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_users_votes</span></code></a>(users_input)</p></td>
+<td><p>Returns Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_api_dict</span></code>(api_dict)</p></td>
+<td><p>Sets a new dictionary to be used as an API key pair</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_taxonomy_dict</span></code>(taxonomy_dict)</p></td>
+<td><p>Sets a new dictionary to be used for taxonomy translations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code>(input_slugs)</p></td>
+<td><p>Wrapper around messari.utils.validate_input, validate input &amp; check if it's supported by DeFi Llama</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 67%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>get_address_dict</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_name_dict</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>get_people_dict</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_address_dict">
+<span class="sig-name descname"><span class="pre">get_address_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_address_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_id_dict">
+<span class="sig-name descname"><span class="pre">get_id_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_id_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Returns
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_info">
+<span class="sig-name descname"><span class="pre">get_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dao_slugs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_info" title="Permalink to this definition"></a></dt>
+<dd><p>Returns
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_name_dict">
+<span class="sig-name descname"><span class="pre">get_name_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_name_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_organizations">
+<span class="sig-name descname"><span class="pre">get_organizations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_organizations" title="Permalink to this definition"></a></dt>
+<dd><p>Returns basic info for all Deep DAO tracked organizations
+Returns
+——-</p>
+<blockquote>
+<div><dl class="simple">
+<dt>DataFrame</dt><dd><p>pandas DataFrame of Deep DAO organizations info</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_overview">
+<span class="sig-name descname"><span class="pre">get_overview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_overview" title="Permalink to this definition"></a></dt>
+<dd><p>Returns
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_people">
+<span class="sig-name descname"><span class="pre">get_people</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_people</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_people" title="Permalink to this definition"></a></dt>
+<dd><p>Returns
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_people_dict">
+<span class="sig-name descname"><span class="pre">get_people_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_people_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_rankings">
+<span class="sig-name descname"><span class="pre">get_rankings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_rankings" title="Permalink to this definition"></a></dt>
+<dd><p>Returns various rankings for organizations tracked by Deep DAO
+Returns
+——-</p>
+<blockquote>
+<div><dl class="simple">
+<dt>DataFrame</dt><dd><p>pandas DataFrame of Deep DAO organizations rankings</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_summary">
+<span class="sig-name descname"><span class="pre">get_summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_summary" title="Permalink to this definition"></a></dt>
+<dd><p>Returns
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_tokens">
+<span class="sig-name descname"><span class="pre">get_tokens</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_tokens" title="Permalink to this definition"></a></dt>
+<dd><p>Returns
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_users">
+<span class="sig-name descname"><span class="pre">get_users</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">users_input</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_users" title="Permalink to this definition"></a></dt>
+<dd><p>Returns
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_users_proposals">
+<span class="sig-name descname"><span class="pre">get_users_proposals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">users_input</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_users_proposals" title="Permalink to this definition"></a></dt>
+<dd><p>Returns
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.deepdao.deepdao.DeepDAO.get_users_votes">
+<span class="sig-name descname"><span class="pre">get_users_votes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">users_input</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.deepdao.deepdao.DeepDAO.get_users_votes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="solscan-class">
+<h2>Solscan Class<a class="headerlink" href="#solscan-class" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">messari.solscan.solscan.</span></span><span class="sig-name descname"><span class="pre">Solscan</span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">messari.dataloader.DataLoader</span></code></p>
+<p>This class is a wrapper around the Solscan API</p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_account" title="messari.solscan.solscan.Solscan.get_account"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_account</span></code></a>(accounts_in)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_account_export_transactions" title="messari.solscan.solscan.Solscan.get_account_export_transactions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_account_export_transactions</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_account_sol_transactions" title="messari.solscan.solscan.Solscan.get_account_sol_transactions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_account_sol_transactions</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_account_spl_transactions" title="messari.solscan.solscan.Solscan.get_account_spl_transactions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_account_spl_transactions</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_account_stake" title="messari.solscan.solscan.Solscan.get_account_stake"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_account_stake</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_account_tokens" title="messari.solscan.solscan.Solscan.get_account_tokens"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_account_tokens</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_account_transactions" title="messari.solscan.solscan.Solscan.get_account_transactions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_account_transactions</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_block" title="messari.solscan.solscan.Solscan.get_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_block</span></code></a>(blocks_in)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_block_transactions" title="messari.solscan.solscan.Solscan.get_block_transactions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_block_transactions</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_chain_info" title="messari.solscan.solscan.Solscan.get_chain_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_chain_info</span></code></a>()</p></td>
+<td><p>Return Blockchain overall information Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_last_block" title="messari.solscan.solscan.Solscan.get_last_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_last_block</span></code></a>()</p></td>
+<td><p>Returns last 10 blocks Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_last_transaction" title="messari.solscan.solscan.Solscan.get_last_transaction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_last_transaction</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_market_info" title="messari.solscan.solscan.Solscan.get_market_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_market_info</span></code></a>(tokens_in)</p></td>
+<td><p>Get market information of the given token Parameters ---------- Returns -------</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_response</span></code>(endpoint_url[, params, headers])</p></td>
+<td><p>Gets response from endpoint and checks for HTTP errors when requesting data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_token_holders" title="messari.solscan.solscan.Solscan.get_token_holders"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_token_holders</span></code></a>(tokens_in[, offset, limit])</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_token_info" title="messari.solscan.solscan.Solscan.get_token_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_token_info</span></code></a>([sort_by, ascending, limit, ...])</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_token_meta" title="messari.solscan.solscan.Solscan.get_token_meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_token_meta</span></code></a>(tokens_in)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#messari.solscan.solscan.Solscan.get_transaction" title="messari.solscan.solscan.Solscan.get_transaction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transaction</span></code></a>(signatures_in)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_api_dict</span></code>(api_dict)</p></td>
+<td><p>Sets a new dictionary to be used as an API key pair</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_taxonomy_dict</span></code>(taxonomy_dict)</p></td>
+<td><p>Sets a new dictionary to be used for taxonomy translations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code>(input_slugs)</p></td>
+<td><p>Wrapper around messari.utils.validate_input, validate input &amp; check if it's supported by DeFi Llama</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_account">
+<span class="sig-name descname"><span class="pre">get_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">accounts_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_account" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_account_export_transactions">
+<span class="sig-name descname"><span class="pre">get_account_export_transactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_account_export_transactions" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_account_sol_transactions">
+<span class="sig-name descname"><span class="pre">get_account_sol_transactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_account_sol_transactions" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_account_spl_transactions">
+<span class="sig-name descname"><span class="pre">get_account_spl_transactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_account_spl_transactions" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_account_stake">
+<span class="sig-name descname"><span class="pre">get_account_stake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_account_stake" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_account_tokens">
+<span class="sig-name descname"><span class="pre">get_account_tokens</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_account_tokens" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_account_transactions">
+<span class="sig-name descname"><span class="pre">get_account_transactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_account_transactions" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_block">
+<span class="sig-name descname"><span class="pre">get_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_block" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_block_transactions">
+<span class="sig-name descname"><span class="pre">get_block_transactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_block_transactions" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_chain_info">
+<span class="sig-name descname"><span class="pre">get_chain_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_chain_info" title="Permalink to this definition"></a></dt>
+<dd><p>Return Blockchain overall information
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_last_block">
+<span class="sig-name descname"><span class="pre">get_last_block</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_last_block" title="Permalink to this definition"></a></dt>
+<dd><p>Returns last 10 blocks
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_last_transaction">
+<span class="sig-name descname"><span class="pre">get_last_transaction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_last_transaction" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_market_info">
+<span class="sig-name descname"><span class="pre">get_market_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_market_info" title="Permalink to this definition"></a></dt>
+<dd><p>Get market information of the given token
+Parameters
+———-
+Returns
+——-</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_token_holders">
+<span class="sig-name descname"><span class="pre">get_token_holders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_token_holders" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_token_info">
+<span class="sig-name descname"><span class="pre">get_token_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort_by</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ascending</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_token_info" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_token_meta">
+<span class="sig-name descname"><span class="pre">get_token_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_token_meta" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messari.solscan.solscan.Solscan.get_transaction">
+<span class="sig-name descname"><span class="pre">get_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signatures_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#messari.solscan.solscan.Solscan.get_transaction" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Returns</strong></dt><dd></dd>
+<dt><strong>——-</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="etherscan-class">
+<h2>Etherscan Class<a class="headerlink" href="#etherscan-class" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="messari.etherscan.Etherscan">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">messari.etherscan.</span></span><span class="sig-name descname"><span class="pre">Etherscan</span></span><a class="headerlink" href="#messari.etherscan.Etherscan" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">messari.dataloader.DataLoader</span></code></p>
+<p>This class is a wrapper around the Etherscan API</p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_response</span></code>(endpoint_url[, params, headers])</p></td>
+<td><p>Gets response from endpoint and checks for HTTP errors when requesting data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_api_dict</span></code>(api_dict)</p></td>
+<td><p>Sets a new dictionary to be used as an API key pair</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_taxonomy_dict</span></code>(taxonomy_dict)</p></td>
+<td><p>Sets a new dictionary to be used for taxonomy translations</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code>(input_slugs)</p></td>
+<td><p>Wrapper around messari.utils.validate_input, validate input &amp; check if it's supported by DeFi Llama</p></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </section>

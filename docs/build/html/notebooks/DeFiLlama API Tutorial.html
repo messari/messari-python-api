@@ -53,6 +53,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="TokenTerminal%20API%20Tutorial.html">Token Terminal Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeepDAO%20API%20Tutorial.html">Deep DAO Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Solscan%20API%20Tutorial.html">Solscan Llama Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etherscan%20API%20Tutorial.html">Etherscan Python API Tutorial</a></li>
 </ul>
 
         </div>
@@ -354,7 +357,7 @@ div.rendered_html tbody tr:hover {
 <h1>DeFi Llama Python API Tutorial<a class="headerlink" href="#DeFi-Llama-Python-API-Tutorial" title="Permalink to this headline"></a></h1>
 <p>This tutorial aims to be a quick guide to get you started using the DeFi Llama API integrated into messari’s python library.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -379,7 +382,7 @@ dl = DeFiLlama()
 <h2>Get protocol tvl timeseries<a class="headerlink" href="#Get-protocol-tvl-timeseries" title="Permalink to this headline"></a></h2>
 <p>This function returns a timeseries of a protocol’s TVL broken down by token amounts as a pandas DataFrame. The DataFrame uses a multiindex to group relevant data together following a convenient <strong>df[protocol][chain][asset]</strong> pattern. For example, the following code returns Aave’s aggregate TVL and token amounts across all chains:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -390,7 +393,7 @@ protocol_tvls[&#39;aave&#39;][&#39;all&#39;].head()
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">

@@ -57,6 +57,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="DeFiLlama%20API%20Tutorial.html">DeFi Llama Python API Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TokenTerminal%20API%20Tutorial.html">Token Terminal Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeepDAO%20API%20Tutorial.html">Deep DAO Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Solscan%20API%20Tutorial.html">Solscan Llama Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etherscan%20API%20Tutorial.html">Etherscan Python API Tutorial</a></li>
 </ul>
 
         </div>
@@ -365,7 +368,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span>from messari.messari import Messari
-messari = Messari(&#39;your_api_key&#39;)
+messari = Messari()
 </pre></div>
 </div>
 </div>
@@ -960,7 +963,7 @@ Number of assets in DataFrame 2000
 <li><p>to_dataframe: Return data as DataFrame or JSON. Default is set to DataFrame.</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -971,7 +974,7 @@ asset_metadata.head()
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1008,7 +1011,7 @@ asset_metadata.head()
       <td>BTC</td>
       <td>Bitcoin</td>
       <td>bitcoin</td>
-      <td>[]</td>
+      <td>None</td>
       <td>9793eae6-f374-46b4-8764-c2d224429791</td>
     </tr>
     <tr>
@@ -1017,7 +1020,7 @@ asset_metadata.head()
       <td>ETH</td>
       <td>Ethereum</td>
       <td>ethereum</td>
-      <td>[{'platform': 'avalanche', 'contract_address':...</td>
+      <td>[{'platform': 'sora', 'contract_address': '0x0...</td>
       <td>263d8b01-5a96-41f0-85d5-09687bbbf7ca</td>
     </tr>
     <tr>
@@ -1026,7 +1029,7 @@ asset_metadata.head()
       <td>USDT</td>
       <td>Tether</td>
       <td>tether</td>
-      <td>[{'platform': 'arbitrum-one', 'contract_addres...</td>
+      <td>[{'platform': 'avalanche', 'contract_address':...</td>
       <td>1eaf063a-b8dd-4cfb-95dd-a06338565720</td>
     </tr>
   </tbody>
@@ -2041,7 +2044,7 @@ exchanges to discount the volume believed to come from wash trading activity. Fo
 <li><p>to_dataframe: Return data as DataFrame or JSON. Default is set to DataFrame.</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -2054,7 +2057,7 @@ timeseries_df
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2324,6 +2327,132 @@ timeseries_df
 </table>
 <p>215 rows × 15 columns</p>
 </div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>col_name = timeseries_df.columns[0][1]
+new_df = timeseries_df.xs(col_name, axis=1, level=1)
+new_df
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>bitcoin</th>
+      <th>ethereum</th>
+      <th>tether</th>
+    </tr>
+    <tr>
+      <th>timestamp</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2020-06-01</th>
+      <td>1.057039e+11</td>
+      <td>2.518345e+10</td>
+      <td>5.742080e+09</td>
+    </tr>
+    <tr>
+      <th>2020-06-02</th>
+      <td>1.056771e+11</td>
+      <td>2.520651e+10</td>
+      <td>5.740208e+09</td>
+    </tr>
+    <tr>
+      <th>2020-06-03</th>
+      <td>1.057562e+11</td>
+      <td>2.512887e+10</td>
+      <td>5.739757e+09</td>
+    </tr>
+    <tr>
+      <th>2020-06-04</th>
+      <td>1.058710e+11</td>
+      <td>2.515576e+10</td>
+      <td>5.739695e+09</td>
+    </tr>
+    <tr>
+      <th>2020-06-05</th>
+      <td>1.058955e+11</td>
+      <td>2.515437e+10</td>
+      <td>5.738543e+09</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2020-12-28</th>
+      <td>1.656552e+11</td>
+      <td>4.818913e+10</td>
+      <td>1.323956e+10</td>
+    </tr>
+    <tr>
+      <th>2020-12-29</th>
+      <td>1.683068e+11</td>
+      <td>4.880051e+10</td>
+      <td>1.324107e+10</td>
+    </tr>
+    <tr>
+      <th>2020-12-30</th>
+      <td>1.702719e+11</td>
+      <td>4.928366e+10</td>
+      <td>1.324535e+10</td>
+    </tr>
+    <tr>
+      <th>2020-12-31</th>
+      <td>1.717412e+11</td>
+      <td>4.929705e+10</td>
+      <td>1.324792e+10</td>
+    </tr>
+    <tr>
+      <th>2021-01-01</th>
+      <td>1.735962e+11</td>
+      <td>4.935936e+10</td>
+      <td>1.355271e+10</td>
+    </tr>
+  </tbody>
+</table>
+<p>215 rows × 3 columns</p>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
 </div>
 </section>
 </section>
