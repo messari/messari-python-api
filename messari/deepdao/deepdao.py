@@ -3,6 +3,7 @@
 import requests
 from string import Template
 from typing import Union, List, Dict
+import json
 import pandas as pd
 
 from messari.dataloader import DataLoader
@@ -32,12 +33,43 @@ class DeepDAO(DataLoader):
     """
 
     def __init__(self):
-        DataLoader.__init__(self, api_dict=None, taxonomy_dict=self.get_id_dict)
-        self.id_tax = self.get_id_dict()
-        self.name_tax = self.get_name_dict()
-        self.people_tax = self.get_people_dict()
-        self.address_tax = self.get_address_dict()
+        # Need to init DataLoader first to have get_respone work in rest of __init__
+        DataLoader.__init__(self, api_dict=None, taxonomy_dict=None)
 
+        people = self.get_top_members(count=100000)
+        people_dict={}
+        address_dict={}
+        for index, person in people.iterrows():
+            people_dict[person["address"]] = person["name"]
+            address_dict[person["name"]] = person["address"]
+
+        # get person
+        self.people_tax = people_dict
+        # get address
+        self.address_tax = address_dict
+
+        summary = self.get_summary()
+        name_dict={}
+        id_dict={}
+        for index, dao in summary.iterrows():
+            name_dict[dao["daoId"]] = dao["daoName"]
+            id_dict[dao["daoName"]] = dao["daoId"]
+
+        # get name
+        self.name_tax = name_dict
+        # get id
+        self.id_tax = id_dict
+
+    ####### Class helpers
+    def get_dao_list(self) -> List:
+        return list(self.id_tax.keys())
+
+    def get_member_list(self) -> List:
+        return list(self.address_tax.keys())
+
+
+
+    ####### Overview
     def get_organizations(self) -> pd.DataFrame:
         """Returns basic info for all Deep DAO tracked organizations
         Returns
@@ -49,30 +81,24 @@ class DeepDAO(DataLoader):
         organizations_df = pd.DataFrame(organizations)
         return organizations_df
 
-    # Dashboard
     def get_summary(self) -> pd.DataFrame:
         """Returns
-        Parameters
-        ----------
         Returns
         -------
         """
         response = requests.get(DASHBOARD_URL).json()
         summary = response["daosSummary"]
         summary_df = pd.DataFrame(summary)
+        summary_df.drop('daosArr', axis=1, inplace=True)
         return summary_df
 
     def get_overview(self) -> pd.DataFrame:
         """Returns
-        Parameters
-        ----------
         Returns
         -------
         """
         response = requests.get(DASHBOARD_URL).json()
         overview = response["daoEcosystemOverview"]
-        #print(overview)
-        #print(overview.keys())
         dict_list = []
         count=0
         for date in overview["datesArray"]:
@@ -92,17 +118,12 @@ class DeepDAO(DataLoader):
         for index in old_index:
             dt_string = str(index).split('T')[0]
             new_index.append(dt_string)
-        #print(new_index)
         overview_df.index=new_index
         # drop last row because it's not formatted correctly & data is weird
         # TODO look into this
         overview_df.drop(overview_df.tail(1).index,inplace=True)
         overview_df.index = pd.to_datetime(overview_df.index, format='%Y-%m-%d')
         overview_df = overview_df[~overview_df.index.duplicated(keep='last')]
-        #overview_df['date'] = overview_df['date'][0].split('T')[0]
-        #overview_df.set_index('date', inplace=True)
-        #overview_df.index = overview_df.index.date
-        #datboy2 = format_df(datboy)
         return overview_df
 
     def get_rankings(self) -> pd.DataFrame:
@@ -119,8 +140,6 @@ class DeepDAO(DataLoader):
 
     def get_tokens(self) -> pd.DataFrame:
         """Returns
-        Parameters
-        ----------
         Returns
         -------
         """
@@ -129,45 +148,36 @@ class DeepDAO(DataLoader):
         tokens_df = pd.DataFrame(tokens)
         return tokens_df
 
-    def get_id_dict(self) -> Dict:
+
+    ####### Overview
+    def get_dao_info(self, dao_slugs: Union[str, List]) -> pd.DataFrame:
         """Returns
         Parameters
         ----------
         Returns
         -------
         """
-        summary = self.get_summary()
-        id_dict={}
-        for index, dao in summary.iterrows():
-            id_dict[dao["daoName"]] = dao["daoId"]
-        return id_dict
 
-    def get_name_dict(self) -> Dict:
-        summary = self.get_summary()
-        name_dict={}
-        for index, dao in summary.iterrows():
-            name_dict[dao["daoId"]] = dao["daoName"]
-        return name_dict
+        slugs = validate_input(dao_slugs)
 
-    def get_people_dict(self) -> Dict:
-        # NOTE, if this starts to not capture all people
-        # Increase num_people
-        people = self.get_people(num_people=100000)
-        people_dict={}
-        for index, person in people.iterrows():
-            people_dict[person["address"]] = person["name"]
-        return people_dict
+        dao_info_list = []
+        for slug in slugs:
+            # TODO swap w/ validate
+            if slug in self.id_tax.keys():
+                dao_id = self.id_tax[slug]
+            else:
+                dao_id = slug
+            endpoint_url = DAO_URL.substitute(dao_id=dao_id)
+            dao_info = self.get_response(endpoint_url)
+            dao_info_series = pd.Series(dao_info)
+            dao_info_list.append(dao_info_series)
 
-    def get_address_dict(self) -> Dict:
-        # NOTE, if this starts to not capture all people
-        # Increase num_people
-        people = self.get_people(num_people=100000)
-        people_dict={}
-        for index, person in people.iterrows():
-            people_dict[person["name"]] = person["address"]
-        return people_dict
+        dao_info_df = pd.concat(dao_info_list, keys=slugs, axis=1)
+        dao_info_df.drop(['rankings', 'indices', 'proposals', 'members', 'votersCoalition', 'financial'], inplace=True)
+        return dao_info_df
 
-    def get_info(self, dao_slugs: Union[str, List]) -> pd.DataFrame:
+
+    def get_dao_indices(self, dao_slugs: Union[str, List]) -> pd.DataFrame:
         """Returns
         Parameters
         ----------
@@ -191,13 +201,210 @@ class DeepDAO(DataLoader):
             dao_info_list.append(dao_info_series)
 
         dao_info_df = pd.concat(dao_info_list, keys=slugs, axis=1)
-        return dao_info_df
+        indices = dao_info_df.loc['indices']
 
-    #print(get_info(prots))
+        indices_list = []
+        for index in indices:
+            data = json.loads(index)
+            # Note, the hardcoding here won't scale if DD expands this API
+            data_series = pd.Series(data)
+            indices_list.append(data_series)
+
+        indices_df = pd.concat(indices_list, keys=slugs, axis=1)
+        return indices_df
+
+    def get_dao_proposals(self, dao_slugs: Union[str, List]) -> pd.DataFrame:
+        """Returns
+        Parameters
+        ----------
+        Returns
+        -------
+        """
+        ### TODO extract nested lists & dicts
+
+        slugs = validate_input(dao_slugs)
+
+        dao_info_list = []
+        for slug in slugs:
+            # TODO swap w/ validate
+            if slug in self.id_tax.keys():
+                dao_id = self.id_tax[slug]
+            else:
+                dao_id = slug
+            endpoint_url = DAO_URL.substitute(dao_id=dao_id)
+            dao_info = self.get_response(endpoint_url)
+            dao_info_series = pd.Series(dao_info)
+            dao_info_list.append(dao_info_series)
+
+        dao_info_df = pd.concat(dao_info_list, keys=slugs, axis=1)
+        proposals = dao_info_df.loc['proposals']
+
+        proposals_list = []
+        for proposal in proposals:
+            data = json.loads(proposal)
+            data_series = pd.Series(data)
+            proposals_list.append(data_series)
+        proposals_df = pd.concat(proposals_list, keys=slugs, axis=1)
+
+        #extract
+        proposals_df_list=[]
+        for column_name in proposals_df.columns:
+            user_df = proposals_df[column_name]
+            tmp_series_list=[]
+            for entry in user_df:
+                #if type(entry) == Dict:
+                tmp_series = pd.Series(entry)
+                tmp_series_list.append(tmp_series)
+            reorg_proposals_df = pd.DataFrame(tmp_series_list)
+            reorg_proposals_df.reset_index(drop=True, inplace=True)
+            proposals_df_list.append(reorg_proposals_df)
+        proposals_df = pd.concat(proposals_df_list, keys=proposals_df.columns, axis=1)
 
 
-    ####### People
-    def get_people(self, num_people: int=50) -> pd.DataFrame:
+        return proposals_df
+
+    def get_dao_members(self, dao_slugs: Union[str, List]) -> pd.DataFrame:
+        """Returns
+        Parameters
+        ----------
+        Returns
+        -------
+        """
+        ### TODO extract nested lists & dicts
+
+        slugs = validate_input(dao_slugs)
+
+        dao_info_list = []
+        for slug in slugs:
+            # TODO swap w/ validate
+            if slug in self.id_tax.keys():
+                dao_id = self.id_tax[slug]
+            else:
+                dao_id = slug
+            endpoint_url = DAO_URL.substitute(dao_id=dao_id)
+            dao_info = self.get_response(endpoint_url)
+            dao_info_series = pd.Series(dao_info)
+            dao_info_list.append(dao_info_series)
+
+        dao_info_df = pd.concat(dao_info_list, keys=slugs, axis=1)
+        members = dao_info_df.loc['members']
+
+        members_list = []
+        for member in members:
+            data = json.loads(member)
+            data_series = pd.Series(data)
+            members_list.append(data_series)
+
+        members_df = pd.concat(members_list, keys=slugs, axis=1)
+
+        proposals_df_list=[]
+        for column_name in members_df.columns:
+            user_df = members_df[column_name]
+            tmp_series_list=[]
+            for entry in user_df:
+                #if type(entry) == Dict:
+                tmp_series = pd.Series(entry)
+                tmp_series_list.append(tmp_series)
+            reorg_proposals_df = pd.DataFrame(tmp_series_list)
+            reorg_proposals_df.reset_index(drop=True, inplace=True)
+            proposals_df_list.append(reorg_proposals_df)
+        members_df = pd.concat(proposals_df_list, keys=members_df.columns, axis=1)
+
+        return members_df
+
+    def get_dao_voter_coalitions(self, dao_slugs: Union[str, List]) -> pd.DataFrame:
+        """Returns
+        Parameters
+        ----------
+        Returns
+        -------
+        """
+        ### TODO extract nested lists & dicts
+
+        slugs = validate_input(dao_slugs)
+
+        dao_info_list = []
+        for slug in slugs:
+            # TODO swap w/ validate
+            if slug in self.id_tax.keys():
+                dao_id = self.id_tax[slug]
+            else:
+                dao_id = slug
+            endpoint_url = DAO_URL.substitute(dao_id=dao_id)
+            dao_info = self.get_response(endpoint_url)
+            dao_info_series = pd.Series(dao_info)
+            dao_info_list.append(dao_info_series)
+
+        dao_info_df = pd.concat(dao_info_list, keys=slugs, axis=1)
+        coalitions = dao_info_df.loc['votersCoalition']
+
+        coalitions_list = []
+        for coalition in coalitions:
+            data = json.loads(coalition)
+            data_series = pd.Series(data)
+            coalitions_list.append(data_series)
+
+        coalitions_df = pd.concat(coalitions_list, keys=slugs, axis=1)
+
+
+        # pulling out data from list members of DF
+        user_df_list=[]
+        for column_name in coalitions_df.columns:
+            user_df = coalitions_df[column_name]
+            tmp_df_list=[]
+            for entry in user_df:
+                if type(entry) == list:
+                    tmp_df = pd.DataFrame(entry)
+                    tmp_df.rename(columns={"subsetLength": "size"}, inplace=True)
+                    tmp_df_list.append(tmp_df)
+            reorg_user_df = pd.concat(tmp_df_list)
+            reorg_user_df.reset_index(drop=True, inplace=True)
+            user_df_list.append(reorg_user_df)
+        coalitions_df = pd.concat(user_df_list, keys=coalitions_df.columns, axis=1)
+
+
+
+        return coalitions_df
+
+    def get_dao_financials(self, dao_slugs: Union[str, List]) -> pd.DataFrame:
+        """Returns
+        Parameters
+        ----------
+        Returns
+        -------
+        """
+        ### TODO extract nested lists & dicts
+
+        slugs = validate_input(dao_slugs)
+
+        dao_info_list = []
+        for slug in slugs:
+            # TODO swap w/ validate
+            if slug in self.id_tax.keys():
+                dao_id = self.id_tax[slug]
+            else:
+                dao_id = slug
+            endpoint_url = DAO_URL.substitute(dao_id=dao_id)
+            dao_info = self.get_response(endpoint_url)
+            dao_info_series = pd.Series(dao_info)
+            dao_info_list.append(dao_info_series)
+
+        dao_info_df = pd.concat(dao_info_list, keys=slugs, axis=1)
+        financials = dao_info_df.loc['financial']
+
+        financials_list = []
+        for financial in financials:
+            data = json.loads(financial)
+            data_series = pd.Series(data)
+            financials_list.append(data_series)
+
+        financials_df = pd.concat(financials_list, keys=slugs, axis=1)
+
+        return financials_df
+
+
+    ####### Members
+    def get_top_members(self, count: int=50) -> pd.DataFrame:
         """Returns
         Parameters
         ----------
@@ -205,21 +412,21 @@ class DeepDAO(DataLoader):
         -------
         """
         #TODO can work on paging this
-        params = {"limit": num_people,
+        params = {"limit": count,
                   "offset": 0,
                   "sortBy": "daoAmount"}
         people = self.get_response(PEOPLE_URL, params=params)
         people_df = pd.DataFrame(people)
         return people_df
 
-    def get_users(self, users_input: Union[str, List]) -> pd.DataFrame:
+    def get_member(self, pubkeys: Union[str, List]) -> pd.DataFrame:
         """Returns
         Parameters
         ----------
         Returns
         -------
         """
-        users = validate_input(users_input)
+        users = validate_input(pubkeys)
         user_info_list = []
         for user in users:
             endpoint_url = USER_URL.substitute(user=user)
@@ -229,7 +436,7 @@ class DeepDAO(DataLoader):
         users_info_df = pd.concat(user_info_list, keys=users, axis=1)
         return users_info_df
 
-    def get_users_proposals(self, users_input: Union[str, List]) -> pd.DataFrame:
+    def get_member_proposals(self, pubkeys: Union[str, List]) -> pd.DataFrame:
         """Returns
         Parameters
         ----------
@@ -237,7 +444,7 @@ class DeepDAO(DataLoader):
         -------
         """
         #TODO what even is this
-        users = validate_input(users_input)
+        users = validate_input(pubkeys)
         proposal_info_list = []
         for user in users:
             endpoint_url = USER_PROPOSALS_URL.substitute(user=user)
@@ -281,14 +488,14 @@ class DeepDAO(DataLoader):
         return proposals_df
 
 
-    def get_users_votes(self, users_input: Union[str, List]) -> pd.DataFrame:
+    def get_member_votes(self, pubkeys: Union[str, List]) -> pd.DataFrame:
         """Returns
         Parameters
         ----------
         Returns
         -------
         """
-        users = validate_input(users_input)
+        users = validate_input(pubkeys)
         votes_info_list = []
         for user in users:
             endpoint_url = USER_VOTES_URL.substitute(user=user)

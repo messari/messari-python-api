@@ -178,7 +178,18 @@ class Solscan(DataLoader):
         Returns
         -------
         """
-        return
+        accounts = validate_input(accounts_in)
+
+        df_list=[]
+        for account in accounts:
+            params={"account":account}
+            response = self.get_response(ACCOUNT_TRANSACTIONS_URL,
+                                         params=params,
+                                         headers=HEADERS)
+            df = pd.DataFrame(response)
+            df_list.append(df)
+        fin_df = pd.concat(df_list, keys=accounts, axis=1)
+        return fin_df
 
     def get_account_stake(self, accounts_in: Union[str, List]) -> pd.DataFrame:
         """
