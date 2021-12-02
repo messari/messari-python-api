@@ -3,9 +3,8 @@
 
 import pandas as pd
 
-
-def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
-    """format a typical DF from DD, replace date & drop duplicates
+def unpack_dataframe_of_lists(df_in: pd.DataFrame) -> pd.DataFrame:
+    """Unpacks a dataframe where all entries are list of dicts
 
     Parameters
     ----------
@@ -17,21 +16,42 @@ def format_df(df_in: pd.DataFrame) -> pd.DataFrame:
        DataFrame
            formated pandas DataFrame
     """
+    df_list=[]
+    for column_name in df_in.columns:
+        sub_df = df_in[column_name]
+        tmp_df_list=[]
+        for entry in sub_df:
+            if isinstance(entry, list):
+                tmp_df = pd.DataFrame(entry)
+                tmp_df_list.append(tmp_df)
+        reorg_df = pd.concat(tmp_df_list)
+        reorg_df.reset_index(drop=True, inplace=True) # Reset indexes so there are no repeats
+        df_list.append(reorg_df)
+    df_out = pd.concat(df_list, keys=df_in.columns, axis=1)
+    return df_out
 
-    # set date to index
-    df_new = df_in
-    if 'date' in df_in.columns:
-        print(df_new)
-        df_new.set_index('date', inplace=True)
-        print(df_new)
-        df_new.index = pd.to_datetime(df_new.index, format='%Y-%m-%d', exact=False)
-        print(df_new)
-        df_new.index = df_new.index.date
-        print(df_new)
+def unpack_dataframe_of_dicts(df_in: pd.DataFrame) -> pd.DataFrame:
+    """Unpacks a dataframe where all entries are dicts
 
-    # drop duplicates
-    # NOTE: sometimes DeFi Llama has duplicate dates, choosing to just keep the last
-    # NOTE: Data for duplicates is not the same
-    # TODO: Investigate which data should be kept (currently assuming last is more recent
-    #df_new = df_new[~df_new.index.duplicated(keep='last')]
-    return df_new
+    Parameters
+    ----------
+       df_in: pd.DataFrame
+           input DataFrame
+
+    Returns
+    -------
+       DataFrame
+           formated pandas DataFrame
+    """
+    df_list=[]
+    for column_name in df_in.columns:
+        sub_df = df_in[column_name]
+        tmp_series_list=[]
+        for entry in sub_df:
+            tmp_series = pd.Series(entry)
+            tmp_series_list.append(tmp_series)
+        reorg_df = pd.DataFrame(tmp_series_list)
+        reorg_df.reset_index(drop=True, inplace=True) # Reset indexes so there are no repeats
+        df_list.append(reorg_df)
+    df_out = pd.concat(df_list, keys=df_in.columns, axis=1)
+    return df_out
