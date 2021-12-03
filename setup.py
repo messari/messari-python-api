@@ -10,16 +10,11 @@ setup(
     name='messari',
     version='0.0.1',
     packages=['messari',
-              'messari.defillama',
-              'messari.messari',
-              'messari.tokenterminal',
-              'messari.deepdao',
-              'messari.solscan',
-              'messari.etherscan'],
+              'messari.defillama']
     url='',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    package_data={'messari': ['mappings/messari_to_dl.json', 'mappings/messari_to_tt.json']},
+    package_data={'messari': ['mappings/messari_to_dl.json']},
     license='MIT`',
     classifiers=[
         "Programming Language :: Python :: 3",
