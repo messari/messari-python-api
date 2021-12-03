@@ -10,6 +10,7 @@ setup(
     name='messari',
     version='0.0.1',
     packages=['messari',
+              'messari.messari',
               'messari.defillama'],
     url='',
     long_description=long_description,
