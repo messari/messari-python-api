@@ -11,7 +11,6 @@ setup(
     version='0.0.1',
     packages=['messari',
               'messari.defillama']
-    url='',
     long_description=long_description,
     long_description_content_type='text/markdown',
     package_data={'messari': ['mappings/messari_to_dl.json']},
