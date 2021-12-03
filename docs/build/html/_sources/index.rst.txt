@@ -72,7 +72,6 @@ Check out our examples `here <https://github.com/messari/messari-python-api/blob
 
    notebooks/Messari API Tutorial.ipynb
    notebooks/DeFiLlama API Tutorial.ipynb
-   notebooks/TokenTerminal API Tutorial.ipynb
 
 
 Indices and tables

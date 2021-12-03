@@ -17,10 +17,3 @@ DeFiLlama Class
    :undoc-members:
    :show-inheritance:
 
-TokenTerminal Class
-===================
-
-.. autoclass:: messari.tokenterminal.tokenterminal.TokenTerminal
-   :members:
-   :undoc-members:
-   :show-inheritance:

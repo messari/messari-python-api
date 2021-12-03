@@ -12,13 +12,11 @@ check:
 	$(python_ver) -m pylint messari/*py
 	$(python_ver) -m pylint messari/messari/*py
 	$(python_ver) -m pylint messari/defillama/*py
-	$(python_ver) -m pylint messari/tokenterminal/*py
 
 # Test Library
 test:
 	$(python_ver) unit_testing/messari_tests.py
 	$(python_ver) unit_testing/defillama_tests.py
-	$(python_ver) unit_testing/tokenterminal_tests.py
 
 # Make documentation
 docs:
