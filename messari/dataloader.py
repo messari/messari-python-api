@@ -34,7 +34,7 @@ class DataLoader:
         """
         self.taxonomy_dict = taxonomy_dict
 
-    def get_response(self, endpoint_url: str, params: Dict = None) -> Dict:
+    def get_response(self, endpoint_url: str, params: Dict = None, headers: Dict = None) -> Dict:
         """Gets response from endpoint and checks for HTTP errors when requesting data.
 
         :param endpoint_url: str
@@ -45,7 +45,7 @@ class DataLoader:
         :raises SystemError if HTTP error occurs
         """
         try:
-            response = self.session.get(endpoint_url, params=params, headers=self.api_dict)
+            response = self.session.get(endpoint_url, params=params, headers=headers)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.HTTPError as e:
