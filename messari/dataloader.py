@@ -18,7 +18,6 @@ class DataLoader:
     def __del__(self):
         self.session.close()
 
-
     def set_api_dict(self, api_dict: Dict) -> None:
         """Sets a new dictionary to be used as an API key pair
 
@@ -35,20 +34,18 @@ class DataLoader:
         """
         self.taxonomy_dict = taxonomy_dict
 
-    def get_response(self, endpoint_url: str, params: Dict = None, headers: Dict = None) -> Dict:
+    def get_response(self, endpoint_url: str, params: Dict = None) -> Dict:
         """Gets response from endpoint and checks for HTTP errors when requesting data.
 
         :param endpoint_url: str
             URL API string.
         :param params: dict
             Dictionary of query parameters.
-        :param headers: str:
-            Dictionary of headers
         :return: JSON with requested data
         :raises SystemError if HTTP error occurs
         """
         try:
-            response = self.session.get(endpoint_url, params=params, headers=headers)
+            response = self.session.get(endpoint_url, params=params, headers=self.api_dict)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.HTTPError as e:

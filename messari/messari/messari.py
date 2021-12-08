@@ -45,7 +45,7 @@ class Messari(DataLoader):
                 List of dictionaries or pandas DataFrame of markets indexed by exchange slug.
         """
         payload = {'page': page, 'limit': limit}
-        response_data = self.get_response(BASE_URL_MARKETS, params=payload, headers=self.messari_api_key)
+        response_data = self.get_response(BASE_URL_MARKETS, params=payload)
         if to_dataframe:
             return pd.DataFrame(response_data['data']).set_index('exchange_slug')
         return response_data['data']
@@ -158,7 +158,7 @@ class Messari(DataLoader):
             for key, value in response_data.items():
                 response_data[key] = convert_flatten(value)
             return pd.DataFrame.from_dict(response_data, orient='index')
-        response_data = self.get_response(BASE_URL_V2, params=payload, headers=self.messari_api_key)
+        response_data = self.get_response(BASE_URL_V2, params=payload)
         return unpack_list_of_dicts(response_data['data'])
 
     def get_asset(self, asset_slugs: Union[str, List], asset_fields: Union[str, List] = None,
@@ -194,7 +194,7 @@ class Messari(DataLoader):
         response_data = {}
         for asset in asset_slugs:
             url = base_url_template.substitute(asset_key=asset)
-            response = self.get_response(url, params=payload, headers=self.messari_api_key)
+            response = self.get_response(url, params=payload)
             response_flat = convert_flatten(response['data'])
             response_data[asset] = response_flat
 
@@ -240,7 +240,7 @@ class Messari(DataLoader):
         response_data = {}
         for asset in asset_slugs:
             url = base_url_template.substitute(asset_key=asset)
-            response = self.get_response(url, params=payload, headers=self.messari_api_key)
+            response = self.get_response(url, params=payload)
             response_flat = convert_flatten(response['data'])
             response_data[asset] = response_flat
         return response_data
@@ -298,7 +298,7 @@ class Messari(DataLoader):
         response_data = {}
         for asset in asset_slugs:
             url = base_url_template.substitute(asset_key=asset)
-            response = self.get_response(url, params=payload, headers=self.messari_api_key)
+            response = self.get_response(url, params=payload)
             response_flat = convert_flatten(response['data'])
             response_data[asset] = response_flat
         if to_dataframe:
@@ -539,7 +539,7 @@ class Messari(DataLoader):
         response_data = {}
         for asset in asset_slugs:
             url = base_url_template.substitute(asset_key=asset)
-            response = self.get_response(url, params=payload, headers=self.messari_api_key)
+            response = self.get_response(url, params=payload)
             response_flat = convert_flatten(response['data'])
             response_data[asset] = response_flat
         if to_dataframe:
