@@ -15,9 +15,11 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Messari Python API Tutorial" href="notebooks/Messari%20API%20Tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,15 +37,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to Messari’s Documentation!</a></li>
-<li><a class="reference internal" href="#installing-messari">Installing messari</a></li>
-<li><a class="reference internal" href="#authentication">Authentication</a></li>
-<li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Messari%20API%20Tutorial.html">Messari Python API Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/DeFiLlama%20API%20Tutorial.html">DeFi Llama Python API Tutorial</a></li>
 </ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -68,7 +67,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-messari-s-documentation">
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="welcome-to-messari-s-documentation">
 <h1>Welcome to Messari’s Documentation!<a class="headerlink" href="#welcome-to-messari-s-documentation" title="Permalink to this headline"></a></h1>
 <p>Messari provides a free API for crypto prices, market data metrics, on-chain metrics,
 and qualitative information (asset profiles).</p>
@@ -79,7 +102,7 @@ and qualitative information (asset profiles).</p>
 <p>The first step is installing messari. messari is a python project, so it can be installed like any
 other python library. Every Operating System should have Python pre-installed,
 so you should just have to run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">messari</span><span class="o">/</span><span class="n">messari</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">api</span><span class="o">.</span><span class="n">git</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$&gt; pip install git+https://github.com/messari/messari-python-api.git
 </pre></div>
 </div>
 </section>
@@ -95,8 +118,16 @@ minute and 2000 requests per day. PRO users have the highest limit at 60 request
 up to a maximum of 4000 requests per day. Contact us at <a class="reference external" href="mailto:api&#37;&#52;&#48;messsari&#46;io">api<span>&#64;</span>messsari<span>&#46;</span>io</a> if you need a higher limit.</p>
 </div>
 <p>Once you generate an API key, import messari then set your API key by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">messari</span>
-<span class="n">messari</span><span class="o">.</span><span class="n">MESSARI_API_KEY</span> <span class="o">=</span> <span class="s1">&#39;add_your_api_key&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import Messari API wrapper</span>
+<span class="kn">from</span> <span class="nn">messari.messari</span> <span class="kn">import</span> <span class="n">Messari</span>
+
+<span class="c1"># Set up Messari instance</span>
+<span class="n">MESSARI_API_KEY</span> <span class="o">=</span> <span class="s1">&#39;add_your_api_key&#39;</span>
+<span class="n">messari</span> <span class="o">=</span> <span class="n">Messari</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">MESSARI_API_KEY</span><span class="p">)</span>
+
+<span class="c1"># Run a quick demo</span>
+<span class="n">markets_df</span> <span class="o">=</span> <span class="n">messari</span><span class="o">.</span><span class="n">get_all_markets</span><span class="p">()</span>
+<span class="n">markets_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -115,9 +146,27 @@ installation instructions can be found <a class="reference external" href="https
 </section>
 <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h1>
-<p>Check out our examples <a class="reference external" href="https://github.com/messari/messari-python-api/blob/master/examples/Messari%20API%20Tutorial.ipynb">here</a> for detailed usage.</p>
+<p>Check out our examples <a class="reference external" href="https://github.com/messari/messari-python-api/blob/master/examples/notebooks/Messari%20API%20Tutorial.ipynb">here</a> for detailed usage.</p>
 <p><a class="reference internal" href="genindex.html"><span class="std std-ref">Here</span></a> is detailed description of all the available functions in the library.</p>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Messari%20API%20Tutorial.html">Messari Python API Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Messari%20API%20Tutorial.html#Library-Structure">Library Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Messari%20API%20Tutorial.html#Assets-Module">Assets Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Messari%20API%20Tutorial.html#Markets-Module">Markets Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/DeFiLlama%20API%20Tutorial.html">DeFi Llama Python API Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/DeFiLlama%20API%20Tutorial.html#API-Structure">API Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/DeFiLlama%20API%20Tutorial.html#Get-protocol-tvl-timeseries">Get protocol tvl timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/DeFiLlama%20API%20Tutorial.html#Get-global-tvl-timeseries">Get global tvl timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/DeFiLlama%20API%20Tutorial.html#Get-chain-tvl-timeseries">Get chain tvl timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/DeFiLlama%20API%20Tutorial.html#Get-current-tvl">Get current tvl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/DeFiLlama%20API%20Tutorial.html#Get-protocols">Get protocols</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </section>
 <section id="indices-and-tables">
@@ -131,7 +180,9 @@ installation instructions can be found <a class="reference external" href="https
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="notebooks/Messari%20API%20Tutorial.html" class="btn btn-neutral float-right" title="Messari Python API Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

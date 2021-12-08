@@ -1,3 +1,5 @@
+"""This module is meant to contain the DeFiLlama class"""
+
 # Global imports
 import datetime
 from string import Template
@@ -21,6 +23,8 @@ DL_GET_PROTOCOL_TVL_URL = Template("https://api.llama.fi/protocol/$slug")
 
 
 class DeFiLlama(DataLoader):
+    """This class is a wrapper around the DeFi Llama API
+    """
 
     def __init__(self):
         messari_to_dl_dict = get_taxonomy_dict("messari_to_dl.json")
@@ -29,7 +33,8 @@ class DeFiLlama(DataLoader):
     def get_protocol_tvl_timeseries(self, asset_slugs: Union[str, List],
                                     start_date: Union[str, datetime.datetime] = None,
                                     end_date: Union[str, datetime.datetime] = None) -> pd.DataFrame:
-        """Returns times TVL of a protocol with token amounts as a pandas DataFrame indexed by df[protocol][chain][asset].
+        """Returns times TVL of a protocol with token amounts as a pandas DataFrame.
+        Returned DataFrame is indexed by df[protocol][chain][asset].
 
         Parameters
         ----------
@@ -48,12 +53,11 @@ class DeFiLlama(DataLoader):
                pandas DataFrame of protocol TVL, indexed by df[protocol][chain][asset]
                to look at total tvl across all chains, index with chain='all'
                to look at total tvl across all tokens of a chain, asset='totalLiquidityUSD'
-               tokens can be indexed by native amount, asset='tokenName', or by USD amount, asset='tokenName_usd'
+               tokens can be indexed by asset='tokenName' or by asset='tokenName_usd'
         """
         slugs = self.translate(asset_slugs)
 
-        protocols_dict = {}
-        slug_df_list = []
+        slug_df_list: List = []
         for slug in slugs:
             endpoint_url = DL_GET_PROTOCOL_TVL_URL.substitute(slug=slug)
             protocol = self.get_response(endpoint_url)
@@ -62,7 +66,7 @@ class DeFiLlama(DataLoader):
             # This portion is basically grabbing tvl metrics on a per chain basis
 
             # TODO this is gonna be difficult
-            chainTvls = protocol["chainTvls"]
+            chain_tvls = protocol["chainTvls"]
             chains = protocol["chains"]
             chain_list = []
             chain_df_list = []
@@ -70,36 +74,36 @@ class DeFiLlama(DataLoader):
                 chain_list.append(chain)
 
                 # get timeseries
-                chainTvl = chainTvls[chain]["tvl"]
-                chainTvl_tokens = chainTvls[chain]["tokens"]
-                chainTvl_tokensInUsd = chainTvls[chain]["tokensInUsd"]
+                chain_tvl = chain_tvls[chain]["tvl"]
+                chain_tvl_tokens = chain_tvls[chain]["tokens"]
+                chain_tvl_tokens_usd = chain_tvls[chain]["tokensInUsd"]
 
                 # convert tokens & tokensInUsd
-                for token in chainTvl_tokens:
+                for token in chain_tvl_tokens:
                     for key, value in token["tokens"].items():
                         token[key] = value
                     token.pop("tokens", None)
 
-                for token in chainTvl_tokensInUsd:
+                for token in chain_tvl_tokens_usd:
                     for key, value in token["tokens"].items():
                         token[key] = value
                     token.pop("tokens", None)
 
                 # convert to df
-                chainTvl_df = pd.DataFrame(chainTvl)
-                chainTvl_tokens_df = pd.DataFrame(chainTvl_tokens)
-                chainTvl_tokensInUsd_df = pd.DataFrame(chainTvl_tokensInUsd)
+                chain_tvl_df = pd.DataFrame(chain_tvl)
+                chain_tvl_tokens_df = pd.DataFrame(chain_tvl_tokens)
+                chain_tvl_tokens_usd_df = pd.DataFrame(chain_tvl_tokens_usd)
 
                 # fix indexes
-                chainTvl_df = format_df(chainTvl_df)
-                chainTvl_tokens_df = format_df(chainTvl_tokens_df)
-                chainTvl_tokensInUsd_df = format_df(chainTvl_tokensInUsd_df)
-                chainTvl_tokensInUsd_df = chainTvl_tokensInUsd_df.add_suffix('_usd')
+                chain_tvl_df = format_df(chain_tvl_df)
+                chain_tvl_tokens_df = format_df(chain_tvl_tokens_df)
+                chain_tvl_tokens_usd_df = format_df(chain_tvl_tokens_usd_df)
+                chain_tvl_tokens_usd_df = chain_tvl_tokens_usd_df.add_suffix("_usd")
 
                 # concat tokens and tokensInUsd
-                joint_tokens_df = pd.concat([chainTvl_tokens_df, chainTvl_tokensInUsd_df], axis=1)
+                joint_tokens_df = pd.concat([chain_tvl_tokens_df, chain_tvl_tokens_usd_df], axis=1)
                 # Join total chain TVL w/ token TVL
-                chain_df = chainTvl_df.join(joint_tokens_df)
+                chain_df = chain_tvl_df.join(joint_tokens_df)
                 chain_df_list.append(chain_df)
 
             ###########################
@@ -118,14 +122,14 @@ class DeFiLlama(DataLoader):
             tokens_df = format_df(tokens_df)
 
             ## tokens in USD
-            tokensInUsd = protocol["tokensInUsd"]
-            for token in tokensInUsd:
+            tokens_usd = protocol["tokensInUsd"]
+            for token in tokens_usd:
                 for key, value in token["tokens"].items():
                     token[key] = value
                 token.pop("tokens", None)
-            tokensInUsd_df = pd.DataFrame(tokensInUsd)
-            tokensInUsd_df = format_df(tokensInUsd_df)
-            tokensInUsd_df = tokensInUsd_df.add_suffix('_usd')
+            tokens_usd_df = pd.DataFrame(tokens_usd)
+            tokens_usd_df = format_df(tokens_usd_df)
+            tokens_usd_df = tokens_usd_df.add_suffix("_usd")
 
             # Get total tvl across chains
             tvl = protocol["tvl"]
@@ -133,7 +137,7 @@ class DeFiLlama(DataLoader):
             total_tvl_df = format_df(total_tvl_df)
 
             # Working
-            joint_tokens_df = pd.concat([tokens_df, tokensInUsd_df], axis=1)
+            joint_tokens_df = pd.concat([tokens_df, tokens_usd_df], axis=1)
             total_df = total_tvl_df.join(joint_tokens_df)
 
             # Now create multi index
@@ -172,7 +176,8 @@ class DeFiLlama(DataLoader):
         global_tvl_df = time_filter_df(global_tvl_df, start_date=start_date, end_date=end_date)
         return global_tvl_df
 
-    def get_chain_tvl_timeseries(self, chains_in: Union[str, List], start_date: Union[str, datetime.datetime] = None,
+    def get_chain_tvl_timeseries(self, chains_in: Union[str, List],
+                                 start_date: Union[str, datetime.datetime] = None,
                                  end_date: Union[str, datetime.datetime] = None) -> pd.DataFrame:
         """Retrive timeseries TVL for a given chain
 
@@ -227,7 +232,7 @@ class DeFiLlama(DataLoader):
         for slug in slugs:
             endpoint_url = DL_CURRENT_PROTOCOL_TVL_URL.substitute(slug=slug)
             tvl = self.get_response(endpoint_url)
-            if type(tvl) == float:
+            if isinstance(tvl, float):
                 tvl_dict[slug] = tvl
             else:
                 print(f"ERROR: slug={slug}, MESSAGE: {tvl['message']}")
@@ -237,7 +242,8 @@ class DeFiLlama(DataLoader):
         return tvl_df
 
     def get_protocols(self) -> pd.DataFrame:
-        """Returns basic information on all listed protocols, their current TVL and the changes to it in the last hour/day/week
+        """Returns basic information on all listed protocols, their current TVL
+        and the changes to it in the last hour/day/week
 
         Returns
         -------

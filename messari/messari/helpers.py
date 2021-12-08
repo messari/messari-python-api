@@ -1,3 +1,6 @@
+"""This module is dedicated to helpers for the Messari class"""
+
+
 import logging
 from typing import Union, List, Dict
 import pandas as pd
@@ -5,7 +8,8 @@ import pandas as pd
 from messari.utils import validate_input, validate_asset_fields_list_order, find_and_update_asset_field
 
 
-def fields_payload(asset_fields: Union[str, List], asset_metric: str = None, asset_profile_metric: str = None):
+def fields_payload(asset_fields: Union[str, List],
+                   asset_metric: str = None, asset_profile_metric: str = None):
     """Returns payload with fields parameter.
 
     :param asset_fields: str, list
@@ -33,8 +37,8 @@ def fields_payload(asset_fields: Union[str, List], asset_metric: str = None, ass
         # Ensure that metric is the last value in asset fields to successfully concatenate url
         asset_fields = validate_asset_fields_list_order(asset_fields, 'profile')
         # Update metric in asset fields to include drill down asset metric
-        asset_fields = find_and_update_asset_field(asset_fields,
-                                                   'profile', '/'.join(['profile', asset_profile_metric]))
+        asset_fields = find_and_update_asset_field(asset_fields, 'profile',
+                                                   '/'.join(['profile', asset_profile_metric]))
 
     return ','.join(asset_fields)
 
@@ -50,13 +54,13 @@ def timeseries_to_dataframe(response: Dict) -> pd.DataFrame:
     for key, value in response.items():
         key_list.append(key)
         if isinstance(value['values'], list):
-            values_df = pd.DataFrame.from_records(value['values'],
-                                                  columns=[f'{name}' for name in value['parameters_columns']])
-            values_df.set_index(f'timestamp', inplace=True)
+            df_columns=[f'{name}' for name in value['parameters_columns']]
+            values_df = pd.DataFrame.from_records(value['values'], columns=df_columns)
+            values_df.set_index('timestamp', inplace=True)
             values_df.index = pd.to_datetime(values_df.index, unit='ms', origin='unix')  # noqa
             df_list.append(values_df)
         else:
-            logging.warning(f'Missing timeseries data for {key}')
+            logging.warning('Missing timeseries data for %s', key)
             continue
     # Create multindex DataFrame using list of dataframes & keys
     metric_data_df = pd.concat(df_list, keys=key_list, axis=1)

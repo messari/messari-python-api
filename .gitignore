@@ -31,7 +31,9 @@ build/*
 dist/*
 
 # Ignore pycache
-messari/__pycache__/*
+messari/*/__pycache__/*
+
+unit_testing/_env
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,

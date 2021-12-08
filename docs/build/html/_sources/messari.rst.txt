@@ -1,29 +1,19 @@
 messari package
+***************
+
+Messari Class
+=============
+
+.. autoclass:: messari.messari.messari.Messari
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+DeFiLlama Class
 ===============
 
-Submodules
-----------
-
-messari.assets module
----------------------
-
-.. automodule:: messari.assets
+.. autoclass:: messari.defillama.defillama.DeFiLlama
    :members:
    :undoc-members:
    :show-inheritance:
 
-messari.markets module
-----------------------
-
-.. automodule:: messari.markets
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-messari.timeseries module
--------------------------
-
-.. automodule:: messari.timeseries
-   :members:
-   :undoc-members:
-   :show-inheritance:

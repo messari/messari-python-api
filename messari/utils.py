@@ -1,3 +1,5 @@
+"""This module is dedicated to utilites used by multiple classes"""
+
 import datetime
 import json
 import os
@@ -6,18 +8,17 @@ from typing import List, Union, Dict
 
 import pandas as pd
 
-"""
-Inconsistent API usage between metrics and profile end points
-
-works: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol,marketcap
-doesn't work: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol,metrics/markecap
-
-works: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,profile/general
-doesn't work: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,general
-"""
+# Inconsistent API usage between metrics and profile end points
+#
+# works: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol,marketcap
+# doesn't work: https://data.messari.io/api/v1/assets/BTC/metrics?fields=id,symbol,metrics/markecap
+#
+# works: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,profile/general
+# doesn't work: https://data.messari.io/api/v2/assets/BTC/profile?fields=id,symbol,general
 
 
-def convert_flatten(response_json: Union[Dict, MutableMapping], parent_key: str = '', sep: str = '_') -> Dict:
+def convert_flatten(response_json: Union[Dict, MutableMapping],
+                    parent_key: str = "", sep: str = "_") -> Dict:
     """Collapse JSON response to one single dictionary.
 
      :param response_json: dict, MutableMapping
@@ -28,7 +29,7 @@ def convert_flatten(response_json: Union[Dict, MutableMapping], parent_key: str 
         Delimiter for new keys
      :return Collapsed JSON.ass
      """
-    items = []
+    items: List = []
     for k, v in response_json.items():
         new_key = parent_key + sep + k if parent_key else k
         if isinstance(v, MutableMapping):
@@ -51,13 +52,13 @@ def validate_input(asset_input: Union[str, List]):
     elif isinstance(asset_input, list):
         return asset_input
     else:
-        raise ValueError('Input should be of type string or list')
+        raise ValueError("Input should be of type string or list")
 
 
 DATETIME_FORMAT = "%Y-%m-%d"
 
 
-def validate_datetime(datetime_input: Union[str, datetime.datetime]) -> Union[datetime.datetime, None]:
+def validate_datetime(datetime_input: Union[str, datetime.datetime]) -> Union[datetime.date, None]:
     """Checks if input is datetime.datetime.
 
     :param datetime_input: str, datetime.datetime
@@ -84,7 +85,7 @@ def unpack_list_of_dicts(list_of_dicts: List) -> Dict:
         List of python dictionaries
     :return Dictionary of dictionaries
     """
-    return {asset_data['slug']: asset_data for asset_data in list_of_dicts}
+    return {asset_data["slug"]: asset_data for asset_data in list_of_dicts}
 
 
 def validate_asset_fields_list_order(asset_fields: List, field: str) -> List:
@@ -119,7 +120,8 @@ def find_and_update_asset_field(asset_fields: List, field: str, updated_field: s
     return asset_fields
 
 
-def time_filter_df(df_in: pd.DataFrame, start_date: str = None, end_date: str = None) -> pd.DataFrame:
+def time_filter_df(df_in: pd.DataFrame, start_date: Union[str, datetime.datetime] = None,
+                   end_date: Union[str, datetime.datetime] = None) -> pd.DataFrame:
     """Convert filter timeseries indexed DataFrame
 
     :param df_in: pd.DataFrame
@@ -149,14 +151,18 @@ def time_filter_df(df_in: pd.DataFrame, start_date: str = None, end_date: str = 
 
 def get_taxonomy_dict(filename: str) -> Dict:
     current_path = os.path.dirname(__file__)
-    if os.path.exists(os.path.join(current_path, f"../{filename}")):  # this file is being called from an install
+    # this file is being called from an install
+    if os.path.exists(os.path.join(current_path, f"../{filename}")):
         json_path = os.path.join(current_path, f"../{filename}")
-        taxonomy_dict = json.load(open(json_path, "r"))
-        # TODO check this below path
-    elif os.path.exists(
-            os.path.join(current_path, f"../mappings/{filename}")):  # this file is being called from the project dir
-        json_path = os.path.join(current_path, f"../mappings/{filename}")
-        taxonomy_dict = json.load(open(json_path, "r"))
+        with open(json_path, "r", encoding="utf=8") as file:
+            taxonomy_dict = json.load(file)
+            file.close()
+    # this file is being called from the project dir
+    elif os.path.exists(os.path.join(current_path, f"mappings/{filename}")):
+        json_path = os.path.join(current_path, f"mappings/{filename}")
+        with open(json_path, "r", encoding="utf-8") as file:
+            taxonomy_dict = json.load(file)
+            file.close()
     else:  # Can't find .mappings mapping file, default to empty
         print(f"ERROR: cannot find {filename}")
         taxonomy_dict = {}
