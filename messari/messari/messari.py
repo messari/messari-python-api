@@ -19,7 +19,7 @@ class Messari(DataLoader):
     """
     def __init__(self, api_key=None):
         self.messari_api_key = {'x-messari-api-key': api_key}
-        DataLoader.__init__(self, api_dict=messari_api_key, taxonomy_dict=None)
+        DataLoader.__init__(self, api_dict=self.messari_api_key, taxonomy_dict=None)
         # TODO, look into super() for __init__
 
     #######################
