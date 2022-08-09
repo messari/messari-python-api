@@ -20,6 +20,7 @@ DL_GLOBAL_TVL_URL = "https://api.llama.fi/charts/"
 DL_CURRENT_PROTOCOL_TVL_URL = Template("https://api.llama.fi/tvl/$slug")
 DL_CHAIN_TVL_URL = Template("https://api.llama.fi/charts/$chain")
 DL_GET_PROTOCOL_TVL_URL = Template("https://api.llama.fi/protocol/$slug")
+DL_CHAINS_URL = "https://api.llama.fi/chains/"
 
 
 class DeFiLlama(DataLoader):
@@ -209,6 +210,11 @@ class DeFiLlama(DataLoader):
 
         # Join DataFrames from each chain & return
         chains_df = pd.concat(chain_df_list, axis=1)
+
+        # If chains_df is empty, return an empty DataFrame
+        if chains_df.empty:
+            return pd.DataFrame()
+
         chains_df.columns = chains
         chains_df = time_filter_df(chains_df, start_date=start_date, end_date=end_date)
         return chains_df
@@ -258,3 +264,22 @@ class DeFiLlama(DataLoader):
 
         protocols_df = pd.DataFrame(protocol_dict)
         return protocols_df
+
+    def get_chains(self) -> List[str]:
+        """Get the names of all chains supported by Defi Llama
+
+        Used downstream to get the names/TVL of protocols on each chain
+
+        Returns
+        -------
+        List
+            List of chain name strings
+        """
+        chains = self.get_response(DL_CHAINS_URL)
+
+        chain_names = [chain['name'] for chain in chains]
+
+        # Sort chain name results to ensure consistent order
+        chain_names = sorted(chain_names)
+
+        return chain_names
