@@ -1,4 +1,4 @@
-# Messari API
+# [DEPRECATED] Messari API
 Messari provides a free API for crypto prices, market data metrics, on-chain metrics, and qualitative information (asset profiles).
 
 This documentation will provide the basic steps to start using messari’s python library.
